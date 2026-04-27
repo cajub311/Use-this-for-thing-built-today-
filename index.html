@@ -1412,10 +1412,128 @@
     font-style: italic;
     font-size: 0.95rem;
   }
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .path-field {
+    margin-bottom: 14px;
+  }
+  .path-field:last-child { margin-bottom: 0; }
+  .path-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .path-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--r);
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.42);
+  }
+  .path-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    flex-shrink: 0;
+    cursor: pointer;
+    color: var(--paper-3);
+    display: grid;
+    place-items: center;
+    font-size: 0.86rem;
+  }
+  .path-item.done .path-check {
+    background: var(--moss);
+    border-color: var(--moss-deep);
+  }
+  .path-item.done .desc {
+    text-decoration: line-through;
+    color: var(--ink-faint);
+  }
+  .path-item .desc {
+    flex: 1;
+    color: var(--ink);
+    font-size: 0.92rem;
+  }
+  .path-item .del {
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer;
+    font-size: 1.15rem;
+  }
+  .path-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .path-prompt {
+    background: linear-gradient(135deg, var(--moss-mist), var(--paper-3));
+    border-radius: var(--r);
+    padding: 14px 16px;
+    color: var(--moss-deep);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+  }
+  .path-meter {
+    height: 10px;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .path-meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--moss), var(--gold));
+    transition: width .35s ease;
+  }
+  .path-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin: 0 0 10px;
+  }
+  .path-suggest-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .path-suggest {
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    background: var(--paper);
+    border-radius: var(--r);
+    padding: 10px 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    text-align: left;
+    transition: all .2s ease;
+  }
+  .path-suggest:hover {
+    border-color: var(--moss);
+    background: var(--moss-mist);
+    color: var(--moss-deep);
+    transform: translateY(-1px);
+  }
   @media (max-width: 560px) {
     .peace-gallery { grid-template-columns: 1fr; }
     .peace-visual img { height: 220px; }
     .soundscape-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .path-grid { grid-template-columns: 1fr; }
+    .path-input-row { flex-direction: column; }
+    .path-suggest-grid { grid-template-columns: 1fr; }
   }
 
   /* ── Bottom navigation ──────────────────────────────────── */
@@ -1437,6 +1555,9 @@
     box-shadow: 0 8px 32px var(--shadow-deep);
     z-index: 50;
     border: 1px solid rgba(201, 187, 164, 0.5);
+  }
+  @media (max-width: 720px) {
+    .nav { border-radius: 24px; }
   }
   .nav-btn {
     background: transparent;
@@ -2514,26 +2635,6 @@
     </section>
     <section class="leaf">
       <div class="leaf-head">
-        <h2 class="leaf-title">Display <em>mood</em></h2>
-      </div>
-      <p class="leaf-sub">Choose the atmosphere that feels best for journaling right now.</p>
-      <div class="theme-row" id="themeRow">
-        <button type="button" class="theme-swatch" data-set-theme="parchment">
-          <span class="sw" style="background:#EDE3D2;border-color:#C9BBA4"></span>
-          <span>Parchment</span>
-        </button>
-        <button type="button" class="theme-swatch" data-set-theme="forest">
-          <span class="sw" style="background:#2A332B;border-color:#4A5448"></span>
-          <span>Forest</span>
-        </button>
-        <button type="button" class="theme-swatch" data-set-theme="midnight">
-          <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
-          <span>Midnight</span>
-        </button>
-      </div>
-    </section>
-    <section class="leaf">
-      <div class="leaf-head">
         <h2 class="leaf-title">Backup &amp; <em>restore</em></h2>
       </div>
       <p class="leaf-sub">Deployments do not move your data. Download a file you can re-import on this or another device.</p>
@@ -2590,8 +2691,84 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       QUOTES VIEW
+       PATH VIEW
   ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-path">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Path</span></div>
+      <h1 class="greeting">The life you are tending.</h1>
+      <div class="date-line">Values, experiments, and next small steps</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <section class="leaf intention">
+      <div class="leaf-head">
+        <h2 class="leaf-title">North <em>star</em></h2>
+        <span class="leaf-num">Long view</span>
+      </div>
+      <p class="leaf-sub">Not a commandment. A sentence you can return to when the day gets noisy.</p>
+      <textarea class="deep-input" id="pathNorthStar" rows="3" placeholder="I am becoming someone who..."></textarea>
+      <div class="path-meter" aria-hidden="true"><div class="path-meter-fill" id="pathMeterFill"></div></div>
+      <p class="data-hint" id="pathMeterText">A few honest words are enough.</p>
+    </section>
+
+    <div class="path-grid">
+      <section class="leaf">
+        <div class="leaf-head">
+          <h2 class="leaf-title">Values in <em>practice</em></h2>
+          <span class="leaf-num">01</span>
+        </div>
+        <p class="leaf-sub">Name what matters, then make it visible in ordinary life.</p>
+        <div class="path-field">
+          <p class="picker-label">What matters most lately?</p>
+          <textarea class="mood-note" id="pathValues" rows="4" placeholder="peace, courage, patience, health, faith, creativity..."></textarea>
+        </div>
+        <div class="path-field">
+          <p class="picker-label">How will it look this week?</p>
+          <textarea class="mood-note" id="pathPractice" rows="4" placeholder="One visible behavior, boundary, or ritual..."></textarea>
+        </div>
+      </section>
+
+      <section class="leaf">
+        <div class="leaf-head">
+          <h2 class="leaf-title">Tiny <em>experiments</em></h2>
+          <span class="leaf-num">02</span>
+        </div>
+        <p class="leaf-sub">Try one gentle change. Learn from it. No perfection required.</p>
+        <div class="path-prompt" id="pathExperimentPrompt">Try a 10-minute walk after lunch for three days.</div>
+        <div class="path-suggest-grid" id="pathSuggestGrid"></div>
+        <div class="path-input-row">
+          <input type="text" class="text-in" id="pathExperimentInput" maxlength="100" placeholder="Add your own experiment..." />
+          <button class="add-btn" id="pathAddExperiment">Add</button>
+        </div>
+        <div class="path-list" id="pathExperimentList"></div>
+      </section>
+    </div>
+
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Next <em>right steps</em></h2>
+        <span class="leaf-num">03</span>
+      </div>
+      <p class="leaf-sub">Small actions for future you. Keep them kind and concrete.</p>
+      <div class="path-input-row">
+        <input type="text" class="text-in" id="pathStepInput" maxlength="100" placeholder="One next step..." />
+        <button class="add-btn" id="pathAddStep">Add</button>
+      </div>
+      <div class="path-list" id="pathStepList"></div>
+    </section>
+
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Future self <em>letter</em></h2>
+        <span class="leaf-num">04</span>
+      </div>
+      <p class="leaf-sub">A note for the you who keeps going.</p>
+      <textarea class="deep-input" id="pathLetter" rows="6" placeholder="Dear future me..."></textarea>
+    </section>
+  </div>
+
+  <!-- QUOTES VIEW -->
   <div class="view" id="view-quotes">
     <header class="plate">
       <div class="plate-rule"><span class="ornament">The Library</span></div>
@@ -2659,6 +2836,7 @@
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
   <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
   <button type="button" class="nav-btn" data-view="insights" aria-pressed="false" aria-label="Insights — patterns">Insights</button>
+  <button type="button" class="nav-btn" data-view="path" aria-pressed="false" aria-label="Path — self-help plan">Path</button>
   <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library — quotes">Library</button>
   <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
 </nav>
@@ -2776,9 +2954,10 @@
   const DAY_KEY_PREFIX = 'mindful:day:';
   const CONFIG_KEY = 'mindful:config:';
   const ACTIVITY_KEY = 'mindful:activity:';
+  const PATH_KEY = 'mindful:path:';
   const THEME_KEY = 'mindful:theme';
   const AUDIO_KEY = 'mindful:audio';
-  const BACKUP_VERSION = 1;
+  const BACKUP_VERSION = 2;
 
   /* ────────────────────────────────────────────────────────
      Curated quotes — from Calm, Headspace, Insight Timer
@@ -2884,6 +3063,18 @@
     { title: 'Tea and open journal', src: 'assets/peaceful/tea-open-journal.jpg', alt: 'A cup of tea beside an open journal and a small green branch' },
     { title: 'Sunrise bamboo', src: 'assets/peaceful/sunrise-bamboo.jpg', alt: 'Golden sunrise shining through bamboo leaves' }
   ];
+
+  const PATH_SUGGESTIONS = [
+    'Try a 10-minute walk after lunch for three days.',
+    'Put your phone away for the first 20 minutes after waking.',
+    'Write one honest paragraph before bed.',
+    'Drink water before caffeine tomorrow morning.',
+    'Choose one room corner and reset it for five minutes.',
+    'Send one kind message you have been meaning to send.',
+    'Practice saying no to one thing that drains you.',
+    'Spend five minutes outside without multitasking.'
+  ];
+
   const RITUAL_LABELS = {
     'made-bed': 'made your bed',
     'water-am': 'morning water',
@@ -3000,6 +3191,35 @@
   const escapeHtml = (s) => {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   };
+
+  const blankPath = () => ({
+    northStar: '',
+    values: '',
+    practice: '',
+    letter: '',
+    experiments: [],
+    steps: []
+  });
+  let pathData = blankPath();
+  function loadPath() {
+    const raw = Storage.get(PATH_KEY);
+    if (!raw) {
+      pathData = blankPath();
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      pathData = { ...blankPath(), ...(parsed && typeof parsed === 'object' ? parsed : {}) };
+      if (!Array.isArray(pathData.experiments)) pathData.experiments = [];
+      if (!Array.isArray(pathData.steps)) pathData.steps = [];
+    } catch {
+      pathData = blankPath();
+    }
+  }
+  function savePath() {
+    Storage.set(PATH_KEY, JSON.stringify(pathData));
+    setSaveBarText('Saved in this browser', 'saved');
+  }
 
   let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'chimes', breatheCues: true };
   function loadConfig() {
@@ -4297,6 +4517,123 @@
   /* ────────────────────────────────────────────────────────
      Navigation
   ──────────────────────────────────────────────────────── */
+  /* Path view - longer-term self-help */
+  function pathCompletionScore() {
+    let score = 0;
+    if ((pathData.northStar || '').trim()) score++;
+    if ((pathData.values || '').trim()) score++;
+    if ((pathData.practice || '').trim()) score++;
+    if ((pathData.letter || '').trim()) score++;
+    if ((pathData.experiments || []).length) score++;
+    if ((pathData.steps || []).length) score++;
+    return score;
+  }
+  function renderPathList(items, wrapId, type) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!items.length) {
+      wrap.innerHTML = '<div class="history-empty" style="padding:18px 8px;font-size:1rem;">Nothing here yet. Add one small thing.</div>';
+      return;
+    }
+    items.forEach((item, idx) => {
+      const el = document.createElement('div');
+      el.className = 'path-item' + (item.done ? ' done' : '');
+      el.innerHTML = `
+        <button type="button" class="path-check" aria-label="${item.done ? 'Mark unfinished' : 'Mark complete'}">${item.done ? '✓' : ''}</button>
+        <span class="desc">${escapeHtml(item.text || '')}</span>
+        <button type="button" class="del" aria-label="Remove">×</button>
+      `;
+      el.querySelector('.path-check').addEventListener('click', () => {
+        item.done = !item.done;
+        savePath();
+        renderPath();
+        pushActivity((type === 'step' ? 'Path step' : 'Path experiment') + (item.done ? ' completed.' : ' reopened.'));
+      });
+      el.querySelector('.del').addEventListener('click', () => {
+        items.splice(idx, 1);
+        savePath();
+        renderPath();
+        pushActivity(type === 'step' ? 'Removed a path step.' : 'Removed a path experiment.');
+      });
+      wrap.appendChild(el);
+    });
+  }
+  function updatePathMeter() {
+    const pct = Math.round((pathCompletionScore() / 6) * 100);
+    const fill = document.getElementById('pathMeterFill');
+    if (fill) fill.style.width = pct + '%';
+    const text = document.getElementById('pathMeterText');
+    if (text) text.textContent = pct >= 100 ? 'Your path page is richly tended.' : (pct >= 50 ? 'A clear path is taking shape.' : 'A few honest words are enough.');
+  }
+  function renderPath() {
+    const north = document.getElementById('pathNorthStar');
+    if (!north) return;
+    north.value = pathData.northStar || '';
+    document.getElementById('pathValues').value = pathData.values || '';
+    document.getElementById('pathPractice').value = pathData.practice || '';
+    document.getElementById('pathLetter').value = pathData.letter || '';
+    const seed = seedFromDate(new Date());
+    document.getElementById('pathExperimentPrompt').textContent = PATH_SUGGESTIONS[seed % PATH_SUGGESTIONS.length];
+    const suggestWrap = document.getElementById('pathSuggestGrid');
+    if (suggestWrap) {
+      suggestWrap.innerHTML = '';
+      PATH_SUGGESTIONS.slice(0, 4).forEach((text) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'path-suggest';
+        btn.textContent = text;
+        btn.addEventListener('click', () => addPathExperiment(text));
+        suggestWrap.appendChild(btn);
+      });
+    }
+    renderPathList(pathData.experiments, 'pathExperimentList', 'experiment');
+    renderPathList(pathData.steps, 'pathStepList', 'step');
+    updatePathMeter();
+  }
+  function addPathExperiment(text) {
+    const input = document.getElementById('pathExperimentInput');
+    const val = (text || (input && input.value) || '').trim();
+    if (!val) return;
+    pathData.experiments.unshift({ text: val, done: false, createdAt: new Date().toISOString() });
+    pathData.experiments = pathData.experiments.slice(0, 12);
+    if (input) input.value = '';
+    savePath();
+    renderPath();
+    pushActivity('Added path experiment.');
+  }
+  function addPathStep() {
+    const input = document.getElementById('pathStepInput');
+    const val = (input && input.value || '').trim();
+    if (!val) return;
+    pathData.steps.unshift({ text: val, done: false, createdAt: new Date().toISOString() });
+    pathData.steps = pathData.steps.slice(0, 20);
+    input.value = '';
+    savePath();
+    renderPath();
+    pushActivity('Added path step.');
+  }
+  ['pathNorthStar', 'pathValues', 'pathPractice', 'pathLetter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      if (id === 'pathNorthStar') pathData.northStar = el.value;
+      if (id === 'pathValues') pathData.values = el.value;
+      if (id === 'pathPractice') pathData.practice = el.value;
+      if (id === 'pathLetter') pathData.letter = el.value;
+      savePath();
+      updatePathMeter();
+    });
+  });
+  const pathAddExperimentBtn = document.getElementById('pathAddExperiment');
+  if (pathAddExperimentBtn) pathAddExperimentBtn.addEventListener('click', () => addPathExperiment());
+  const pathExperimentInput = document.getElementById('pathExperimentInput');
+  if (pathExperimentInput) pathExperimentInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathExperiment(); });
+  const pathAddStepBtn = document.getElementById('pathAddStep');
+  if (pathAddStepBtn) pathAddStepBtn.addEventListener('click', addPathStep);
+  const pathStepInput = document.getElementById('pathStepInput');
+  if (pathStepInput) pathStepInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathStep(); });
+
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.nav-btn').forEach(x => {
@@ -4314,6 +4651,7 @@
       if (target === 'log') renderLogView();
       if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); updateThemeSwatches(); }
       if (target === 'insights') renderInsights();
+      if (target === 'path') renderPath();
       if (target === 'today') renderTodaySummary();
     });
   });
@@ -4688,7 +5026,8 @@
     const payload = {
       version: BACKUP_VERSION,
       exportedAt: new Date().toISOString(),
-      days: {}
+      days: {},
+      path: Storage.get(PATH_KEY) || ''
     };
     Storage.listKeys(DAY_KEY_PREFIX).forEach(k => {
       const raw = Storage.get(k);
@@ -4720,6 +5059,11 @@
               count++;
             }
           });
+          if (typeof data.path === 'string') {
+            Storage.set(PATH_KEY, data.path);
+          } else if (data.path && typeof data.path === 'object') {
+            Storage.set(PATH_KEY, JSON.stringify(data.path));
+          }
         } else if (data && typeof data === 'object') {
           Object.keys(data).forEach(k => {
             if (k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string') {
@@ -4727,13 +5071,16 @@
               count++;
             }
           });
+          if (typeof data[PATH_KEY] === 'string') Storage.set(PATH_KEY, data[PATH_KEY]);
         } else {
           msg.textContent = 'That file does not look like a Stillness backup.';
           return;
         }
         currentDateKey = dateKey();
         loadDay();
+        loadPath();
         renderAll();
+        renderPath();
         renderHistory();
         renderLogView();
         msg.textContent = count ? `Restored ${count} day record(s).` : 'No day records found in file.';
@@ -4754,7 +5101,9 @@
     saveConfig();
     currentDateKey = dateKey();
     loadDay();
+    loadPath();
     renderAll();
+    renderPath();
     renderHistory();
     renderLogView();
     setSaveBarText('Saved in this browser', 'saved');
@@ -4772,7 +5121,9 @@
   setRetentionSelect();
   pruneOldDays();
   loadDay();
+  loadPath();
   renderAll();
+  renderPath();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }

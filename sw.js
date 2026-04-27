@@ -1,5 +1,5 @@
 /* Minimal offline shell: cache app shell, network-first for navigation */
-const CACHE = 'stillness-shell-v2';
+const CACHE = 'stillness-shell-v3';
 const SHELL = [
   '/index.html',
   '/manifest.json',
