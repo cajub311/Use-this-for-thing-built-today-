@@ -40,8 +40,12 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
 
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del):focus {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label):focus {
     outline: none;
+  }
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label):focus-visible {
+    outline: 2px solid var(--moss);
+    outline-offset: 2px;
   }
   :where(input, textarea, .slider, .intention-input, .mood-note, .deep-input, .grounding-input, .text-in):focus { outline: none; }
   :where(input, textarea, .slider, .intention-input, .mood-note, .deep-input, .grounding-input, .text-in):focus-visible {
@@ -969,6 +973,9 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100% - 24px);
     gap: 4px;
     background: rgba(237, 227, 210, 0.92);
     backdrop-filter: blur(10px);
@@ -1157,8 +1164,11 @@
     .practices-row { grid-template-columns: 1fr; }
     .pain-input { grid-template-columns: 1fr; }
     .picker-btn .lbl { font-size: 0.66rem; }
-    .nav-btn { padding: 8px 13px; font-size: 0.92rem; }
+    .nav-btn { padding: 8px 12px; font-size: 0.9rem; }
     .leaf { padding: 22px 20px 20px; }
+  }
+  @media (max-width: 400px) {
+    .nav-btn { padding: 8px 9px; font-size: 0.82rem; }
   }
 
   /* Section flourish between cards */
@@ -1169,6 +1179,114 @@
     opacity: 0.5;
   }
   .flourish svg { width: 90px; height: 16px; }
+
+  .save-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--moss-deep);
+    background: rgba(214, 220, 201, 0.92);
+    border-bottom: 1px solid rgba(201, 187, 164, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: opacity .3s, transform .3s;
+  }
+  .save-bar.saving { opacity: 0.95; }
+  .save-bar.saved { color: var(--moss); }
+  .save-bar .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--moss-soft);
+  }
+  .save-bar.saving .dot { background: var(--gold); animation: pulse 1s ease infinite; }
+  .save-bar.error { color: var(--clay); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .app { padding-top: 44px; }
+
+  .data-btn {
+    display: inline-block;
+    background: var(--moss);
+    color: var(--paper-3);
+    border: none;
+    border-radius: var(--r);
+    padding: 10px 16px;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .data-btn:hover { background: var(--moss-deep); }
+  .data-btn-danger {
+    background: transparent;
+    color: var(--clay);
+    border: 1px solid var(--clay);
+  }
+  .data-btn-danger:hover { background: rgba(181, 101, 74, 0.08); }
+  .data-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: center; }
+  .file-label {
+    display: inline-block;
+    background: var(--paper);
+    color: var(--moss-deep);
+    border: 1px solid rgba(201, 187, 164, 0.6);
+    border-radius: var(--r);
+    padding: 10px 16px;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .file-label:hover { border-color: var(--moss-soft); background: var(--paper-3); }
+  .data-hint {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    line-height: 1.5;
+    margin-top: 10px;
+  }
+  .retention-select {
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: var(--r);
+    border: 1px solid rgba(201, 187, 164, 0.6);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .activity-list { margin-top: 10px; max-height: 320px; overflow-y: auto; }
+  .activity-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .activity-item .act-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+    min-width: 4.5em;
+    flex-shrink: 0;
+  }
+  .activity-item .act-msg { flex: 1; }
+  .activity-empty { color: var(--ink-faint); font-style: italic; padding: 20px 0; text-align: center; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   .skip-link {
     position: absolute;
@@ -1201,6 +1319,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
+<div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved in this browser</span></div>
 <!-- Reusable SVG icons (defined once, used everywhere) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -1355,6 +1474,7 @@
       <div class="plate-rule"><span class="ornament">Stillness</span></div>
       <h1 class="greeting" id="greeting">Good morning.</h1>
       <div class="date-line" id="date">—</div>
+      <p class="date-line" id="syncNote" style="margin-top:6px;font-size:0.7rem;max-width:28em;margin-left:auto;margin-right:auto;line-height:1.45">Your journal is kept on <strong>this device</strong> in the browser. It does not sync to the server when you deploy—use Memory → backup file to keep a copy.</p>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
@@ -1611,6 +1731,67 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
+       MEMORY VIEW
+  ═══════════════════════════════════════════════════════ -->
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Memory</span></div>
+      <h1 class="greeting">Kept close, on your device.</h1>
+      <div class="date-line" id="memoryDateLine">—</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Your <em>archive</em></h2>
+      </div>
+      <p class="leaf-sub">Day pages save automatically. Older days roll off after the window below to keep the journal light.</p>
+      <p class="picker-label">How long to keep</p>
+      <select class="retention-select" id="retentionSelect" title="Keep journal days for this many days">
+        <option value="30">30 days (default)</option>
+        <option value="60">60 days</option>
+        <option value="90">90 days</option>
+        <option value="180">6 months</option>
+        <option value="365">1 year</option>
+        <option value="0">Forever (no auto-delete)</option>
+      </select>
+      <p class="data-hint" id="retentionStatus">—</p>
+    </section>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Backup &amp; <em>restore</em></h2>
+      </div>
+      <p class="leaf-sub">Deployments do not move your data. Download a file you can re-import on this or another device.</p>
+      <div class="data-row">
+        <button type="button" class="data-btn" id="exportBtn">Download backup</button>
+        <input type="file" id="importFile" class="sr-only" accept="application/json,.json" />
+        <label for="importFile" class="file-label">Restore from file</label>
+      </div>
+      <p class="data-hint" id="importMessage"></p>
+    </section>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Erase <em>everything</em></h2>
+      </div>
+      <p class="leaf-sub">Removes all saved days, activity, and local settings in this browser. This cannot be undone. Export a backup first if you might need it.</p>
+      <button type="button" class="data-btn data-btn-danger" id="wipeAllBtn">Erase all Stillness data</button>
+    </section>
+  </div>
+
+  <!-- LOG VIEW — activity + rolling feed -->
+  <div class="view" id="view-log">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">The log</span></div>
+      <h1 class="greeting">What changed.</h1>
+      <div class="date-line">A gentle trail of your check-ins</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+    <div class="leaf" style="padding-bottom:18px">
+      <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
+      <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
+    </div>
+    <div id="logEntryList"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
        QUOTES VIEW
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-quotes">
@@ -1629,7 +1810,9 @@
 <nav class="nav">
   <button class="nav-btn active" data-view="today">Today</button>
   <button class="nav-btn" data-view="history">Garden</button>
+  <button class="nav-btn" data-view="log">Log</button>
   <button class="nav-btn" data-view="quotes">Library</button>
+  <button class="nav-btn" data-view="memory">Memory</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -1673,6 +1856,10 @@
     set(key, val) {
       try { localStorage.setItem(key, val); } catch { memStore[key] = val; }
     },
+    remove(key) {
+      try { localStorage.removeItem(key); } catch {}
+      delete memStore[key];
+    },
     listKeys(prefix) {
       try {
         const keys = [];
@@ -1686,6 +1873,11 @@
       }
     }
   };
+
+  const DAY_KEY_PREFIX = 'mindful:day:';
+  const CONFIG_KEY = 'mindful:config:';
+  const ACTIVITY_KEY = 'mindful:activity:';
+  const BACKUP_VERSION = 1;
 
   /* ────────────────────────────────────────────────────────
      Curated quotes — from Calm, Headspace, Insight Timer
@@ -1824,7 +2016,7 @@
 
   let day = blankDay();
   let currentDateKey = dateKey();
-  const getStorageKey = () => 'mindful:day:' + currentDateKey;
+  const getStorageKey = () => DAY_KEY_PREFIX + currentDateKey;
 
   function loadDay() {
     const raw = Storage.get(getStorageKey());
@@ -1838,12 +2030,23 @@
   let saveTimer = null;
   function saveDay() {
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => Storage.set(getStorageKey(), JSON.stringify(day)), 220);
+    setSaveBarText('Saving…', 'saving');
+    saveTimer = setTimeout(() => {
+      try {
+        Storage.set(getStorageKey(), JSON.stringify(day));
+        setSaveBarText('Saved in this browser', 'saved');
+        throttledNote('Day saved for ' + currentDateKey + '.');
+      } catch (e) {
+        setSaveBarText('Could not save — storage may be full or blocked', 'error');
+        pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+      }
+    }, 220);
   }
   function ensureCurrentDay() {
     const k = dateKey();
     if (k !== currentDateKey) {
       currentDateKey = k;
+      pruneOldDays();
       loadDay();
       renderAll();
     }
@@ -1856,8 +2059,101 @@
     renderMindful();
   }
 
-  function escapeHtml(s) {
+  const escapeHtml = (s) => {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  };
+
+  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000 };
+  function loadConfig() {
+    const raw = Storage.get(CONFIG_KEY);
+    if (raw) {
+      try {
+        const j = JSON.parse(raw);
+        if (j && typeof j === 'object') {
+          if (j.retentionDays != null) config.retentionDays = Math.max(0, Math.min(2000, Number(j.retentionDays) || 30));
+          if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
+        }
+      } catch {}
+    }
+  }
+  function saveConfig() {
+    Storage.set(CONFIG_KEY, JSON.stringify({ retentionDays: config.retentionDays, activityCap: config.activityCap }));
+  }
+
+  function getAllDayRecords() {
+    const keys = Storage.listKeys(DAY_KEY_PREFIX).sort();
+    const days = [];
+    keys.forEach(k => {
+      const raw = Storage.get(k);
+      if (!raw) return;
+      try {
+        const d = JSON.parse(raw);
+        const date = k.replace(DAY_KEY_PREFIX, '');
+        days.push({ key: k, date, ...d });
+      } catch {}
+    });
+    return days.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+  }
+
+  function dateStrCompare(a, b) {
+    if (a === b) return 0;
+    return a < b ? -1 : 1;
+  }
+
+  function pruneOldDays() {
+    if (!config.retentionDays || config.retentionDays <= 0) return 0;
+    const cutoff = new Date();
+    cutoff.setHours(0, 0, 0, 0);
+    cutoff.setDate(cutoff.getDate() - config.retentionDays);
+    const cutoffStr = dateKey(cutoff);
+    const keys = Storage.listKeys(DAY_KEY_PREFIX);
+    let removed = 0;
+    keys.forEach(k => {
+      const date = k.replace(DAY_KEY_PREFIX, '');
+      if (dateStrCompare(date, cutoffStr) < 0) {
+        Storage.remove(k);
+        removed++;
+      }
+    });
+    if (removed) pushActivity(`Archived: removed ${removed} day(s) beyond ${config.retentionDays} days.`);
+    return removed;
+  }
+
+  let lastSaveLogAt = 0;
+  function pushActivity(msg) {
+    let list = [];
+    const raw = Storage.get(ACTIVITY_KEY);
+    if (raw) {
+      try { list = JSON.parse(raw); } catch {}
+    }
+    if (!Array.isArray(list)) list = [];
+    const cap = config.activityCap || 200;
+    list.push({ t: Date.now(), msg: String(msg) });
+    if (list.length > cap) list = list.slice(-cap);
+    Storage.set(ACTIVITY_KEY, JSON.stringify(list));
+  }
+
+  function throttledNote(msg) {
+    const now = Date.now();
+    if (now - lastSaveLogAt < (config.saveLogThrottleMs || 120000)) return;
+    lastSaveLogAt = now;
+    pushActivity(msg);
+  }
+
+  function setSaveBarText(text, className) {
+    const bar = document.getElementById('saveBar');
+    const el = document.getElementById('saveBarText');
+    if (!bar || !el) return;
+    el.textContent = text;
+    bar.classList.remove('saving', 'saved', 'error');
+    if (className) bar.classList.add(className);
+  }
+
+  function hasAnyData(d) {
+    return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
+           d.water || d.pee || d.coffee || d.movement || d.sun ||
+           (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
+           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes;
   }
 
   /* ────────────────────────────────────────────────────────
@@ -1979,6 +2275,81 @@
   function renderMindful() {
     document.getElementById('mindfulMinutes').textContent = day.mindfulMinutes || 0;
   }
+  function formatActivityTime(t) {
+    return new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function renderRetentionStatus() {
+    const el = document.getElementById('retentionStatus');
+    const days = getAllDayRecords();
+    if (!el) return;
+    const n = days.length;
+    if (!config.retentionDays) {
+      el.textContent = n ? `You have ${n} saved day(s) on this device. Nothing is deleted automatically.` : 'No days saved yet.';
+    } else {
+      el.textContent = n
+        ? `You have ${n} saved day(s) on this device. Days older than ${config.retentionDays} day(s) are removed to save space.`
+        : 'No days saved yet.';
+    }
+    const mdl = document.getElementById('memoryDateLine');
+    if (mdl) mdl.textContent = formatDateLine();
+  }
+  function setRetentionSelect() {
+    const sel = document.getElementById('retentionSelect');
+    if (sel) sel.value = String(config.retentionDays);
+  }
+  function renderLogView() {
+    const actWrap = document.getElementById('logActivity');
+    const listWrap = document.getElementById('logEntryList');
+    const line = document.getElementById('logCountLine');
+    let activity = [];
+    const raw = Storage.get(ACTIVITY_KEY);
+    if (raw) { try { activity = JSON.parse(raw); } catch {} }
+    if (!Array.isArray(activity)) activity = [];
+    const actRev = activity.slice().reverse();
+    if (actWrap) {
+      if (actRev.length === 0) {
+        actWrap.innerHTML = '<p class="activity-empty">Edits to your day will show here — automatic saves, backups, and cleanup.</p>';
+      } else {
+        actWrap.innerHTML = actRev.map(a => `
+          <div class="activity-item"><span class="act-time">${escapeHtml(formatActivityTime(a.t))}</span><span class="act-msg">${escapeHtml(a.msg)}</span></div>
+        `).join('');
+      }
+    }
+    if (line) {
+      const days = getAllDayRecords();
+      const withData = days.filter(d => hasAnyData(d));
+      line.textContent = withData.length
+        ? `${withData.length} day(s) with an entry, newest first. Activity above is a short trail; full days are in the cards below.`
+        : 'No entries yet — as you add to Today, it will be remembered on this device.';
+    }
+    if (listWrap) {
+      const days = getAllDayRecords().filter(d => hasAnyData(d));
+      if (days.length === 0) {
+        listWrap.innerHTML = '';
+        return;
+      }
+      listWrap.innerHTML = '';
+      days.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'history-day';
+        const moodPill = d.mood ? `<div class="history-mood-pill"><svg width="20" height="20" style="color:var(--moss-deep)"><use href="#mood-${d.mood}"/></svg></div>` : '';
+        const meta = [];
+        if (d.intention) meta.push(`<span>✦ ${escapeHtml(d.intention)}</span>`);
+        if (d.mood) meta.push(`<span>mood ${d.mood}/5</span>`);
+        if (d.energy) meta.push(`<span>energy ${d.energy}/5</span>`);
+        if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
+        if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
+        if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m</span>`);
+        el.innerHTML = `
+          ${moodPill}
+          <div class="history-date">${formatDate(d.date)}</div>
+          <div class="history-meta">${meta.join('')}</div>
+          ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
+        `;
+        listWrap.appendChild(el);
+      });
+    }
+  }
   function renderAll() {
     renderHeader();
     renderQuoteAndAffirmation();
@@ -1990,6 +2361,8 @@
     renderSleep();
     renderTextFields();
     renderMindful();
+    setRetentionSelect();
+    renderRetentionStatus();
   }
 
   /* ────────────────────────────────────────────────────────
@@ -2046,6 +2419,7 @@
     });
     input.value = '';
     renderMeals(); saveDay();
+    pushActivity('Meal logged: ' + val.slice(0, 40) + (val.length > 40 ? '…' : ''));
   }
   document.getElementById('mealAdd').addEventListener('click', addMeal);
   document.getElementById('mealInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMeal(); });
@@ -2062,6 +2436,7 @@
     document.getElementById('painNote').value = '';
     day.activeSeverity = 0;
     renderPains(); saveDay();
+    pushActivity('Pain entry: ' + loc.slice(0, 30) + (loc.length > 30 ? '…' : ''));
   }
   document.getElementById('painAdd').addEventListener('click', addPain);
 
@@ -2225,6 +2600,8 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (target === 'history') renderHistory();
       if (target === 'quotes') renderQuotes();
+      if (target === 'log') renderLogView();
+      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
     });
   });
 
@@ -2232,14 +2609,14 @@
      History view
   ──────────────────────────────────────────────────────── */
   function renderHistory() {
-    const keys = Storage.listKeys('mindful:day:').sort().reverse();
+    const keys = Storage.listKeys(DAY_KEY_PREFIX).sort().reverse();
     const days = [];
     keys.forEach(k => {
       const raw = Storage.get(k);
       if (raw) {
         try {
           const d = JSON.parse(raw);
-          days.push({ key: k, date: k.replace('mindful:day:', ''), ...d });
+          days.push({ key: k, date: k.replace(DAY_KEY_PREFIX, ''), ...d });
         } catch {}
       }
     });
@@ -2305,13 +2682,6 @@
       `;
       list.appendChild(el);
     });
-  }
-
-  function hasAnyData(d) {
-    return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
-           d.water || d.pee || d.coffee || d.movement || d.sun ||
-           (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
-           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes;
   }
 
   function drawMoodGraph(days) {
@@ -2383,9 +2753,100 @@
     else if (g.classList.contains('open')) document.getElementById('groundClose').click();
   });
 
+  document.getElementById('retentionSelect').addEventListener('change', (e) => {
+    const v = Number(e.target.value);
+    config.retentionDays = isNaN(v) ? 30 : v;
+    saveConfig();
+    pruneOldDays();
+    pushActivity(`Keep days: ${config.retentionDays || 'forever'}.`);
+    renderRetentionStatus();
+    renderHistory();
+    renderLogView();
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const payload = {
+      version: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      days: {}
+    };
+    Storage.listKeys(DAY_KEY_PREFIX).forEach(k => {
+      const raw = Storage.get(k);
+      if (raw) payload.days[k] = raw;
+    });
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'stillness-backup-' + dateKey() + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    pushActivity('Downloaded backup file.');
+    document.getElementById('importMessage').textContent = '';
+  });
+
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    const msg = document.getElementById('importMessage');
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        let count = 0;
+        if (data && data.days && typeof data.days === 'object') {
+          Object.keys(data.days).forEach(k => {
+            if (k.startsWith(DAY_KEY_PREFIX) && typeof data.days[k] === 'string') {
+              Storage.set(k, data.days[k]);
+              count++;
+            }
+          });
+        } else if (data && typeof data === 'object') {
+          Object.keys(data).forEach(k => {
+            if (k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string') {
+              Storage.set(k, data[k]);
+              count++;
+            }
+          });
+        } else {
+          msg.textContent = 'That file does not look like a Stillness backup.';
+          return;
+        }
+        currentDateKey = dateKey();
+        loadDay();
+        renderAll();
+        renderHistory();
+        renderLogView();
+        msg.textContent = count ? `Restored ${count} day record(s).` : 'No day records found in file.';
+        pushActivity('Restored backup (' + count + ' day record(s)).');
+      } catch (err) {
+        msg.textContent = 'Could not read that file.';
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('wipeAllBtn').addEventListener('click', () => {
+    if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
+    Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
+    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000 };
+    saveConfig();
+    currentDateKey = dateKey();
+    loadDay();
+    renderAll();
+    renderHistory();
+    renderLogView();
+    setSaveBarText('Saved in this browser', 'saved');
+    document.getElementById('importMessage').textContent = 'All local data cleared.';
+    pushActivity('All data erased in this browser.');
+  });
+
   /* ────────────────────────────────────────────────────────
      Boot
   ──────────────────────────────────────────────────────── */
+  loadConfig();
+  setRetentionSelect();
+  pruneOldDays();
   loadDay();
   renderAll();
 </script>
