@@ -1232,6 +1232,14 @@
   }
   .data-btn-danger:hover { background: rgba(181, 101, 74, 0.08); }
   .data-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: center; }
+  .field-save-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+  .field-saved { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--moss); text-transform: uppercase; letter-spacing: 0.12em; }
+  .data-btn-ghost {
+    background: var(--paper-3);
+    color: var(--moss-deep);
+    border: 1px solid rgba(201, 187, 164, 0.6);
+  }
+  .data-btn-ghost:hover { background: var(--moss-mist); }
   .file-label {
     display: inline-block;
     background: var(--paper);
@@ -1693,13 +1701,46 @@
       </div>
       <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
       <div class="prompt-pill" id="promptPill">Today's prompt</div>
-      <textarea class="deep-input" id="reflectionInput" rows="4"></textarea>
+      <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
+    </section>
+
+    <!-- Evening close-out (visible save + log) -->
+    <section class="leaf" id="eveningSection" aria-label="Evening check-in">
+      <div class="leaf-head">
+        <h2 class="leaf-title"><em>Evening</em> check-in</h2>
+        <span class="leaf-num">№ 09</span>
+      </div>
+      <p class="leaf-sub">A small close to the day. Tap <strong>Save to journal</strong> when a field feels done — or it still saves as you type.</p>
+      <p class="picker-label">I did: smallest version (one two-minute start)</p>
+      <textarea class="deep-input" id="eveningWinInput" rows="2" placeholder="I did: smallest version: one two-minute start…" maxlength="2000"></textarea>
+      <div class="field-save-row" data-for="win">
+        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="win">Save to journal</button>
+        <span class="field-saved" id="fieldSavedWin" hidden aria-live="polite">Saved</span>
+      </div>
+      <p class="picker-label" style="margin-top:16px">Something I’m taking with me</p>
+      <textarea class="deep-input" id="eveningNoteInput" rows="2" placeholder="Something…" maxlength="2000"></textarea>
+      <div class="field-save-row" data-for="note">
+        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="note">Save to journal</button>
+        <span class="field-saved" id="fieldSavedNote" hidden aria-live="polite">Saved</span>
+      </div>
+      <p class="picker-label" style="margin-top:16px">What got in the way?</p>
+      <textarea class="deep-input" id="eveningObstacleInput" rows="2" placeholder="What got in the way?" maxlength="2000"></textarea>
+      <div class="field-save-row" data-for="obstacle">
+        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="obstacle">Save to journal</button>
+        <span class="field-saved" id="fieldSavedObstacle" hidden aria-live="polite">Saved</span>
+      </div>
+      <p class="picker-label" style="margin-top:16px">Tomorrow’s smallest start</p>
+      <textarea class="deep-input" id="eveningTomorrowInput" rows="2" placeholder="Tomorrow’s smallest start…" maxlength="2000"></textarea>
+      <div class="field-save-row" data-for="tomorrow">
+        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="tomorrow">Save to journal</button>
+        <span class="field-saved" id="fieldSavedTomorrow" hidden aria-live="polite">Saved</span>
+      </div>
     </section>
 
     <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
-    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;">
-      <span id="mindfulMinutes">0</span> mindful minutes today
+    <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
+      <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
     </div>
 
   </div>
@@ -1733,6 +1774,7 @@
   <!-- ═══════════════════════════════════════════════════════
        MEMORY VIEW
   ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-memory">
     <header class="plate">
       <div class="plate-rule"><span class="ornament">Memory</span></div>
       <h1 class="greeting">Kept close, on your device.</h1>
@@ -2010,6 +2052,7 @@
     meals: [], pains: [],
     sleepHours: 7.0, sleepQuality: 0,
     gratitude: '', reflection: '',
+    eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
     activeMeal: 'breakfast', activeSeverity: 0,
     mindfulMinutes: 0
   });
@@ -2028,6 +2071,16 @@
     }
   }
   let saveTimer = null;
+  function saveDayNow() {
+    clearTimeout(saveTimer);
+    try {
+      Storage.set(getStorageKey(), JSON.stringify(day));
+      setSaveBarText('Saved in this browser', 'saved');
+    } catch (e) {
+      setSaveBarText('Could not save — storage may be full or blocked', 'error');
+      pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+    }
+  }
   function saveDay() {
     clearTimeout(saveTimer);
     setSaveBarText('Saving…', 'saving');
@@ -2153,7 +2206,8 @@
     return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
            d.water || d.pee || d.coffee || d.movement || d.sun ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
-           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes;
+           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes ||
+           d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow;
   }
 
   /* ────────────────────────────────────────────────────────
@@ -2271,6 +2325,10 @@
   function renderTextFields() {
     document.getElementById('gratitudeInput').value = day.gratitude || '';
     document.getElementById('reflectionInput').value = day.reflection || '';
+    document.getElementById('eveningWinInput').value = day.eveningWin || '';
+    document.getElementById('eveningNoteInput').value = day.eveningNote || '';
+    document.getElementById('eveningObstacleInput').value = day.eveningObstacle || '';
+    document.getElementById('eveningTomorrowInput').value = day.eveningTomorrow || '';
   }
   function renderMindful() {
     document.getElementById('mindfulMinutes').textContent = day.mindfulMinutes || 0;
@@ -2340,11 +2398,18 @@
         if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
         if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
         if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m</span>`);
+        if (d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow) meta.push(`<span>evening ✓</span>`);
         el.innerHTML = `
           ${moodPill}
           <div class="history-date">${formatDate(d.date)}</div>
           <div class="history-meta">${meta.join('')}</div>
           ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
+          ${d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ? `<div class="history-quote" style="margin-top:8px">` +
+            (d.eveningWin ? `<em>Win:</em> ${escapeHtml(d.eveningWin)}<br/>` : '') +
+            (d.eveningNote ? `<em>Carry:</em> ${escapeHtml(d.eveningNote)}<br/>` : '') +
+            (d.eveningObstacle ? `<em>Stuck:</em> ${escapeHtml(d.eveningObstacle)}<br/>` : '') +
+            (d.eveningTomorrow ? `<em>Tomorrow:</em> ${escapeHtml(d.eveningTomorrow)}` : '') +
+            `</div>` : ''}
         `;
         listWrap.appendChild(el);
       });
@@ -2454,6 +2519,49 @@
 
   document.getElementById('gratitudeInput').addEventListener('input', e => { day.gratitude = e.target.value; saveDay(); });
   document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
+
+  const fieldSavedIds = { win: 'fieldSavedWin', note: 'fieldSavedNote', obstacle: 'fieldSavedObstacle', tomorrow: 'fieldSavedTomorrow' };
+  function flashFieldSaved(key) {
+    const id = fieldSavedIds[key];
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.hidden = false;
+    setTimeout(() => { el.hidden = true; }, 1800);
+  }
+  document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDay(); });
+  document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDay(); });
+  document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDay(); });
+  document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDay(); });
+  ['eveningWinInput', 'eveningNoteInput', 'eveningObstacleInput', 'eveningTomorrowInput'].forEach(fieldId => {
+    const el = document.getElementById(fieldId);
+    el.addEventListener('blur', () => saveDayNow());
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        saveDayNow();
+        pushActivity('Evening check-in saved (Ctrl/⌘ + Enter).');
+        setSaveBarText('Saved in this browser', 'saved');
+      }
+    });
+  });
+  document.querySelectorAll('.btn-save-section').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      saveDayNow();
+      pushActivity('Evening: saved to journal' + (key ? ' (' + key + ')' : '') + '.');
+      flashFieldSaved(key);
+    });
+  });
+  document.getElementById('goToLogFromToday').addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+    const logBtn = document.querySelector('.nav-btn[data-view="log"]');
+    if (logBtn) logBtn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-log').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderLogView();
+  });
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -2673,12 +2781,19 @@
       if (d.pains && d.pains.length) meta.push(`<span>~ ${d.pains.length} pains</span>`);
       if (d.sleepHours) meta.push(`<span>☽ ${d.sleepHours.toFixed(1)}h</span>`);
       if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m mindful</span>`);
+      if (d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow) meta.push(`<span>evening ✓</span>`);
       el.innerHTML = `
         ${moodPill}
         <div class="history-date">${formatDate(d.date)}</div>
         <div class="history-meta">${meta.join('')}</div>
         ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
         ${d.reflection ? `<div class="history-quote">${escapeHtml(d.reflection)}</div>` : ''}
+        ${d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ? `<div class="history-quote" style="margin-top:8px">` +
+          (d.eveningWin ? `<em>Win:</em> ${escapeHtml(d.eveningWin)}<br/>` : '') +
+          (d.eveningNote ? `<em>Carry:</em> ${escapeHtml(d.eveningNote)}<br/>` : '') +
+          (d.eveningObstacle ? `<em>Stuck:</em> ${escapeHtml(d.eveningObstacle)}<br/>` : '') +
+          (d.eveningTomorrow ? `<em>Tomorrow:</em> ${escapeHtml(d.eveningTomorrow)}` : '') +
+          `</div>` : ''}
       `;
       list.appendChild(el);
     });
