@@ -3355,14 +3355,15 @@
   function applyTheme(name) {
     const t = (name === 'forest' || name === 'midnight' || name === 'parchment') ? name : 'parchment';
     config.theme = t;
+    Storage.set(THEME_KEY, t);
     document.documentElement.setAttribute('data-theme', t);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
-    updateThemeSwatches();
-  }
-  function updateThemeSwatches() {
-    const t = config.theme || 'parchment';
-    document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('on', s.dataset.setTheme === t));
+    document.querySelectorAll('.theme-swatch').forEach(btn => {
+      const on = btn.dataset.setTheme === t;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
   }
 
   const BREATHE_SOUNDS = ['chimes', 'bowl', 'bamboo', 'strings', 'rain', 'stream', 'breeze', 'cave', 'silent'];
@@ -3909,22 +3910,12 @@
     const mdl = document.getElementById('memoryDateLine');
     if (mdl) mdl.textContent = formatDateLine();
   }
-  function applyTheme(theme) {
-    const next = ['parchment', 'forest', 'midnight'].includes(theme) ? theme : 'parchment';
-    document.documentElement.setAttribute('data-theme', next);
-    Storage.set(THEME_KEY, next);
-    const colors = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', colors[next] || colors.parchment);
-    document.querySelectorAll('.theme-swatch').forEach(btn => {
-      btn.classList.toggle('on', btn.dataset.setTheme === next);
-      btn.setAttribute('aria-pressed', btn.dataset.setTheme === next ? 'true' : 'false');
-    });
-  }
   function setRetentionSelect() {
     const sel = document.getElementById('retentionSelect');
     if (sel) sel.value = String(config.retentionDays);
-    applyTheme(Storage.get(THEME_KEY) || 'parchment');
+    const stored = Storage.get(THEME_KEY);
+    const t = ['parchment', 'forest', 'midnight'].includes(stored) ? stored : (config.theme || 'parchment');
+    applyTheme(t);
   }
   function getLogFilter() {
     const q = document.getElementById('logSearch');
@@ -4865,7 +4856,7 @@
       if (target === 'history') renderHistory();
       if (target === 'quotes') renderQuotes();
       if (target === 'log') renderLogView();
-      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); updateThemeSwatches(); }
+      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
       if (target === 'insights') renderInsights();
       if (target === 'path') renderPath();
       if (target === 'today') renderTodaySummary();
@@ -4925,8 +4916,6 @@
       return;
     }
     list.innerHTML = '';
-    const moodMap = ['—','heavy','off','steady','bright','glowing'];
-    days.forEach(d => {
       const el = document.createElement('div');
       el.className = 'history-day';
       el.innerHTML = buildLogCardHtml(d);
@@ -5167,6 +5156,17 @@
   });
   document.getElementById('printPage').addEventListener('click', () => window.print());
 
+  document.getElementById('retentionSelect').addEventListener('change', (e) => {
+    const v = Number(e.target.value);
+    config.retentionDays = isNaN(v) ? 30 : v;
+    saveConfig();
+    pruneOldDays();
+    pushActivity(`Keep days: ${config.retentionDays || 'forever'}.`);
+    renderRetentionStatus();
+    renderHistory();
+    renderLogView();
+  });
+
   let logSearchTimer = null;
   document.getElementById('logSearch').addEventListener('input', () => {
     clearTimeout(logSearchTimer);
@@ -5196,25 +5196,8 @@
   document.querySelectorAll('.theme-swatch').forEach(btn => {
     btn.addEventListener('click', () => {
       applyTheme(btn.dataset.setTheme);
-      pushActivity('Theme changed to ' + btn.dataset.setTheme + '.');
-    });
-  });
-
-  document.getElementById('retentionSelect').addEventListener('change', (e) => {
-    const v = Number(e.target.value);
-    config.retentionDays = isNaN(v) ? 30 : v;
-    saveConfig();
-    pruneOldDays();
-    pushActivity(`Keep days: ${config.retentionDays || 'forever'}.`);
-    renderRetentionStatus();
-    renderHistory();
-    renderLogView();
-  });
-
-  document.querySelectorAll('.theme-swatch').forEach(btn => {
-    btn.addEventListener('click', () => {
-      applyTheme(btn.dataset.setTheme);
       saveConfig();
+      pushActivity('Theme changed to ' + btn.dataset.setTheme + '.');
     });
   });
 
