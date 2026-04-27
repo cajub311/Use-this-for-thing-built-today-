@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Stillness" />
@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
+  :root, [data-theme="parchment"] {
     /* Botanical journal palette */
     --paper: #EDE3D2;
     --paper-2: #E5DAC5;
@@ -42,11 +42,63 @@
     --shadow-warm: rgba(74, 64, 49, 0.12);
     --shadow-deep: rgba(74, 64, 49, 0.18);
     --line: #C9BBA4;
+    --noise-opacity: 0.35;
+    --bg-grad-1: rgba(184, 197, 178, 0.30);
+    --bg-grad-2: rgba(232, 197, 178, 0.22);
+    --bg-grad-3: rgba(201, 169, 97, 0.18);
 
     --r-sm: 8px;
     --r: 14px;
     --r-lg: 22px;
     --r-xl: 32px;
+  }
+
+  [data-theme="forest"] {
+    --paper: #2A332B;
+    --paper-2: #1E2620;
+    --paper-3: #313B33;
+    --ink: #E8E0CF;
+    --ink-soft: #B8B09F;
+    --ink-faint: #7E7867;
+    --moss: #94B488;
+    --moss-deep: #B8D4AC;
+    --moss-soft: #4A6B4F;
+    --moss-mist: #3A4D3D;
+    --clay: #D4886B;
+    --clay-soft: #4A2E22;
+    --gold: #D4B473;
+    --gold-soft: #4D3D1F;
+    --shadow-warm: rgba(0,0,0,0.25);
+    --shadow-deep: rgba(0,0,0,0.4);
+    --line: #4A5448;
+    --noise-opacity: 0.18;
+    --bg-grad-1: rgba(74, 107, 79, 0.30);
+    --bg-grad-2: rgba(74, 46, 34, 0.22);
+    --bg-grad-3: rgba(77, 61, 31, 0.20);
+  }
+
+  [data-theme="midnight"] {
+    --paper: #1B1F2E;
+    --paper-2: #14172A;
+    --paper-3: #232940;
+    --ink: #E5E5F0;
+    --ink-soft: #B0B5C9;
+    --ink-faint: #757A92;
+    --moss: #8AA0C8;
+    --moss-deep: #B0BFE0;
+    --moss-soft: #5A6A88;
+    --moss-mist: #2D3556;
+    --clay: #D4A07A;
+    --clay-soft: #3D2820;
+    --gold: #D9BE7F;
+    --gold-soft: #3D331C;
+    --shadow-warm: rgba(0,0,0,0.3);
+    --shadow-deep: rgba(0,0,0,0.5);
+    --line: #3A4060;
+    --noise-opacity: 0.15;
+    --bg-grad-1: rgba(90, 106, 136, 0.25);
+    --bg-grad-2: rgba(61, 40, 32, 0.22);
+    --bg-grad-3: rgba(217, 190, 127, 0.10);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -70,9 +122,9 @@
     color: var(--ink);
     background-color: var(--paper);
     background-image:
-      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(184, 197, 178, 0.30), transparent 70%),
-      radial-gradient(ellipse 700px 500px at -10% 30%, rgba(232, 197, 178, 0.22), transparent 70%),
-      radial-gradient(ellipse 900px 400px at 50% 110%, rgba(201, 169, 97, 0.18), transparent 70%);
+      radial-gradient(ellipse 800px 400px at 80% -10%, var(--bg-grad-1), transparent 70%),
+      radial-gradient(ellipse 700px 500px at -10% 30%, var(--bg-grad-2), transparent 70%),
+      radial-gradient(ellipse 900px 400px at 50% 110%, var(--bg-grad-3), transparent 70%);
     background-attachment: fixed;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -88,7 +140,7 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: var(--noise-opacity);
     mix-blend-mode: multiply;
     z-index: 1;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.40 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
@@ -809,6 +861,18 @@
     box-shadow: 0 6px 18px rgba(181, 101, 74, 0.25);
   }
   .practice-btn.alt:hover { box-shadow: 0 10px 28px rgba(181, 101, 74, 0.35); }
+  .practice-btn.gold {
+    background: linear-gradient(135deg, var(--gold) 0%, #8B7B3F 100%);
+    box-shadow: 0 6px 18px rgba(201, 169, 97, 0.28);
+  }
+  .practice-btn.dusk {
+    background: linear-gradient(135deg, #5A6A88 0%, #34405A 100%);
+    box-shadow: 0 6px 18px rgba(90, 106, 136, 0.25);
+  }
+  .practice-btn.warm {
+    background: linear-gradient(135deg, var(--clay) 0%, #8B4A33 100%);
+    box-shadow: 0 6px 18px rgba(181, 101, 74, 0.25);
+  }
   .practice-btn .ptitle {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
@@ -977,6 +1041,178 @@
     letter-spacing: 0.04em;
   }
   .grounding-next:hover { transform: translateY(-1px); }
+
+  .audio-toggle {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    background: rgba(237, 227, 210, 0.1);
+    border: 1px solid rgba(237, 227, 210, 0.25);
+    color: var(--paper-3);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .audio-toggle svg { width: 14px; height: 14px; }
+
+  .overlay.gold-bg { background: linear-gradient(135deg, #1F1A14 0%, #4D3D1F 100%); }
+  .overlay.dusk-bg { background: linear-gradient(135deg, #14172A 0%, #34405A 100%); }
+  .overlay.warm-bg { background: linear-gradient(135deg, #1F1A14 0%, #4A3829 100%); }
+  .meditation-content,
+  .worry-content {
+    text-align: center;
+    z-index: 1;
+    color: #EDE3D2;
+    max-width: 540px;
+    width: 90%;
+    padding: 0 24px;
+  }
+  .meditation-pulse {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(229,213,170,0.5), rgba(229,213,170,0.1));
+    margin: 0 auto 26px;
+    animation: meditPulse 4s ease-in-out infinite;
+    position: relative;
+  }
+  .meditation-pulse::before,
+  .meditation-pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(229,213,170,0.3);
+    animation: meditRing 4s ease-out infinite;
+  }
+  .meditation-pulse::after { animation-delay: 1.5s; }
+  .meditation-step {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: rgba(237,227,210,0.55);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .meditation-phrase {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    line-height: 1.4;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .25s ease;
+  }
+  .meditation-progress {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(237,227,210,0.2);
+    transition: all .3s;
+  }
+  .progress-dot.on { background: #C9A961; transform: scale(1.3); }
+  .meditation-next {
+    background: #C9A961;
+    color: #2A241B;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+  }
+  .worry-instruction {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+  }
+  .worry-paper {
+    background: rgba(237,227,210,0.95);
+    color: #2A241B;
+    padding: 28px 24px;
+    border-radius: 4px;
+    margin: 0 auto 24px;
+    max-width: 360px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(201,187,164,0.3) 27px, rgba(201,187,164,0.3) 28px);
+  }
+  .worry-paper textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    color: #2A241B;
+    line-height: 1.7;
+    resize: none;
+    min-height: 130px;
+  }
+  .worry-paper textarea:focus { outline: none; }
+  .worry-paper.dissolving { animation: worryDissolve 3s forwards ease-in; }
+  @keyframes meditPulse {
+    0%,100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.08); opacity: 1; }
+  }
+  @keyframes meditRing {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  @keyframes worryDissolve {
+    0% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); }
+    50% { opacity: 0.6; transform: scale(0.95) rotate(2deg) translateY(-20px); filter: blur(2px); }
+    100% { opacity: 0; transform: scale(0.7) rotate(-3deg) translateY(-100px); filter: blur(8px); }
+  }
+
+  .theme-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .theme-swatch {
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 12px 8px;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all .2s;
+  }
+  .theme-swatch:hover,
+  .theme-swatch.on {
+    background: var(--moss-mist);
+    border-color: var(--moss);
+    transform: translateY(-1px);
+  }
+  .theme-swatch .sw {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+  }
 
   /* ── Bottom navigation ──────────────────────────────────── */
   .nav {
@@ -1530,6 +1766,28 @@
       <path d="M22 27 H 38"/>
       <path d="M14 38 Q 14 50 30 50 Q 46 50 46 38"/>
     </symbol>
+    <symbol id="i-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 9 H 8 L 13 5 V 19 L 8 15 H 5 z"/>
+      <path d="M16 9 Q 18 12 16 15"/>
+    </symbol>
+    <symbol id="i-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 9 H 8 L 13 5 V 19 L 8 15 H 5 z"/>
+      <path d="M17 10 L 21 14 M21 10 L 17 14"/>
+    </symbol>
+    <symbol id="i-lotus" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M30 50 Q 14 44 14 32 Q 22 30 30 36 Q 38 30 46 32 Q 46 44 30 50 z"/>
+      <path d="M30 36 Q 22 24 26 14 Q 30 18 30 26"/>
+      <path d="M30 36 Q 38 24 34 14 Q 30 18 30 26"/>
+    </symbol>
+    <symbol id="i-bodyscan" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="30" cy="14" r="5"/>
+      <path d="M30 19 V 38 M22 25 H 38 M22 50 L 30 38 L 38 50"/>
+    </symbol>
+    <symbol id="i-worry" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 12 H 38 L 46 20 V 48 H 14 z"/>
+      <path d="M38 12 V 20 H 46"/>
+      <path d="M20 28 H 40 M20 34 H 36 M20 40 H 32"/>
+    </symbol>
     <symbol id="flourish-svg" viewBox="0 0 90 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
       <path d="M2 8 H 35"/>
       <path d="M55 8 H 88"/>
@@ -1635,13 +1893,32 @@
     <div class="practices-row">
       <button class="practice-btn" id="breatheBtn">
         <div class="ptitle">Take a breath</div>
-        <div class="pdesc">3 techniques · choose</div>
+        <div class="pdesc">4 techniques · peaceful sound</div>
         <svg class="pic"><use href="#i-breath"/></svg>
       </button>
       <button class="practice-btn alt" id="groundBtn">
         <div class="ptitle">Come back home</div>
         <div class="pdesc">5-4-3-2-1 grounding</div>
         <svg class="pic"><use href="#i-anchor"/></svg>
+      </button>
+    </div>
+    <div class="practices-row">
+      <button class="practice-btn gold" id="kindnessBtn">
+        <div class="ptitle">Loving-kindness</div>
+        <div class="pdesc">Metta · 4 stages</div>
+        <svg class="pic"><use href="#i-lotus"/></svg>
+      </button>
+      <button class="practice-btn dusk" id="scanBtn">
+        <div class="ptitle">Body scan</div>
+        <div class="pdesc">Head to toe · soft</div>
+        <svg class="pic"><use href="#i-bodyscan"/></svg>
+      </button>
+    </div>
+    <div class="practices-row">
+      <button class="practice-btn warm" id="worryBtn" style="grid-column: 1 / -1;">
+        <div class="ptitle">Release a worry</div>
+        <div class="pdesc">Write it · let it dissolve</div>
+        <svg class="pic"><use href="#i-worry"/></svg>
       </button>
     </div>
 
@@ -1825,6 +2102,10 @@
 
     <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
+    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
+      <span id="mindfulMinutes">0</span> mindful minutes today
+    </div>
+
     <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
       <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
     </div>
@@ -1883,6 +2164,26 @@
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
+    </section>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Display <em>mood</em></h2>
+      </div>
+      <p class="leaf-sub">Choose the atmosphere that feels best for journaling right now.</p>
+      <div class="theme-row" id="themeRow">
+        <button type="button" class="theme-swatch" data-set-theme="parchment">
+          <span class="sw" style="background:#EDE3D2;border-color:#C9BBA4"></span>
+          <span>Parchment</span>
+        </button>
+        <button type="button" class="theme-swatch" data-set-theme="forest">
+          <span class="sw" style="background:#2A332B;border-color:#4A5448"></span>
+          <span>Forest</span>
+        </button>
+        <button type="button" class="theme-swatch" data-set-theme="midnight">
+          <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
+          <span>Midnight</span>
+        </button>
+      </div>
     </section>
     <section class="leaf">
       <div class="leaf-head">
@@ -1955,10 +2256,14 @@
 ═══════════════════════════════════════════════════════ -->
 <div class="overlay" id="breatheOverlay" role="dialog" aria-modal="true" aria-label="Guided breathing" aria-hidden="true">
   <button class="overlay-close" id="breatheClose">close</button>
+  <button type="button" class="audio-toggle" id="audioToggle" aria-pressed="true">
+    <svg id="audioIcon"><use href="#i-sound-on"/></svg><span id="audioLbl">sound on</span>
+  </button>
   <div class="technique-tabs" id="techTabs">
     <button class="tech-tab on" data-tech="478">4 · 7 · 8</button>
     <button class="tech-tab" data-tech="box">Box</button>
     <button class="tech-tab" data-tech="calm">Calm</button>
+    <button class="tech-tab" data-tech="coh">Coherent</button>
   </div>
   <div class="breathe-circle" id="breatheCircle"></div>
   <div class="breathe-text" id="breatheText">Settle in…</div>
@@ -1975,6 +2280,39 @@
     <div class="grounding-prompt" id="groundPrompt">things you can <em>see</em></div>
     <input type="text" class="grounding-input" id="groundInput" placeholder="name one…" />
     <button class="grounding-next" id="groundNext">next →</button>
+  </div>
+</div>
+
+<div class="overlay gold-bg" id="kindnessOverlay" role="dialog" aria-modal="true" aria-label="Loving-kindness meditation" aria-hidden="true">
+  <button class="overlay-close" id="kindnessClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="meditation-step" id="kindnessStep">stage 1 of 4</div>
+    <div class="meditation-phrase" id="kindnessPhrase">—</div>
+    <div class="meditation-progress" id="kindnessProgress" aria-hidden="true"></div>
+    <button type="button" class="meditation-next" id="kindnessNext">continue →</button>
+  </div>
+</div>
+
+<div class="overlay dusk-bg" id="scanOverlay" role="dialog" aria-modal="true" aria-label="Body scan meditation" aria-hidden="true">
+  <button class="overlay-close" id="scanClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="meditation-step" id="scanStep">part 1 of 8</div>
+    <div class="meditation-phrase" id="scanPhrase">—</div>
+    <div class="meditation-progress" id="scanProgress" aria-hidden="true"></div>
+    <button type="button" class="meditation-next" id="scanNext">continue →</button>
+  </div>
+</div>
+
+<div class="overlay warm-bg" id="worryOverlay" role="dialog" aria-modal="true" aria-label="Worry release" aria-hidden="true">
+  <button class="overlay-close" id="worryClose">close</button>
+  <div class="worry-content">
+    <div class="worry-instruction" id="worryInstruction">Write the worry. Read it once. Then let it go.</div>
+    <div class="worry-paper" id="worryPaper">
+      <textarea id="worryText" placeholder="What's been weighing on you?"></textarea>
+    </div>
+    <button type="button" class="meditation-next" id="worryRelease">release it</button>
   </div>
 </div>
 
@@ -2012,6 +2350,8 @@
   const DAY_KEY_PREFIX = 'mindful:day:';
   const CONFIG_KEY = 'mindful:config:';
   const ACTIVITY_KEY = 'mindful:activity:';
+  const THEME_KEY = 'mindful:theme';
+  const AUDIO_KEY = 'mindful:audio';
   const BACKUP_VERSION = 1;
 
   /* ────────────────────────────────────────────────────────
@@ -2424,7 +2764,8 @@
     document.getElementById('eveningTomorrowInput').value = day.eveningTomorrow || '';
   }
   function renderMindful() {
-    document.getElementById('mindfulMinutes').textContent = day.mindfulMinutes || 0;
+    const el = document.getElementById('mindfulMinutes');
+    if (el) el.textContent = day.mindfulMinutes || 0;
   }
   const MOOD_L = ['', 'Heavy', 'Off', 'Steady', 'Bright', 'Glowing'];
   const ENERGY_L = ['', 'Drained', 'Low', 'Even', 'Lively', 'Vital'];
@@ -2488,9 +2829,22 @@
     const mdl = document.getElementById('memoryDateLine');
     if (mdl) mdl.textContent = formatDateLine();
   }
+  function applyTheme(theme) {
+    const next = ['parchment', 'forest', 'midnight'].includes(theme) ? theme : 'parchment';
+    document.documentElement.setAttribute('data-theme', next);
+    Storage.set(THEME_KEY, next);
+    const colors = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', colors[next] || colors.parchment);
+    document.querySelectorAll('.theme-swatch').forEach(btn => {
+      btn.classList.toggle('on', btn.dataset.setTheme === next);
+      btn.setAttribute('aria-pressed', btn.dataset.setTheme === next ? 'true' : 'false');
+    });
+  }
   function setRetentionSelect() {
     const sel = document.getElementById('retentionSelect');
     if (sel) sel.value = String(config.retentionDays);
+    applyTheme(Storage.get(THEME_KEY) || 'parchment');
   }
   function getLogFilter() {
     const q = document.getElementById('logSearch');
@@ -2759,11 +3113,55 @@
   const TECHNIQUES = {
     '478': { name: '4-7-8 · calming', steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 7, label: 'Hold…' }, { phase: 'exhale', dur: 8, label: 'Release…' }] },
     'box': { name: 'Box · steady',    steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 4, label: 'Hold…' }, { phase: 'exhale', dur: 4, label: 'Breathe out…' }, { phase: 'hold-out', dur: 4, label: 'Pause…' }] },
-    'calm': { name: 'Calm · 4-6',     steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'exhale', dur: 6, label: 'Long, soft exhale…' }] }
+    'calm': { name: 'Calm · 4-6',     steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'exhale', dur: 6, label: 'Long, soft exhale…' }] },
+    'coh':  { name: 'Coherent · 5-5', steps: [{ phase: 'inhale', dur: 5, label: 'Breathe in…' }, { phase: 'exhale', dur: 5, label: 'Breathe out…' }] }
   };
   let activeTech = '478';
   let breatheRunning = false, breatheCycle = 0;
   let breatheStartTime = null;
+  let audioCtx = null;
+  let audioEnabled = (Storage.get(AUDIO_KEY) || 'on') === 'on';
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function playBell(freq = 528, duration = 1.1) {
+    if (!audioEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    [freq, freq * 1.5].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(i === 0 ? 0.16 : 0.05, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + duration);
+    });
+  }
+  function updateAudioToggle() {
+    const icon = document.getElementById('audioIcon');
+    const label = document.getElementById('audioLbl');
+    const btn = document.getElementById('audioToggle');
+    if (icon) icon.innerHTML = audioEnabled ? '<use href="#i-sound-on"/>' : '<use href="#i-sound-off"/>';
+    if (label) label.textContent = audioEnabled ? 'sound on' : 'sound off';
+    if (btn) btn.setAttribute('aria-pressed', audioEnabled ? 'true' : 'false');
+  }
+  document.getElementById('audioToggle').addEventListener('click', () => {
+    audioEnabled = !audioEnabled;
+    Storage.set(AUDIO_KEY, audioEnabled ? 'on' : 'off');
+    updateAudioToggle();
+    if (audioEnabled) playBell(528, 0.9);
+  });
+  updateAudioToggle();
 
   document.querySelectorAll('#techTabs .tech-tab').forEach(b => {
     b.addEventListener('click', () => {
@@ -2781,6 +3179,7 @@
     breatheRunning = true;
     breatheCycle = 0;
     breatheStartTime = Date.now();
+    getAudioCtx();
     runBreathe();
   });
   document.getElementById('breatheClose').addEventListener('click', () => {
@@ -2810,6 +3209,9 @@
         circle.className = 'breathe-circle ' + step.phase;
         circle.style.transitionDuration = step.dur + 's';
         text.textContent = step.label;
+        if (step.phase === 'inhale') playBell(528, 0.8);
+        else if (step.phase === 'exhale') playBell(396, 1.0);
+        else playBell(440, 0.5);
         await wait(step.dur * 1000);
       }
     }
@@ -2883,6 +3285,157 @@
   document.getElementById('groundNext').addEventListener('click', handleGroundNext);
   document.getElementById('groundInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); handleGroundNext(); }
+  });
+
+  const KINDNESS_STAGES = [
+    { who: 'For yourself', phrases: ['May I be safe.', 'May I be peaceful.', 'May I be healthy.', 'May I live with ease.'] },
+    { who: 'For someone you love', phrases: ['May you be safe.', 'May you be peaceful.', 'May you be healthy.', 'May you live with ease.'] },
+    { who: 'For someone neutral', phrases: ['May they be safe.', 'May they be peaceful.', 'May they be healthy.', 'May they live with ease.'] },
+    { who: 'For all beings', phrases: ['May all beings be safe.', 'May all beings be peaceful.', 'May all beings be healthy.', 'May all beings live with ease.'] }
+  ];
+  const BODY_SCAN = [
+    'Begin with your feet. Notice the floor beneath them. Soften.',
+    'Move up to your calves and shins. Let any holding melt.',
+    'Your knees, then your thighs. Heavy. Settled.',
+    'Your hips and lower back. Let them widen, sink, release.',
+    'Your belly. Let it be soft. No need to hold it in.',
+    'Your chest. Feel your heartbeat: that quiet, faithful rhythm.',
+    'Your shoulders, arms, and hands. Let them fall away from your ears.',
+    'Your neck, jaw, and forehead. Let your face be soft as warm water.'
+  ];
+  let kindnessStage = 0, kindnessPhrase = 0, kindnessStart = null;
+  let scanIdx = 0, scanStart = null;
+  let worryStart = null;
+
+  function setOverlayOpen(id, open) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('open', open);
+    el.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  function renderProgress(elId, total, active) {
+    const wrap = document.getElementById(elId);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i <= active ? ' on' : '');
+      wrap.appendChild(dot);
+    }
+  }
+  function renderKindness() {
+    const stage = KINDNESS_STAGES[kindnessStage];
+    if (!stage) return;
+    document.getElementById('kindnessStep').textContent = `stage ${kindnessStage + 1} of ${KINDNESS_STAGES.length} · ${stage.who}`;
+    const phrase = document.getElementById('kindnessPhrase');
+    phrase.style.opacity = '0';
+    setTimeout(() => {
+      phrase.textContent = stage.phrases[kindnessPhrase];
+      phrase.style.opacity = '1';
+    }, 180);
+    renderProgress('kindnessProgress', stage.phrases.length, kindnessPhrase);
+    playBell(528, 0.8);
+  }
+  document.getElementById('kindnessBtn').addEventListener('click', () => {
+    kindnessStage = 0;
+    kindnessPhrase = 0;
+    kindnessStart = Date.now();
+    getAudioCtx();
+    setOverlayOpen('kindnessOverlay', true);
+    renderKindness();
+    document.getElementById('kindnessClose').focus();
+  });
+  document.getElementById('kindnessNext').addEventListener('click', () => {
+    kindnessPhrase++;
+    if (kindnessPhrase >= KINDNESS_STAGES[kindnessStage].phrases.length) {
+      kindnessPhrase = 0;
+      kindnessStage++;
+      if (kindnessStage >= KINDNESS_STAGES.length) {
+        document.getElementById('kindnessClose').click();
+        pushActivity('Completed loving-kindness practice.');
+        return;
+      }
+    }
+    renderKindness();
+  });
+  document.getElementById('kindnessClose').addEventListener('click', () => {
+    setOverlayOpen('kindnessOverlay', false);
+    if (kindnessStart) {
+      addMindfulSeconds(Date.now() - kindnessStart);
+      kindnessStart = null;
+    }
+    document.getElementById('kindnessBtn').focus();
+  });
+
+  function renderScan() {
+    document.getElementById('scanStep').textContent = `part ${scanIdx + 1} of ${BODY_SCAN.length}`;
+    const phrase = document.getElementById('scanPhrase');
+    phrase.style.opacity = '0';
+    setTimeout(() => {
+      phrase.textContent = BODY_SCAN[scanIdx];
+      phrase.style.opacity = '1';
+    }, 180);
+    renderProgress('scanProgress', BODY_SCAN.length, scanIdx);
+    playBell(396, 0.8);
+  }
+  document.getElementById('scanBtn').addEventListener('click', () => {
+    scanIdx = 0;
+    scanStart = Date.now();
+    getAudioCtx();
+    setOverlayOpen('scanOverlay', true);
+    renderScan();
+    document.getElementById('scanClose').focus();
+  });
+  document.getElementById('scanNext').addEventListener('click', () => {
+    scanIdx++;
+    if (scanIdx >= BODY_SCAN.length) {
+      document.getElementById('scanClose').click();
+      pushActivity('Completed body scan practice.');
+      return;
+    }
+    renderScan();
+  });
+  document.getElementById('scanClose').addEventListener('click', () => {
+    setOverlayOpen('scanOverlay', false);
+    if (scanStart) {
+      addMindfulSeconds(Date.now() - scanStart);
+      scanStart = null;
+    }
+    document.getElementById('scanBtn').focus();
+  });
+
+  document.getElementById('worryBtn').addEventListener('click', () => {
+    worryStart = Date.now();
+    document.getElementById('worryText').value = '';
+    document.getElementById('worryPaper').classList.remove('dissolving');
+    document.getElementById('worryRelease').style.display = 'inline-block';
+    document.getElementById('worryInstruction').textContent = 'Write the worry. Read it once. Then let it go.';
+    setOverlayOpen('worryOverlay', true);
+    setTimeout(() => document.getElementById('worryText').focus(), 250);
+  });
+  document.getElementById('worryClose').addEventListener('click', () => {
+    setOverlayOpen('worryOverlay', false);
+    if (worryStart) {
+      addMindfulSeconds(Date.now() - worryStart);
+      worryStart = null;
+    }
+    document.getElementById('worryBtn').focus();
+  });
+  document.getElementById('worryRelease').addEventListener('click', () => {
+    const text = document.getElementById('worryText').value.trim();
+    if (!text) {
+      document.getElementById('worryInstruction').textContent = 'Write a few words first, then release them.';
+      return;
+    }
+    document.getElementById('worryPaper').classList.add('dissolving');
+    document.getElementById('worryRelease').style.display = 'none';
+    document.getElementById('worryInstruction').textContent = 'Released. Watch it dissolve.';
+    playBell(396, 1.5);
+    setTimeout(() => playBell(528, 1.2), 800);
+    setTimeout(() => {
+      document.getElementById('worryClose').click();
+      pushActivity('Released a worry.');
+    }, 3200);
   });
 
   /* ────────────────────────────────────────────────────────
@@ -3052,8 +3605,21 @@
     if (e.key !== 'Escape') return;
     const b = document.getElementById('breatheOverlay');
     const g = document.getElementById('groundOverlay');
+    const k = document.getElementById('kindnessOverlay');
+    const s = document.getElementById('scanOverlay');
+    const w = document.getElementById('worryOverlay');
     if (b.classList.contains('open')) document.getElementById('breatheClose').click();
     else if (g.classList.contains('open')) document.getElementById('groundClose').click();
+    else if (k.classList.contains('open')) document.getElementById('kindnessClose').click();
+    else if (s.classList.contains('open')) document.getElementById('scanClose').click();
+    else if (w.classList.contains('open')) document.getElementById('worryClose').click();
+  });
+
+  document.querySelectorAll('.theme-swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.dataset.setTheme);
+      pushActivity('Theme changed to ' + btn.dataset.setTheme + '.');
+    });
   });
 
   document.getElementById('retentionSelect').addEventListener('change', (e) => {
