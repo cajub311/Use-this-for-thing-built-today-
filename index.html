@@ -103,10 +103,10 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
 
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch):focus {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn):focus {
     outline: none;
   }
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch):focus-visible {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn):focus-visible {
     outline: 2px solid var(--moss);
     outline-offset: 2px;
   }
@@ -1113,9 +1113,12 @@
     letter-spacing: 0.04em;
   }
   .grounding-next:hover { transform: translateY(-1px); }
-
+  .ground-actions {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%;
+    max-width: 320px; margin: 0 auto;
+  }
+  .grounding-overlay .grounding-next#groundEnter { margin-top: 0; }
   .audio-toggle {
-    position: absolute;
     top: 22px;
     left: 22px;
     background: rgba(237, 227, 210, 0.1);
@@ -1975,6 +1978,56 @@
   .sum-hint { font-size: 0.8rem; color: var(--ink-faint); margin-top: 8px; }
   .print-only { display: none; }
 
+  .start-here .start-list {
+    text-align: left; margin: 0; padding: 0 0 0 1.1em; color: var(--ink-soft);
+    font-size: 0.92rem; line-height: 1.6;
+  }
+  .start-here .start-list li { margin: 0.4em 0; }
+
+  .sleep-top {
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;
+  }
+  .sleep-hours-block { flex: 1 1 200px; min-width: 0; }
+  .dream-block {
+    flex: 1 1 220px; min-width: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .dream-block label, .exercise-block label, .outdoor-split label.sub {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .dream-input, .exercise-text {
+    width: 100%; min-height: 80px; resize: vertical; margin: 0;
+  }
+  .outdoor-split { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .outdoor-sun, .outdoor-steps { flex: 1 1 200px; min-width: 0; }
+  .exercise-block {
+    margin-top: 10px; padding-top: 12px;
+    border-top: 1px solid rgba(201, 187, 164, 0.4);
+  }
+  .mood-text-actions, .grounding-btn-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px;
+  }
+  .mood-text-actions .mini-btn, .grounding-btn-row .mini-btn, .ground-actions .mini-btn {
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.65);
+    color: var(--moss-deep);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-family: 'Lora', serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+  .mood-text-actions .mini-btn:hover, .grounding-btn-row .mini-btn:hover, .ground-actions .mini-btn:hover { background: var(--moss-mist); }
+  .grounding-log {
+    text-align: left; font-size: 0.78rem; line-height: 1.5; color: rgba(237, 227, 210, 0.75);
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(237, 227, 210, 0.2);
+    border-radius: var(--r);
+    padding: 10px 12px; margin: 0 0 10px; max-height: 140px; overflow-y: auto;
+  }
+  .grounding-log strong { color: var(--paper-3); }
+
   @media print {
     .no-print, .save-bar, .nav, .skip-link, body::before, body::after { display: none !important; }
     .print-only { display: block !important; }
@@ -2209,28 +2262,26 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
+    <section class="leaf start-here" aria-label="How to use today">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Start <em>here</em></h2>
+        <span class="leaf-num">№ 00</span>
+      </div>
+      <p class="leaf-sub">A gentle order for your day — you can still scroll to anything.</p>
+      <ol class="start-list">
+        <li><strong>Anchor &amp; check-in</strong> — intention, then mood and energy.</li>
+        <li><strong>Body &amp; basics</strong> — water, movement, light, food, what hurts.</li>
+        <li><strong>Rest &amp; close</strong> — sleep, dreams, gratitude, reflection, evening.</li>
+        <li><strong>Session sheet &amp; print</strong> — at the bottom: copy or print your whole day.</li>
+      </ol>
+    </section>
+
     <section class="peace-visual no-print" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
       <div class="peace-visual-caption">
         <small>Today&apos;s quiet image</small>
         <strong id="dailyPeaceTitle">Still lake at dawn</strong>
       </div>
-    </section>
-
-    <section class="leaf" id="summaryCard" aria-label="Today summary">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Your <em>session sheet</em></h2>
-        <span class="leaf-num">print</span>
-      </div>
-      <p class="leaf-sub no-print">All of today’s saved fields in one place — copy, print, or share from the browser.</p>
-      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
-      <pre class="today-summary" id="todaySummary" role="status" aria-live="polite">—</pre>
-      <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
-        <a href="#eveningSection" class="sum-hint" style="align-self:center; margin:0; text-decoration:underline; color:var(--moss-deep)">Scroll to evening check-in ↓</a>
-        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
-        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
-      </div>
-      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
     </section>
 
     <!-- Daily intention -->
@@ -2280,23 +2331,27 @@
 
       <div class="picker-label">Mood</div>
       <div class="picker-row" id="moodRow">
-        <button class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy</span></button>
-        <button class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off</span></button>
-        <button class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Steady</span></button>
-        <button class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Bright</span></button>
-        <button class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Glowing</span></button>
+        <button class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy / low</span></button>
+        <button class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off / flat</span></button>
+        <button class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Okay / mixed</span></button>
+        <button class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Good / light</span></button>
+        <button class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Really good</span></button>
       </div>
 
       <div class="picker-label">Energy</div>
       <div class="picker-row energy-row" id="energyRow">
-        <button class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Drained</span></button>
-        <button class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low</span></button>
-        <button class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Even</span></button>
-        <button class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Lively</span></button>
-        <button class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Vital</span></button>
+        <button class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Wiped out</span></button>
+        <button class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low / flat</span></button>
+        <button class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Steady</span></button>
+        <button class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Up / alert</span></button>
+        <button class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Fired up</span></button>
       </div>
 
-      <textarea class="mood-note" id="moodNote" rows="2" placeholder="A note for yourself, if you like…"></textarea>
+      <textarea class="mood-note" id="moodNote" rows="2" placeholder="A few words, if you want — nothing has to sound pretty."></textarea>
+      <div class="mood-text-actions no-print">
+        <button type="button" class="mini-btn" id="moodNoteSave">Add to journal (enter)</button>
+        <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
+      </div>
     </section>
 
     <!-- Body weather (chips) -->
@@ -2390,17 +2445,34 @@
           <button class="pill minus" data-action="move-minus">−5</button>
           <button class="pill" data-action="move-plus">+ 5 min</button>
         </div>
+        <div class="exercise-block">
+          <label for="exerciseNote" class="sub">Exercise or movement (optional)</label>
+          <textarea class="deep-input exercise-text" id="exerciseNote" rows="2" maxlength="300" placeholder="e.g. 20 min walk · swim · gym · yoga · cleaning that counted…"></textarea>
+        </div>
       </div>
 
       <div class="tracker" style="grid-column: 1 / -1;">
         <svg class="sun-decoration"><use href="#i-sun"/></svg>
-        <div class="tracker-head"><svg><use href="#i-sun"/></svg><span class="name">Outdoor light</span></div>
-        <div class="tracker-value"><span id="sunValue">0</span></div>
-        <div class="tracker-unit">minutes in daylight today</div>
-        <div class="tracker-controls">
-          <button class="pill minus" data-action="sun-minus">−10</button>
-          <button class="pill" data-action="sun-plus">+ 10 min</button>
-          <button class="pill" data-action="sun-plus30">+ 30 min</button>
+        <div class="tracker-head"><svg><use href="#i-sun"/></svg><span class="name">Outdoor light &amp; steps</span></div>
+        <div class="outdoor-split">
+          <div class="outdoor-sun">
+            <div class="tracker-value"><span id="sunValue">0</span></div>
+            <div class="tracker-unit">minutes in daylight today</div>
+            <div class="tracker-controls">
+              <button class="pill minus" data-action="sun-minus">−10</button>
+              <button class="pill" data-action="sun-plus">+ 10 min</button>
+              <button class="pill" data-action="sun-plus30">+ 30 min</button>
+            </div>
+          </div>
+          <div class="outdoor-steps">
+            <div class="tracker-value"><span id="stepsValue">0</span></div>
+            <div class="tracker-unit">steps (rough count)</div>
+            <div class="tracker-controls">
+              <button class="pill minus" data-action="steps-minus500">−500</button>
+              <button class="pill" data-action="steps-plus1000">+ 1k</button>
+              <button class="pill" data-action="steps-plus2500">+ 2.5k</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2455,9 +2527,17 @@
         <span class="leaf-num">№ 06</span>
       </div>
       <p class="leaf-sub">Sleep is sacred. Honor whatever it gave you.</p>
-      <div class="sleep-row">
-        <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
-        <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
+      <div class="sleep-top">
+        <div class="sleep-hours-block">
+          <div class="sleep-row">
+            <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
+            <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
+          </div>
+        </div>
+        <div class="dream-block">
+          <label for="dreamInput">Dreams (optional)</label>
+          <textarea class="deep-input dream-input" id="dreamInput" rows="4" maxlength="2000" placeholder="Anything you remember — images, feelings, a single line…"></textarea>
+        </div>
       </div>
       <div class="picker-label">Quality</div>
       <div class="moon-row" id="moonRow">
@@ -2520,6 +2600,22 @@
         <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="tomorrow">Save to journal</button>
         <span class="field-saved" id="fieldSavedTomorrow" hidden aria-live="polite">Saved</span>
       </div>
+    </section>
+
+    <section class="leaf" id="summaryCard" aria-label="Today summary">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Your <em>session sheet</em></h2>
+        <span class="leaf-num">print</span>
+      </div>
+      <p class="leaf-sub no-print">All of today’s saved fields in one place — copy, print, or share from the browser.</p>
+      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
+      <pre class="today-summary" id="todaySummary" role="status" aria-live="polite">—</pre>
+      <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
+        <a href="#eveningSection" class="sum-hint" style="align-self:center; margin:0; text-decoration:underline; color:var(--moss-deep)">Scroll to evening check-in ↑</a>
+        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
+        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
+      </div>
+      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
     </section>
 
     <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
@@ -2882,8 +2978,16 @@
   <div class="grounding-content">
     <div class="grounding-step" id="groundStep">5</div>
     <div class="grounding-prompt" id="groundPrompt">things you can <em>see</em></div>
+    <pre class="grounding-log" id="groundLog" aria-live="polite" hidden></pre>
     <input type="text" class="grounding-input" id="groundInput" placeholder="name one…" />
-    <button class="grounding-next" id="groundNext">next →</button>
+    <div class="grounding-btn-row">
+      <button type="button" class="mini-btn" id="groundBack" title="Go back one step">← back</button>
+      <button type="button" class="mini-btn" id="groundErase">Erase line</button>
+    </div>
+    <div class="ground-actions">
+      <button type="button" class="grounding-next" id="groundEnter">enter</button>
+      <button type="button" class="grounding-next" id="groundNext" style="margin-top:10px">next →</button>
+    </div>
   </div>
 </div>
 
@@ -3028,27 +3132,27 @@
   ];
 
   const SYMPTOMS = [
-    { id: 'calm',    label: 'calm',     bad: false },
-    { id: 'focused', label: 'focused',  bad: false },
-    { id: 'content', label: 'content',  bad: false },
-    { id: 'grateful',label: 'grateful', bad: false },
-    { id: 'peaceful',label: 'peaceful', bad: false },
-    { id: 'creative',label: 'creative', bad: false },
-    { id: 'connected',label:'connected',bad: false },
+    { id: 'calm',    label: 'settled',     bad: false },
+    { id: 'focused', label: 'dialed in',  bad: false },
+    { id: 'content', label: 'okay-ish',  bad: false },
+    { id: 'grateful',label: 'thankful', bad: false },
+    { id: 'peaceful',label: 'quiet inside', bad: false },
+    { id: 'creative',label: 'in flow', bad: false },
+    { id: 'connected',label:'with people',bad: false },
     { id: 'rested',  label: 'rested',   bad: false },
     { id: 'divider', divider: true },
-    { id: 'anxious', label: 'anxious',  bad: true },
-    { id: 'foggy',   label: 'foggy',    bad: true },
-    { id: 'tired',   label: 'tired',    bad: true },
-    { id: 'tense',   label: 'tense',    bad: true },
+    { id: 'anxious', label: 'worried / on edge',  bad: true },
+    { id: 'foggy',   label: 'brain fog',    bad: true },
+    { id: 'tired',   label: 'wiped out',    bad: true },
+    { id: 'tense',   label: 'keyed up',    bad: true },
     { id: 'lonely',  label: 'lonely',   bad: true },
-    { id: 'sad',     label: 'sad',      bad: true },
-    { id: 'restless',label: 'restless', bad: true },
-    { id: 'overwhelmed',label:'overwhelmed',bad:true },
-    { id: 'irritable',label:'irritable',bad: true },
-    { id: 'numb',    label: 'numb',     bad: true },
-    { id: 'achy',    label: 'achy',     bad: true },
-    { id: 'nauseous',label: 'nauseous', bad: true }
+    { id: 'sad',     label: 'heavy heart',      bad: true },
+    { id: 'restless',label: 'antsy', bad: true },
+    { id: 'overwhelmed',label:'too much at once',bad:true },
+    { id: 'irritable',label:'snappy / short fuse',bad: true },
+    { id: 'numb',    label: 'shut down / blank',     bad: true },
+    { id: 'achy',    label: 'physical ache',     bad: true },
+    { id: 'nauseous',label: 'queasy / sick', bad: true }
   ];
 
   const PEACE_IMAGES = [
@@ -3123,7 +3227,7 @@
     mood: 0, energy: 0, moodNote: '',
     symptoms: [], rituals: [],
     water: 0, pee: 0, coffee: 0,
-    movement: 0, steps: 0, moveMode: 'min', sun: 0,
+    movement: 0, steps: 0, moveMode: 'min', sun: 0, exerciseNote: '',
     outings: 0, sweets: 0, calories: 0,
     meals: [], pains: [],
     sleepHours: 7.0, sleepQuality: 0, dreams: '',
@@ -3575,7 +3679,7 @@
   function hasAnyData(d) {
     return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
            (d.rituals && d.rituals.length) ||
-           d.water || d.pee || d.coffee || d.movement || d.sun || d.steps ||
+           d.water || d.pee || d.coffee || d.movement || d.sun || d.steps || (d.exerciseNote && d.exerciseNote.trim()) ||
            d.outings || d.sweets || d.calories ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
            d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes ||
@@ -3661,8 +3765,16 @@
     const pct = Math.min(100, (day.coffee / 4) * 100);
     document.getElementById('coffeeFill').style.height = pct + '%';
   }
-  function renderMove()   { document.getElementById('moveValue').textContent = day.movement; }
-  function renderSun()    { document.getElementById('sunValue').textContent = day.sun; }
+  function renderMove() {
+    document.getElementById('moveValue').textContent = day.movement;
+    const ex = document.getElementById('exerciseNote');
+    if (ex) ex.value = day.exerciseNote || '';
+  }
+  function renderSun() {
+    document.getElementById('sunValue').textContent = day.sun;
+    const st = document.getElementById('stepsValue');
+    if (st) st.textContent = day.steps != null ? Number(day.steps).toLocaleString() : '0';
+  }
   function renderMeals() {
     document.querySelectorAll('.meal-type').forEach(b =>
       b.classList.toggle('on', b.dataset.meal === day.activeMeal));
@@ -3718,13 +3830,15 @@
     document.getElementById('eveningNoteInput').value = day.eveningNote || '';
     document.getElementById('eveningObstacleInput').value = day.eveningObstacle || '';
     document.getElementById('eveningTomorrowInput').value = day.eveningTomorrow || '';
+    const dr = document.getElementById('dreamInput');
+    if (dr) dr.value = day.dreams || '';
   }
   function renderMindful() {
     const el = document.getElementById('mindfulMinutes');
     if (el) el.textContent = day.mindfulMinutes || 0;
   }
-  const MOOD_L = ['', 'Heavy', 'Off', 'Steady', 'Bright', 'Glowing'];
-  const ENERGY_L = ['', 'Drained', 'Low', 'Even', 'Lively', 'Vital'];
+  const MOOD_L = ['', 'Heavy / low', 'Off / flat', 'Okay / mixed', 'Good / light', 'Really good'];
+  const ENERGY_L = ['', 'Wiped out', 'Low / flat', 'Steady', 'Up / alert', 'Fired up'];
   const SLEEP_Q = ['', 'Restless', 'Light', 'Decent', 'Deep'];
   function buildTodaySummaryText() {
     const lines = [];
@@ -3744,6 +3858,7 @@
     }
     lines.push('Water: ' + (day.water || 0) + ' cups · Bathroom: ' + (day.pee || 0) + ' · Caffeine: ' + (day.coffee || 0) + ' · Movement: ' + (day.movement || 0) + ' min · Sun: ' + (day.sun || 0) + ' min');
     if (day.steps) lines.push('Steps: ' + Number(day.steps).toLocaleString());
+    if (day.exerciseNote && day.exerciseNote.trim()) lines.push('Exercise / movement: ' + day.exerciseNote.trim());
     if (day.outings) lines.push('Outings: ' + day.outings);
     if (day.sweets) lines.push('Sweets / treats: ' + day.sweets);
     if (day.calories) lines.push('Calories logged: ' + Number(day.calories).toLocaleString() + ' kcal');
@@ -3818,7 +3933,7 @@
   function dayMatchesQuery(d, q) {
     if (!q) return true;
     const parts = [
-      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams,
+      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams, d.exerciseNote,
       d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow
     ];
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
@@ -3951,6 +4066,20 @@
   document.getElementById('moodNote').addEventListener('input', e => {
     day.moodNote = e.target.value; saveDay();
   });
+  document.getElementById('moodNoteSave').addEventListener('click', () => {
+    saveDayNow();
+    setSaveBarText('Mood note saved', 'saved');
+    pushActivity('Mood note saved to journal.');
+  });
+  document.getElementById('moodNoteClear').addEventListener('click', () => {
+    day.moodNote = '';
+    document.getElementById('moodNote').value = '';
+    saveDay();
+  });
+  const exEl = document.getElementById('exerciseNote');
+  if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDay(); });
+  const dreamEl = document.getElementById('dreamInput');
+  if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDay(); });
 
   document.querySelectorAll('[data-action]').forEach(b => {
     b.addEventListener('click', () => {
@@ -3966,11 +4095,15 @@
       if (a === 'sun-plus')      day.sun = Math.min(720, day.sun + 10);
       if (a === 'sun-plus30')    day.sun = Math.min(720, day.sun + 30);
       if (a === 'sun-minus')     day.sun = Math.max(0, day.sun - 10);
+      if (a === 'steps-plus1000') day.steps = Math.min(50000, (day.steps || 0) + 1000);
+      if (a === 'steps-plus2500') day.steps = Math.min(50000, (day.steps || 0) + 2500);
+      if (a === 'steps-minus500') day.steps = Math.max(0, (day.steps || 0) - 500);
       if (a.startsWith('water'))  renderWater();
       if (a.startsWith('pee'))    renderPee();
       if (a.startsWith('coffee')) renderCoffee();
       if (a.startsWith('move'))   renderMove();
       if (a.startsWith('sun'))    renderSun();
+      if (a.startsWith('steps'))  renderSun();
       saveDay();
     });
   });
@@ -4304,15 +4437,128 @@
     { n: 2, sense: 'smell', prompt: 'things you can <em>smell</em>' },
     { n: 1, sense: 'taste', prompt: 'thing you can <em>taste</em>' }
   ];
-  let groundIdx = 0, groundCount = 0, groundStart = null;
+  let groundIdx = 0, groundStart = null;
+  let groundAnswers = [];
+
+  function renderGroundLog() {
+    const logEl = document.getElementById('groundLog');
+    if (!logEl) return;
+    const parts = [];
+    for (let i = 0; i < GROUND_STEPS.length; i++) {
+      const step = GROUND_STEPS[i];
+      const items = groundAnswers[i] || [];
+      if (!items.length) continue;
+      const lines = items.map(t => '· ' + escapeHtml(t)).join('\n');
+      parts.push(`<strong>${step.n} ${step.sense}</strong>\n${lines}`);
+    }
+    if (parts.length) {
+      logEl.hidden = false;
+      logEl.innerHTML = parts.join('\n\n');
+    } else {
+      logEl.hidden = true;
+      logEl.textContent = '';
+    }
+  }
+
+  function showGroundStep() {
+    const input = document.getElementById('groundInput');
+    const nextBtn = document.getElementById('groundNext');
+    const enterBtn = document.getElementById('groundEnter');
+    const backBtn = document.getElementById('groundBack');
+    const eraseBtn = document.getElementById('groundErase');
+    if (groundIdx >= GROUND_STEPS.length) {
+      document.getElementById('groundStep').textContent = '✦';
+      document.getElementById('groundPrompt').innerHTML = 'You are <em>here</em>.';
+      input.style.display = 'none';
+      if (enterBtn) enterBtn.style.display = 'none';
+      if (eraseBtn) eraseBtn.style.display = 'none';
+      if (backBtn) backBtn.style.display = 'inline-block';
+      if (nextBtn) {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.textContent = 'finish';
+      }
+      return;
+    }
+    const step = GROUND_STEPS[groundIdx];
+    document.getElementById('groundStep').textContent = String(step.n);
+    document.getElementById('groundPrompt').innerHTML = step.prompt;
+    if (enterBtn) enterBtn.style.display = 'inline-block';
+    if (eraseBtn) eraseBtn.style.display = 'inline-block';
+    if (backBtn) backBtn.style.display = 'inline-block';
+    if (nextBtn) {
+      nextBtn.style.display = 'inline-block';
+      nextBtn.textContent = 'skip sense →';
+    }
+    const have = (groundAnswers[groundIdx] || []).length;
+    input.style.display = 'block';
+    input.value = '';
+    input.placeholder = have
+      ? `one more… (${have}/${step.n} named)`
+      : `name one… (${step.n} to do)`;
+    setTimeout(() => { try { input.focus(); } catch (e) {} }, 0);
+  }
+
+  function beginGroundingSession() {
+    groundAnswers = GROUND_STEPS.map(() => []);
+    groundIdx = 0;
+    renderGroundLog();
+    showGroundStep();
+  }
+
+  function handleGroundEnter() {
+    if (groundIdx >= GROUND_STEPS.length) return;
+    const step = GROUND_STEPS[groundIdx];
+    const val = document.getElementById('groundInput').value.trim();
+    if (!val) return;
+    if (!groundAnswers[groundIdx]) groundAnswers[groundIdx] = [];
+    if (groundAnswers[groundIdx].length >= step.n) return;
+    groundAnswers[groundIdx].push(val);
+    document.getElementById('groundInput').value = '';
+    renderGroundLog();
+    if (groundAnswers[groundIdx].length >= step.n) {
+      groundIdx++;
+      showGroundStep();
+    } else {
+      showGroundStep();
+    }
+  }
+
+  function handleGroundNext() {
+    if (groundIdx >= GROUND_STEPS.length) {
+      document.getElementById('groundClose').click();
+      return;
+    }
+    groundIdx++;
+    showGroundStep();
+  }
+
+  function handleGroundBack() {
+    if (groundIdx >= GROUND_STEPS.length) {
+      groundIdx = GROUND_STEPS.length - 1;
+      showGroundStep();
+      return;
+    }
+    const arr = groundAnswers[groundIdx];
+    if (arr && arr.length) {
+      arr.pop();
+      renderGroundLog();
+    } else if (groundIdx > 0) {
+      groundIdx--;
+    }
+    showGroundStep();
+  }
+
+  function handleGroundErase() {
+    const input = document.getElementById('groundInput');
+    if (input) { input.value = ''; input.focus(); }
+  }
 
   document.getElementById('groundBtn').addEventListener('click', () => {
     const ov = document.getElementById('groundOverlay');
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
-    groundIdx = 0; groundCount = 0;
     groundStart = Date.now();
-    showGroundStep();
+    beginGroundingSession();
     document.getElementById('groundClose').focus();
   });
   document.getElementById('groundClose').addEventListener('click', () => {
@@ -4325,42 +4571,12 @@
     }
     document.getElementById('groundBtn').focus();
   });
-  function showGroundStep() {
-    if (groundIdx >= GROUND_STEPS.length) {
-      document.getElementById('groundStep').textContent = '✦';
-      document.getElementById('groundPrompt').innerHTML = 'You are <em>here</em>.';
-      document.getElementById('groundInput').style.display = 'none';
-      document.getElementById('groundNext').textContent = 'finish';
-      return;
-    }
-    const step = GROUND_STEPS[groundIdx];
-    document.getElementById('groundStep').textContent = step.n;
-    document.getElementById('groundPrompt').innerHTML = step.prompt;
-    document.getElementById('groundInput').value = '';
-    document.getElementById('groundInput').style.display = 'block';
-    document.getElementById('groundInput').focus();
-    groundCount = 0;
-    document.getElementById('groundNext').textContent = `next →`;
-  }
-  function handleGroundNext() {
-    if (groundIdx >= GROUND_STEPS.length) {
-      document.getElementById('groundClose').click();
-      return;
-    }
-    const step = GROUND_STEPS[groundIdx];
-    const val = document.getElementById('groundInput').value.trim();
-    if (val) {
-      groundCount++;
-      document.getElementById('groundInput').value = '';
-      if (groundCount >= step.n) { groundIdx++; showGroundStep(); }
-    } else {
-      groundIdx++;
-      showGroundStep();
-    }
-  }
+  document.getElementById('groundEnter').addEventListener('click', handleGroundEnter);
   document.getElementById('groundNext').addEventListener('click', handleGroundNext);
+  document.getElementById('groundBack').addEventListener('click', handleGroundBack);
+  document.getElementById('groundErase').addEventListener('click', handleGroundErase);
   document.getElementById('groundInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); handleGroundNext(); }
+    if (e.key === 'Enter') { e.preventDefault(); handleGroundEnter(); }
   });
 
   const KINDNESS_STAGES = [
@@ -4777,7 +4993,7 @@
       return;
     }
     const symLabel = (id) => { const s = SYMPTOMS.find(x => x.id === id); return s ? s.label : id; };
-    const moodNames = ['', 'heavy', 'off', 'steady', 'bright', 'glowing'];
+    const moodNames = MOOD_L;
     const insights = [];
 
     const moodCounts = [0, 0, 0, 0, 0, 0];
@@ -4787,7 +5003,7 @@
       const top = moodCounts.indexOf(Math.max(...moodCounts));
       if (top > 0) {
         const pct = Math.round(moodCounts[top] / moodTotal * 100);
-        insights.push({ tag: 'Tendency', cls: '', text: `Your most common mood is <strong>${moodNames[top]}</strong> — about <strong>${pct}%</strong> of the days you logged.` });
+        insights.push({ tag: 'Tendency', cls: '', text: `Your most common mood is <strong>${escapeHtml(moodNames[top])}</strong> — about <strong>${pct}%</strong> of the days you logged.` });
       }
     }
 
