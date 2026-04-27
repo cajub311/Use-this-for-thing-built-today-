@@ -1,6 +1,21 @@
 /* Minimal offline shell: cache app shell, network-first for navigation */
-const CACHE = 'stillness-shell-v1';
-const SHELL = ['/index.html', '/manifest.json', '/icon.svg', '/sw.js'];
+const CACHE = 'stillness-shell-v2';
+const SHELL = [
+  '/index.html',
+  '/manifest.json',
+  '/icon.svg',
+  '/sw.js',
+  '/assets/peaceful/buddha-moss-garden.jpg',
+  '/assets/peaceful/misty-forest-path.jpg',
+  '/assets/peaceful/still-lake-dawn.jpg',
+  '/assets/peaceful/lotus-water.jpg',
+  '/assets/peaceful/rain-leaves.jpg',
+  '/assets/peaceful/candle-meditation-corner.jpg',
+  '/assets/peaceful/river-stones-stream.jpg',
+  '/assets/peaceful/moonlit-pine-forest.jpg',
+  '/assets/peaceful/tea-open-journal.jpg',
+  '/assets/peaceful/sunrise-bamboo.jpg'
+];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(

@@ -1214,6 +1214,78 @@
     border: 1.5px solid var(--line);
   }
 
+  .peace-visual {
+    margin-bottom: 18px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    min-height: 240px;
+    position: relative;
+    box-shadow: 0 8px 26px var(--shadow-warm);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    background: var(--paper-3);
+    animation: fadeUp .8s ease both;
+  }
+  .peace-visual img {
+    width: 100%;
+    height: 260px;
+    display: block;
+    object-fit: cover;
+  }
+  .peace-visual-caption {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 58px 22px 18px;
+    color: #F4ECDA;
+    background: linear-gradient(to top, rgba(31, 26, 20, 0.72), rgba(31, 26, 20, 0));
+  }
+  .peace-visual-caption small {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 3px;
+  }
+  .peace-visual-caption strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.35rem, 4vw, 1.8rem);
+  }
+
+  .peace-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .peace-card {
+    margin: 0;
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: 0 4px 14px var(--shadow-warm);
+  }
+  .peace-card img {
+    width: 100%;
+    aspect-ratio: 1.92;
+    object-fit: cover;
+    display: block;
+  }
+  .peace-card figcaption {
+    padding: 10px 12px 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+  @media (max-width: 560px) {
+    .peace-gallery { grid-template-columns: 1fr; }
+    .peace-visual img { height: 220px; }
+  }
+
   /* ── Bottom navigation ──────────────────────────────────── */
   .nav {
     position: fixed;
@@ -1814,6 +1886,14 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
+    <section class="peace-visual no-print" aria-label="Peaceful image for today">
+      <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
+      <div class="peace-visual-caption">
+        <small>Today&apos;s quiet image</small>
+        <strong id="dailyPeaceTitle">Still lake at dawn</strong>
+      </div>
+    </section>
+
     <section class="leaf" id="summaryCard" aria-label="Today summary">
       <div class="leaf-head">
         <h2 class="leaf-title">Your <em>session sheet</em></h2>
@@ -2237,6 +2317,55 @@
       <div class="date-line">25 quiet teachings</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Peaceful <em>images</em></h2>
+        <span class="leaf-num">10 scenes</span>
+      </div>
+      <p class="leaf-sub">A small visual library for breathing, reflection, and softer starts.</p>
+      <div class="peace-gallery">
+        <figure class="peace-card">
+          <img src="assets/peaceful/buddha-moss-garden.jpg" alt="A serene Buddhist meditation statue in a moss garden" loading="lazy" />
+          <figcaption>Buddha moss garden</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/misty-forest-path.jpg" alt="A misty forest path with soft morning light" loading="lazy" />
+          <figcaption>Misty forest path</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist over the water" loading="lazy" />
+          <figcaption>Still lake at dawn</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/lotus-water.jpg" alt="A pink lotus flower floating on quiet water" loading="lazy" />
+          <figcaption>Lotus on water</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/rain-leaves.jpg" alt="Rain drops resting on green leaves" loading="lazy" />
+          <figcaption>Rain on leaves</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/candle-meditation-corner.jpg" alt="A candlelit meditation corner with cushion and plant" loading="lazy" />
+          <figcaption>Candle meditation corner</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/river-stones-stream.jpg" alt="A clear stream moving around smooth river stones" loading="lazy" />
+          <figcaption>River stones stream</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/moonlit-pine-forest.jpg" alt="A moonlit pine forest with misty blue hills" loading="lazy" />
+          <figcaption>Moonlit pine forest</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/tea-open-journal.jpg" alt="A cup of tea beside an open journal and a small green branch" loading="lazy" />
+          <figcaption>Tea and open journal</figcaption>
+        </figure>
+        <figure class="peace-card">
+          <img src="assets/peaceful/sunrise-bamboo.jpg" alt="Golden sunrise shining through bamboo leaves" loading="lazy" />
+          <figcaption>Sunrise bamboo</figcaption>
+        </figure>
+      </div>
+    </section>
     <div class="quotes-list" id="quotesList"></div>
   </div>
 
@@ -2446,6 +2575,19 @@
     { id: 'nauseous',label: 'nauseous', bad: true }
   ];
 
+  const PEACE_IMAGES = [
+    { title: 'Buddha moss garden', src: 'assets/peaceful/buddha-moss-garden.jpg', alt: 'A serene Buddhist meditation statue in a moss garden' },
+    { title: 'Misty forest path', src: 'assets/peaceful/misty-forest-path.jpg', alt: 'A misty forest path with soft morning light' },
+    { title: 'Still lake at dawn', src: 'assets/peaceful/still-lake-dawn.jpg', alt: 'A still lake at dawn with mist over the water' },
+    { title: 'Lotus on water', src: 'assets/peaceful/lotus-water.jpg', alt: 'A pink lotus flower floating on quiet water' },
+    { title: 'Rain on leaves', src: 'assets/peaceful/rain-leaves.jpg', alt: 'Rain drops resting on green leaves' },
+    { title: 'Candle meditation corner', src: 'assets/peaceful/candle-meditation-corner.jpg', alt: 'A candlelit meditation corner with cushion and plant' },
+    { title: 'River stones stream', src: 'assets/peaceful/river-stones-stream.jpg', alt: 'A clear stream moving around smooth river stones' },
+    { title: 'Moonlit pine forest', src: 'assets/peaceful/moonlit-pine-forest.jpg', alt: 'A moonlit pine forest with misty blue hills' },
+    { title: 'Tea and open journal', src: 'assets/peaceful/tea-open-journal.jpg', alt: 'A cup of tea beside an open journal and a small green branch' },
+    { title: 'Sunrise bamboo', src: 'assets/peaceful/sunrise-bamboo.jpg', alt: 'Golden sunrise shining through bamboo leaves' }
+  ];
+
   /* ────────────────────────────────────────────────────────
      Time / date helpers
   ──────────────────────────────────────────────────────── */
@@ -2649,6 +2791,16 @@
   function renderHeader() {
     document.getElementById('greeting').textContent = greeting();
     document.getElementById('date').textContent = formatDateLine();
+  }
+  function renderDailyPeaceImage() {
+    const img = PEACE_IMAGES[seedFromDate(new Date()) % PEACE_IMAGES.length];
+    const el = document.getElementById('dailyPeaceImg');
+    const title = document.getElementById('dailyPeaceTitle');
+    if (el) {
+      el.src = img.src;
+      el.alt = img.alt;
+    }
+    if (title) title.textContent = img.title;
   }
   function renderQuoteAndAffirmation() {
     const seed = seedFromDate(new Date());
@@ -2954,6 +3106,7 @@
   }
   function renderAll() {
     renderHeader();
+    renderDailyPeaceImage();
     renderQuoteAndAffirmation();
     renderIntention();
     renderMood();
