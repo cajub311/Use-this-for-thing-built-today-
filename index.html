@@ -6,6 +6,11 @@
 <meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
 <meta name="theme-color" content="#EDE3D2" />
 <meta name="color-scheme" content="light" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/icon.svg" />
 <title>Stillness — a botanical journal for your days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +70,7 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     line-height: 1.55;
-    padding-bottom: 110px;
+    padding-bottom: max(110px, env(safe-area-inset-bottom, 0px) + 90px);
     position: relative;
     overflow-x: hidden;
   }
@@ -969,7 +974,7 @@
   /* ── Bottom navigation ──────────────────────────────────── */
   .nav {
     position: fixed;
-    bottom: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom, 0px) + 8px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -1284,7 +1289,23 @@
     flex-shrink: 0;
   }
   .activity-item .act-msg { flex: 1; }
-  .activity-empty { color: var(--ink-faint); font-style: italic; padding: 20px 0; text-align: center; }
+  .log-search {
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid rgba(201, 187, 164, 0.6);
+    background: var(--paper);
+    border-radius: var(--r);
+    padding: 12px 14px 12px 40px;
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%238C7F6E' stroke-width='1.5'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3Cpath d='M12 12L17 17' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+  }
+  .log-search-wrap { position: relative; }
+  .log-noresult { text-align: center; color: var(--ink-faint); font-style: italic; padding: 24px 12px; }
 
   .sr-only {
     position: absolute;
@@ -1796,6 +1817,7 @@
         <option value="0">Forever (no auto-delete)</option>
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
+      <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
     </section>
     <section class="leaf">
       <div class="leaf-head">
@@ -1826,6 +1848,12 @@
       <div class="date-line">A gentle trail of your check-ins</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <div class="leaf" style="padding-bottom:12px">
+      <p class="picker-label">Search your saved days</p>
+      <div class="log-search-wrap">
+        <input type="search" class="log-search" id="logSearch" enterkeyhint="search" placeholder="Type to filter by any word you wrote…" autocomplete="off" />
+      </div>
+    </div>
     <div class="leaf" style="padding-bottom:18px">
       <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
       <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
@@ -1849,7 +1877,7 @@
 </div>
 
 <!-- Bottom navigation -->
-<nav class="nav">
+<nav class="nav" aria-label="Main">
   <button class="nav-btn active" data-view="today">Today</button>
   <button class="nav-btn" data-view="history">Garden</button>
   <button class="nav-btn" data-view="log">Log</button>
@@ -2355,6 +2383,52 @@
     const sel = document.getElementById('retentionSelect');
     if (sel) sel.value = String(config.retentionDays);
   }
+  function getLogFilter() {
+    const q = document.getElementById('logSearch');
+    return (q && q.value) ? q.value.trim().toLowerCase() : '';
+  }
+  function dayMatchesQuery(d, q) {
+    if (!q) return true;
+    const parts = [
+      d.date, d.intention, d.moodNote, d.gratitude, d.reflection,
+      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow
+    ];
+    if (d.meals && d.meals.length) d.meals.forEach(m => { if (m.description) parts.push(m.description); });
+    if (d.pains && d.pains.length) d.pains.forEach(p => { parts.push(p.location, p.note); });
+    const blob = parts.filter(Boolean).join(' ').toLowerCase();
+    return blob.includes(q);
+  }
+  function buildLogCardHtml(d) {
+    const moodPill = d.mood ? `<div class="history-mood-pill"><svg width="20" height="20" style="color:var(--moss-deep)"><use href="#mood-${d.mood}"/></svg></div>` : '';
+    const meta = [];
+    if (d.intention) meta.push(`<span>✦ ${escapeHtml(d.intention)}</span>`);
+    if (d.mood) meta.push(`<span>mood ${d.mood}/5</span>`);
+    if (d.energy) meta.push(`<span>energy ${d.energy}/5</span>`);
+    if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
+    if (d.pee) meta.push(`<span>🚻 ${d.pee}</span>`);
+    if (d.coffee) meta.push(`<span>☕ ${d.coffee}</span>`);
+    if (d.movement) meta.push(`<span>🌿 ${d.movement}m</span>`);
+    if (d.sun) meta.push(`<span>☼ ${d.sun}m</span>`);
+    if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
+    if (d.pains && d.pains.length) meta.push(`<span>~ ${d.pains.length} pains</span>`);
+    if (d.sleepHours != null && d.sleepHours !== 7) meta.push(`<span>☽ ${Number(d.sleepHours).toFixed(1)}h</span>`);
+    if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m mindful</span>`);
+    if (d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow) meta.push(`<span>evening ✓</span>`);
+    return `
+      ${moodPill}
+      <div class="history-date">${formatDate(d.date)}</div>
+      <div class="history-meta">${meta.join('')}</div>
+      ${d.moodNote ? `<div class="history-quote" style="margin-top:6px"><em>Mood note:</em> ${escapeHtml(d.moodNote)}</div>` : ''}
+      ${d.gratitude ? `<div class="history-quote" style="margin-top:6px">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
+      ${d.reflection ? `<div class="history-quote" style="margin-top:4px">${escapeHtml(d.reflection)}</div>` : ''}
+      ${d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ? `<div class="history-quote" style="margin-top:8px">` +
+        (d.eveningWin ? `<em>Win:</em> ${escapeHtml(d.eveningWin)}<br/>` : '') +
+        (d.eveningNote ? `<em>Carry:</em> ${escapeHtml(d.eveningNote)}<br/>` : '') +
+        (d.eveningObstacle ? `<em>Stuck:</em> ${escapeHtml(d.eveningObstacle)}<br/>` : '') +
+        (d.eveningTomorrow ? `<em>Tomorrow:</em> ${escapeHtml(d.eveningTomorrow)}` : '') +
+        `</div>` : ''}
+    `;
+  }
   function renderLogView() {
     const actWrap = document.getElementById('logActivity');
     const listWrap = document.getElementById('logEntryList');
@@ -2364,11 +2438,17 @@
     if (raw) { try { activity = JSON.parse(raw); } catch {} }
     if (!Array.isArray(activity)) activity = [];
     const actRev = activity.slice().reverse();
+    const logQ = getLogFilter();
     if (actWrap) {
-      if (actRev.length === 0) {
+      const filterAct = logQ
+        ? actRev.filter(a => String(a.msg).toLowerCase().includes(logQ))
+        : actRev;
+      if (filterAct.length === 0 && actRev.length) {
+        actWrap.innerHTML = '<p class="log-noresult">No activity lines match your search. Try a different word.</p>';
+      } else if (actRev.length === 0) {
         actWrap.innerHTML = '<p class="activity-empty">Edits to your day will show here — automatic saves, backups, and cleanup.</p>';
       } else {
-        actWrap.innerHTML = actRev.map(a => `
+        actWrap.innerHTML = filterAct.map(a => `
           <div class="activity-item"><span class="act-time">${escapeHtml(formatActivityTime(a.t))}</span><span class="act-msg">${escapeHtml(a.msg)}</span></div>
         `).join('');
       }
@@ -2376,41 +2456,35 @@
     if (line) {
       const days = getAllDayRecords();
       const withData = days.filter(d => hasAnyData(d));
-      line.textContent = withData.length
-        ? `${withData.length} day(s) with an entry, newest first. Activity above is a short trail; full days are in the cards below.`
-        : 'No entries yet — as you add to Today, it will be remembered on this device.';
+      const matchCount = withData.filter(d => dayMatchesQuery(d, logQ)).length;
+      if (logQ) {
+        line.textContent = matchCount
+          ? `Showing ${matchCount} of ${withData.length} day(s) matching your search.`
+          : withData.length
+            ? 'No day entries match — try other words or clear the search box.'
+            : 'No saved days yet — write on Today, then return here.';
+      } else {
+        line.textContent = withData.length
+          ? `${withData.length} day(s) with an entry, newest first. Use your browser’s Add to Home Screen for an app-like shortcut (see Memory).`
+          : 'No entries yet — as you add to Today, it will be remembered on this device.';
+      }
     }
     if (listWrap) {
-      const days = getAllDayRecords().filter(d => hasAnyData(d));
-      if (days.length === 0) {
+      const allDays = getAllDayRecords().filter(d => hasAnyData(d));
+      const days = allDays.filter(d => dayMatchesQuery(d, logQ));
+      if (allDays.length === 0) {
         listWrap.innerHTML = '';
+        return;
+      }
+      if (days.length === 0) {
+        listWrap.innerHTML = '<p class="log-noresult">No days match that search. Try a shorter word or check spelling.</p>';
         return;
       }
       listWrap.innerHTML = '';
       days.forEach(d => {
         const el = document.createElement('div');
         el.className = 'history-day';
-        const moodPill = d.mood ? `<div class="history-mood-pill"><svg width="20" height="20" style="color:var(--moss-deep)"><use href="#mood-${d.mood}"/></svg></div>` : '';
-        const meta = [];
-        if (d.intention) meta.push(`<span>✦ ${escapeHtml(d.intention)}</span>`);
-        if (d.mood) meta.push(`<span>mood ${d.mood}/5</span>`);
-        if (d.energy) meta.push(`<span>energy ${d.energy}/5</span>`);
-        if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
-        if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
-        if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m</span>`);
-        if (d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow) meta.push(`<span>evening ✓</span>`);
-        el.innerHTML = `
-          ${moodPill}
-          <div class="history-date">${formatDate(d.date)}</div>
-          <div class="history-meta">${meta.join('')}</div>
-          ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
-          ${d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ? `<div class="history-quote" style="margin-top:8px">` +
-            (d.eveningWin ? `<em>Win:</em> ${escapeHtml(d.eveningWin)}<br/>` : '') +
-            (d.eveningNote ? `<em>Carry:</em> ${escapeHtml(d.eveningNote)}<br/>` : '') +
-            (d.eveningObstacle ? `<em>Stuck:</em> ${escapeHtml(d.eveningObstacle)}<br/>` : '') +
-            (d.eveningTomorrow ? `<em>Tomorrow:</em> ${escapeHtml(d.eveningTomorrow)}` : '') +
-            `</div>` : ''}
-        `;
+        el.innerHTML = buildLogCardHtml(d);
         listWrap.appendChild(el);
       });
     }
@@ -2769,32 +2843,7 @@
     days.forEach(d => {
       const el = document.createElement('div');
       el.className = 'history-day';
-      const moodPill = d.mood ? `<div class="history-mood-pill"><svg width="20" height="20" style="color:var(--moss-deep)"><use href="#mood-${d.mood}"/></svg></div>` : '';
-      const meta = [];
-      if (d.intention) meta.push(`<span>✦ ${escapeHtml(d.intention)}</span>`);
-      if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
-      if (d.pee) meta.push(`<span>🚻 ${d.pee}</span>`);
-      if (d.coffee) meta.push(`<span>☕ ${d.coffee}</span>`);
-      if (d.movement) meta.push(`<span>🌿 ${d.movement}m</span>`);
-      if (d.sun) meta.push(`<span>☼ ${d.sun}m</span>`);
-      if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
-      if (d.pains && d.pains.length) meta.push(`<span>~ ${d.pains.length} pains</span>`);
-      if (d.sleepHours) meta.push(`<span>☽ ${d.sleepHours.toFixed(1)}h</span>`);
-      if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m mindful</span>`);
-      if (d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow) meta.push(`<span>evening ✓</span>`);
-      el.innerHTML = `
-        ${moodPill}
-        <div class="history-date">${formatDate(d.date)}</div>
-        <div class="history-meta">${meta.join('')}</div>
-        ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
-        ${d.reflection ? `<div class="history-quote">${escapeHtml(d.reflection)}</div>` : ''}
-        ${d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ? `<div class="history-quote" style="margin-top:8px">` +
-          (d.eveningWin ? `<em>Win:</em> ${escapeHtml(d.eveningWin)}<br/>` : '') +
-          (d.eveningNote ? `<em>Carry:</em> ${escapeHtml(d.eveningNote)}<br/>` : '') +
-          (d.eveningObstacle ? `<em>Stuck:</em> ${escapeHtml(d.eveningObstacle)}<br/>` : '') +
-          (d.eveningTomorrow ? `<em>Tomorrow:</em> ${escapeHtml(d.eveningTomorrow)}` : '') +
-          `</div>` : ''}
-      `;
+      el.innerHTML = buildLogCardHtml(d);
       list.appendChild(el);
     });
   }
@@ -2857,6 +2906,10 @@
     });
   }
 
+  document.getElementById('logSearch').addEventListener('input', () => renderLogView());
+
+  window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') ensureCurrentDay();
   });
@@ -2964,6 +3017,9 @@
   pruneOldDays();
   loadDay();
   renderAll();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
 </script>
 </body>
 </html>

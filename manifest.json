@@ -1,0 +1,20 @@
+{
+  "name": "Stillness — botanical journal",
+  "short_name": "Stillness",
+  "description": "A gentle daily journal — mood, rest, intention, saved on your device.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#EDE3D2",
+  "theme_color": "#EDE3D2",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

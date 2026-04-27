@@ -1,0 +1,52 @@
+/* Minimal offline shell: cache app shell, network-first for navigation */
+const CACHE = 'stillness-shell-v1';
+const SHELL = ['/index.html', '/manifest.json', '/icon.svg', '/sw.js'];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (e) => {
+  const { request } = e;
+  if (request.method !== 'GET') return;
+  const u = new URL(request.url);
+  if (u.origin !== self.location.origin) return;
+
+  e.respondWith(
+    fetch(request)
+      .then((res) => {
+        if (res.ok) {
+          const c = res.clone();
+          caches.open(CACHE).then((cache) => {
+            if (u.pathname === '/' || u.pathname === '/index.html') {
+              cache.put('/index.html', c.clone());
+            } else {
+              cache.put(request, c);
+            }
+          });
+        }
+        return res;
+      })
+      .catch(() =>
+        caches.match(request).then(
+          (r) =>
+            r ||
+            (u.pathname === '/' ? caches.match('/index.html') : null)
+        )
+      )
+  );
+});
