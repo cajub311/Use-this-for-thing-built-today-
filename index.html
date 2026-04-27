@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Stillness — a botanical journal for your days</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Botanical journal palette */
+    --paper: #EDE3D2;
+    --paper-2: #E5DAC5;
+    --paper-3: #F4ECDA;
+    --ink: #2A241B;
+    --ink-soft: #5A4F3F;
+    --ink-faint: #8C7F6E;
+    --moss: #4A6B4F;
+    --moss-deep: #2F4A35;
+    --moss-soft: #B8C5B2;
+    --moss-mist: #D6DCC9;
+    --clay: #B5654A;
+    --clay-soft: #E8C5B2;
+    --gold: #C9A961;
+    --gold-soft: #E5D5AA;
+    --shadow-warm: rgba(74, 64, 49, 0.12);
+    --shadow-deep: rgba(74, 64, 49, 0.18);
+    --line: #C9BBA4;
+
+    --r-sm: 8px;
+    --r: 14px;
+    --r-lg: 22px;
+    --r-xl: 32px;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+
+  /* ── Paper background with grain ────────────────────────── */
+  body {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(184, 197, 178, 0.30), transparent 70%),
+      radial-gradient(ellipse 700px 500px at -10% 30%, rgba(232, 197, 178, 0.22), transparent 70%),
+      radial-gradient(ellipse 900px 400px at 50% 110%, rgba(201, 169, 97, 0.18), transparent 70%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    padding-bottom: 110px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Paper grain noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.40 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Decorative spine line */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; bottom: 0;
+    left: max(20px, calc(50% - 360px - 14px));
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--line) 8%, var(--line) 92%, transparent);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 2;
+  }
+  @media (max-width: 760px) { body::after { display: none; } }
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  .app {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+    position: relative;
+    z-index: 3;
+  }
+
+  /* ── Title plate ────────────────────────────────────────── */
+  .plate {
+    text-align: center;
+    margin-bottom: 28px;
+    animation: fadeUp 1s ease both;
+    position: relative;
+  }
+  .plate-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 14px;
+    color: var(--moss);
+  }
+  .plate-rule::before, .plate-rule::after {
+    content: '';
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--line);
+  }
+  .plate-rule .ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--moss-deep);
+    font-weight: 500;
+  }
+  .greeting {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(2rem, 7vw, 2.8rem);
+    color: var(--ink);
+    line-height: 1.1;
+    margin: 6px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .date-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .botanical-deco {
+    margin: 14px auto 0;
+    width: 80px;
+    color: var(--moss);
+    opacity: 0.6;
+  }
+
+  /* ── Section frame (the journal card) ───────────────────── */
+  .leaf {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 26px 26px 24px;
+    margin-bottom: 18px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 6px 22px var(--shadow-warm);
+    position: relative;
+    border: 1px solid rgba(201, 187, 164, 0.4);
+    animation: fadeUp .8s ease both;
+  }
+  .leaf-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 10px;
+  }
+  .leaf-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.35rem;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .leaf-title em {
+    font-style: italic;
+    color: var(--moss-deep);
+  }
+  .leaf-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--moss);
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+  .leaf-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    font-weight: 400;
+  }
+
+  /* ── Intention card (special hero card) ─────────────────── */
+  .intention {
+    background:
+      linear-gradient(135deg, var(--moss-mist) 0%, var(--paper-3) 100%);
+    padding: 24px 24px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .intention::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 140px; height: 140px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140' fill='none' stroke='%234A6B4F' stroke-width='1' opacity='0.18'><path d='M70 130 Q70 90 50 70 Q30 50 30 30 M70 130 Q70 80 90 60 Q110 40 110 20 M70 130 Q70 100 70 50 M50 70 Q40 65 38 55 M90 60 Q98 55 100 45 M70 80 Q60 75 56 68 M70 80 Q80 75 84 68'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  .intention-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed var(--line);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--ink);
+    padding: 8px 0 10px;
+    margin-top: 6px;
+    text-align: center;
+  }
+  .intention-input:focus { outline: none; border-bottom-color: var(--moss); }
+  .intention-input::placeholder { color: var(--ink-faint); font-style: italic; }
+  .affirmation {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(201, 187, 164, 0.5);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--moss-deep);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .affirmation::before { content: '— '; opacity: 0.6; }
+
+  /* ── Quote card (editorial pulled quote) ────────────────── */
+  .quote-frame {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 36px 28px 30px;
+    margin-bottom: 18px;
+    position: relative;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    box-shadow: 0 6px 22px var(--shadow-warm);
+    overflow: hidden;
+    animation: fadeUp .9s ease both;
+  }
+  .quote-frame::before, .quote-frame::after {
+    content: '';
+    position: absolute;
+    width: 60px; height: 60px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60' fill='none' stroke='%234A6B4F' stroke-width='1' opacity='0.4' stroke-linecap='round'><path d='M30 50 Q26 38 18 32 M30 50 Q34 38 42 32 M30 50 Q30 30 22 22 M30 50 Q30 30 38 22 M22 22 Q18 18 14 18 M38 22 Q42 18 46 18'/></svg>");
+    background-size: contain;
+    pointer-events: none;
+  }
+  .quote-frame::before { top: 12px; left: 12px; }
+  .quote-frame::after { bottom: 12px; right: 12px; transform: rotate(180deg); }
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    color: var(--clay);
+    line-height: 0.5;
+    opacity: 0.6;
+    height: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.15rem, 3.4vw, 1.4rem);
+    color: var(--ink);
+    line-height: 1.45;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 480px;
+  }
+  .quote-author {
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--moss);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.85;
+  }
+  .quote-author::before { content: '· '; }
+  .quote-author::after { content: ' ·'; }
+
+  /* ── Mood + Energy paired ───────────────────────────────── */
+  .pair-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .picker-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .picker-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .picker-btn {
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 12px 4px 10px;
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    color: var(--ink-soft);
+    text-align: center;
+    transition: all .25s ease;
+    position: relative;
+  }
+  .picker-btn:hover {
+    transform: translateY(-2px);
+    background: var(--paper-3);
+    border-color: var(--moss-soft);
+  }
+  .picker-btn.on {
+    background: var(--moss-mist);
+    border-color: var(--moss);
+    color: var(--moss-deep);
+    box-shadow: 0 4px 12px rgba(74, 107, 79, 0.18);
+  }
+  .picker-btn .icon-wrap {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .picker-btn .icon-wrap svg {
+    width: 26px; height: 26px;
+    transition: transform .3s;
+  }
+  .picker-btn:hover .icon-wrap svg { transform: scale(1.12); }
+  .picker-btn.on .icon-wrap svg { transform: scale(1.08); }
+  .picker-btn .lbl {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* Energy uses different palette */
+  .energy-row .picker-btn.on {
+    background: var(--clay-soft);
+    border-color: var(--clay);
+    color: var(--clay);
+  }
+
+  .mood-note {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    resize: none;
+    line-height: 1.5;
+  }
+  .mood-note:focus { outline: none; border-color: var(--moss); background: var(--paper-3); }
+
+  /* ── Symptom chips ──────────────────────────────────────── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all .22s;
+    user-select: none;
+  }
+  .chip:hover { transform: translateY(-1px); border-color: var(--moss-soft); }
+  .chip.on {
+    background: var(--moss);
+    color: var(--paper-3);
+    border-color: var(--moss-deep);
+  }
+  .chip.bad.on {
+    background: var(--clay);
+    border-color: var(--clay);
+    color: var(--paper-3);
+  }
+  .chip-divider {
+    width: 100%;
+    height: 0;
+    border-top: 1px dashed var(--line);
+    margin: 4px 0;
+  }
+
+  /* ── Compact tracker grid (water/pee/coffee/movement) ───── */
+  .grid-trackers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .tracker {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 18px 16px 14px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    box-shadow: 0 4px 14px var(--shadow-warm);
+    position: relative;
+    overflow: hidden;
+  }
+  .tracker-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .tracker-head svg {
+    width: 22px; height: 22px;
+    color: var(--moss);
+    flex-shrink: 0;
+  }
+  .tracker-head .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .tracker-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .tracker-unit {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .tracker-controls {
+    display: flex;
+    gap: 6px;
+  }
+  .pill {
+    flex: 1;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    background: var(--paper);
+    color: var(--ink-soft);
+    padding: 9px 0;
+    border-radius: 999px;
+    font-family: 'Lora', serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .pill:hover { background: var(--moss-mist); color: var(--moss-deep); border-color: var(--moss-soft); transform: translateY(-1px); }
+  .pill:active { transform: scale(0.96); }
+  .pill.minus { font-size: 1.15rem; flex: 0 0 42px; }
+
+  /* Water visualization — wave fill */
+  .water-vessel {
+    position: relative;
+    height: 36px;
+    background: var(--paper);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+  }
+  .water-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, #8FB5C8 0%, #5E91AB 100%);
+    transition: height .5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .water-fill::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: -10%;
+    width: 120%; height: 16px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16' preserveAspectRatio='none'><path d='M0 8 Q15 0 30 8 T60 8 T90 8 T120 8 V16 H0 Z' fill='%235E91AB'/></svg>");
+    background-size: 100% 100%;
+    animation: wave 4s linear infinite;
+  }
+  @keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-30px); }
+  }
+
+  /* Caffeine cup decoration */
+  .coffee-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(180deg, #8B5A3C 0%, #6B3D24 100%);
+    transition: height .5s;
+  }
+
+  /* Outdoor sun rays */
+  .sun-decoration {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* ── Food/Meals ─────────────────────────────────────────── */
+  .meal-types {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .meal-type {
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r-sm);
+    padding: 9px 4px;
+    font-family: 'Lora', serif;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .meal-type:hover { background: var(--paper-3); }
+  .meal-type.on {
+    background: var(--clay-soft);
+    color: var(--clay);
+    border-color: var(--clay);
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+  }
+  .text-in {
+    flex: 1;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    background: var(--paper);
+    border-radius: var(--r);
+    padding: 11px 14px;
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .text-in:focus { outline: none; border-color: var(--moss); background: var(--paper-3); }
+  .add-btn {
+    background: var(--moss);
+    color: var(--paper-3);
+    border: none;
+    border-radius: var(--r);
+    padding: 0 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .add-btn:hover { background: var(--moss-deep); transform: translateY(-1px); }
+  .add-btn:active { transform: scale(0.97); }
+
+  .log-list { margin-top: 12px; }
+  .log-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border-radius: var(--r);
+    margin-bottom: 6px;
+    font-size: 0.92rem;
+    border: 1px solid rgba(201, 187, 164, 0.4);
+    animation: slideIn .3s ease;
+  }
+  .log-item .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--clay-soft);
+    color: var(--clay);
+    flex-shrink: 0;
+  }
+  .log-item .desc { flex: 1; color: var(--ink); font-family: 'Lora', serif; }
+  .log-item .time { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-faint); }
+  .log-item .del {
+    background: none;
+    border: none;
+    color: var(--ink-faint);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color .2s;
+  }
+  .log-item .del:hover { color: var(--clay); }
+
+  /* ── Pain ───────────────────────────────────────────────── */
+  .pain-input {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .severity {
+    display: flex;
+    gap: 4px;
+    background: var(--paper);
+    border-radius: var(--r);
+    padding: 5px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    flex: 1;
+  }
+  .sev-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    border-radius: var(--r-sm);
+    padding: 7px 0;
+    font-family: 'Lora', serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .sev-btn:hover { background: var(--paper-3); }
+  .sev-btn.on { background: var(--clay-soft); color: var(--clay); }
+  .pain-add-row { display: flex; gap: 8px; }
+  .pain-item .badge { background: #f0d4c5; color: var(--clay); }
+
+  /* ── Sleep ──────────────────────────────────────────────── */
+  .sleep-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .sleep-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    color: var(--ink);
+    font-weight: 400;
+    min-width: 80px;
+  }
+  .sleep-display .h { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--ink-faint); margin-left: 2px; }
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--moss-mist), var(--gold-soft));
+    outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--paper-3);
+    border: 3px solid var(--moss);
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--shadow-warm);
+  }
+  .slider::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--paper-3);
+    border: 3px solid var(--moss);
+    cursor: pointer;
+  }
+  .moon-row {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .moon-btn {
+    flex: 1;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    color: var(--ink-soft);
+    transition: all .2s;
+  }
+  .moon-btn:hover { background: var(--paper-3); }
+  .moon-btn.on {
+    background: #2A2438;
+    color: var(--gold-soft);
+    border-color: var(--gold);
+  }
+  .moon-btn .moon-svg { width: 26px; height: 26px; margin-bottom: 4px; }
+  .moon-btn .lbl { font-size: 0.7rem; }
+
+  /* ── Gratitude / Reflection ─────────────────────────────── */
+  .deep-input {
+    width: 100%;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    padding: 16px 18px;
+    font-family: 'Lora', serif;
+    font-size: 0.98rem;
+    color: var(--ink);
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.65;
+    background-image:
+      repeating-linear-gradient(transparent, transparent 27px, rgba(201, 187, 164, 0.25) 27px, rgba(201, 187, 164, 0.25) 28px);
+  }
+  .deep-input:focus { outline: none; border-color: var(--moss); background-color: var(--paper-3); }
+  .prompt-pill {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--moss-deep);
+    background: var(--moss-mist);
+    padding: 10px 14px;
+    border-radius: var(--r);
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .prompt-pill::before { content: '✦  '; color: var(--gold); }
+
+  /* ── Practice tools (breathe + grounding) ───────────────── */
+  .practices-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .practice-btn {
+    background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
+    color: var(--paper-3);
+    border: none;
+    padding: 18px 16px;
+    border-radius: var(--r-lg);
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(74, 107, 79, 0.25);
+    transition: all .25s;
+    text-align: left;
+    font-family: 'Lora', serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .practice-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(74, 107, 79, 0.35); }
+  .practice-btn.alt {
+    background: linear-gradient(135deg, var(--clay) 0%, #8B4A33 100%);
+    box-shadow: 0 6px 18px rgba(181, 101, 74, 0.25);
+  }
+  .practice-btn.alt:hover { box-shadow: 0 10px 28px rgba(181, 101, 74, 0.35); }
+  .practice-btn .ptitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .practice-btn .pdesc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .practice-btn .pic {
+    position: absolute;
+    bottom: 8px; right: 10px;
+    opacity: 0.4;
+    width: 50px; height: 50px;
+  }
+
+  /* ── Breathe overlay ────────────────────────────────────── */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #1F1A14 0%, #2F4A35 100%);
+    display: none;
+    z-index: 100;
+  }
+  .overlay.open { display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn .5s; }
+  .overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+  }
+
+  .overlay-close {
+    position: absolute;
+    top: 22px; right: 22px;
+    background: rgba(237, 227, 210, 0.1);
+    border: 1px solid rgba(237, 227, 210, 0.25);
+    color: var(--paper-3);
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    z-index: 1;
+  }
+
+  .breathe-circle {
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--moss-soft), var(--moss));
+    box-shadow: 0 0 100px rgba(184, 197, 178, 0.3);
+    transform: scale(0.55);
+    transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+  }
+  .breathe-circle::after {
+    content: '';
+    position: absolute;
+    inset: 14%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(245, 240, 220, 0.5), transparent 70%);
+  }
+  .breathe-circle.inhale { transform: scale(1); }
+  .breathe-circle.hold { transform: scale(1); transition: transform 7s linear; }
+  .breathe-circle.exhale { transform: scale(0.55); transition: transform 8s cubic-bezier(0.4, 0, 0.2, 1); }
+  .breathe-circle.hold-out { transform: scale(0.55); transition: transform 4s linear; }
+  .breathe-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    color: var(--paper-3);
+    margin-top: 36px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    z-index: 1;
+  }
+  .breathe-counter {
+    color: rgba(237, 227, 210, 0.55);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    margin-top: 12px;
+    letter-spacing: 0.2em;
+    z-index: 1;
+  }
+  .technique-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 30px;
+    z-index: 1;
+  }
+  .tech-tab {
+    background: rgba(237, 227, 210, 0.08);
+    border: 1px solid rgba(237, 227, 210, 0.15);
+    color: var(--paper-3);
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.92rem;
+    transition: all .2s;
+  }
+  .tech-tab.on { background: rgba(237, 227, 210, 0.2); border-color: rgba(237, 227, 210, 0.4); }
+
+  /* ── Grounding 5-4-3-2-1 ────────────────────────────────── */
+  .grounding-overlay {
+    background: linear-gradient(135deg, #1F1A14 0%, #4A3829 100%);
+  }
+  .grounding-content {
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    z-index: 1;
+    color: var(--paper-3);
+    padding: 0 20px;
+  }
+  .grounding-step {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(7rem, 20vw, 9rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--gold-soft);
+    text-shadow: 0 0 60px rgba(201, 169, 97, 0.3);
+    margin-bottom: 8px;
+  }
+  .grounding-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.4rem, 4vw, 1.7rem);
+    line-height: 1.4;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+  .grounding-input {
+    width: 100%;
+    background: rgba(237, 227, 210, 0.08);
+    border: 1px solid rgba(237, 227, 210, 0.2);
+    border-radius: var(--r);
+    padding: 12px 16px;
+    color: var(--paper-3);
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .grounding-input:focus { outline: none; border-color: var(--gold); background: rgba(237, 227, 210, 0.12); }
+  .grounding-input::placeholder { color: rgba(237, 227, 210, 0.4); }
+  .grounding-next {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    margin-top: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .grounding-next:hover { transform: translateY(-1px); }
+
+  /* ── Bottom navigation ──────────────────────────────────── */
+  .nav {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    background: rgba(237, 227, 210, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 6px;
+    border-radius: 999px;
+    box-shadow: 0 8px 32px var(--shadow-deep);
+    z-index: 50;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+  }
+  .nav-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .25s;
+    letter-spacing: 0.01em;
+  }
+  .nav-btn:hover { color: var(--ink); }
+  .nav-btn.active {
+    background: var(--moss);
+    color: var(--paper-3);
+  }
+
+  /* ── Views ──────────────────────────────────────────────── */
+  .view { display: none; animation: fadeIn .4s; }
+  .view.active { display: block; }
+
+  /* ── History view ───────────────────────────────────────── */
+  .streak-card {
+    background: linear-gradient(135deg, var(--moss-mist), var(--gold-soft));
+    border-radius: var(--r-lg);
+    padding: 26px;
+    margin-bottom: 18px;
+    text-align: center;
+    box-shadow: 0 6px 22px var(--shadow-warm);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .streak-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.6rem;
+    color: var(--moss-deep);
+    line-height: 1;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .streak-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+  .insight-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .insight-stat {
+    background: var(--paper-3);
+    border-radius: var(--r);
+    padding: 14px;
+    text-align: center;
+    border: 1px solid rgba(201, 187, 164, 0.4);
+  }
+  .insight-stat .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    color: var(--moss-deep);
+    line-height: 1;
+  }
+  .insight-stat .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .mood-graph {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 22px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    box-shadow: 0 6px 22px var(--shadow-warm);
+  }
+  .mood-graph h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0 0 14px;
+  }
+
+  .history-day {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(201, 187, 164, 0.4);
+    box-shadow: 0 4px 14px var(--shadow-warm);
+    transition: transform .2s;
+    position: relative;
+  }
+  .history-day:hover { transform: translateY(-2px); }
+  .history-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .history-mood-pill {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--moss-mist);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .history-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+  }
+  .history-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .history-quote {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .history-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-faint);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+  }
+
+  /* ── Quotes view ────────────────────────────────────────── */
+  .quotes-list .quote-frame {
+    margin-bottom: 14px;
+    padding: 28px 24px;
+  }
+
+  /* ── Animations ─────────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 540px) {
+    .pair-row { gap: 10px; }
+    .grid-trackers { grid-template-columns: 1fr; }
+    .practices-row { grid-template-columns: 1fr; }
+    .pain-input { grid-template-columns: 1fr; }
+    .picker-btn .lbl { font-size: 0.66rem; }
+    .nav-btn { padding: 8px 13px; font-size: 0.92rem; }
+    .leaf { padding: 22px 20px 20px; }
+  }
+
+  /* Section flourish between cards */
+  .flourish {
+    text-align: center;
+    margin: 22px 0 18px;
+    color: var(--moss);
+    opacity: 0.5;
+  }
+  .flourish svg { width: 90px; height: 16px; }
+</style>
+</head>
+<body>
+<!-- Reusable SVG icons (defined once, used everywhere) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Mood faces (custom drawn) -->
+    <symbol id="mood-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M8 16 Q12 13 16 16"/>
+      <path d="M8 9 L9.5 10.5 M16 9 L14.5 10.5"/>
+    </symbol>
+    <symbol id="mood-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M8 15.5 Q12 14 16 15.5"/>
+      <circle cx="9" cy="10" r="0.8" fill="currentColor"/>
+      <circle cx="15" cy="10" r="0.8" fill="currentColor"/>
+    </symbol>
+    <symbol id="mood-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M8 15 L16 15"/>
+      <circle cx="9" cy="10" r="0.8" fill="currentColor"/>
+      <circle cx="15" cy="10" r="0.8" fill="currentColor"/>
+    </symbol>
+    <symbol id="mood-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M8 14 Q12 17 16 14"/>
+      <circle cx="9" cy="10" r="0.8" fill="currentColor"/>
+      <circle cx="15" cy="10" r="0.8" fill="currentColor"/>
+    </symbol>
+    <symbol id="mood-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M7.5 13.5 Q12 18 16.5 13.5"/>
+      <path d="M8 9.5 Q9 8.5 10 9.5 M14 9.5 Q15 8.5 16 9.5"/>
+    </symbol>
+    <!-- Energy bars -->
+    <symbol id="energy-1" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="1" opacity="0.4"/>
+      <rect x="9" y="12" width="3" height="8" rx="1" opacity="0.2"/>
+      <rect x="14" y="9" width="3" height="11" rx="1" opacity="0.2"/>
+      <rect x="19" y="6" width="3" height="14" rx="1" opacity="0.2" transform="translate(-1)"/>
+    </symbol>
+    <symbol id="energy-2" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="1"/>
+      <rect x="9" y="12" width="3" height="8" rx="1" opacity="0.7"/>
+      <rect x="14" y="9" width="3" height="11" rx="1" opacity="0.2"/>
+      <rect x="19" y="6" width="3" height="14" rx="1" opacity="0.2" transform="translate(-1)"/>
+    </symbol>
+    <symbol id="energy-3" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="1"/>
+      <rect x="9" y="12" width="3" height="8" rx="1"/>
+      <rect x="14" y="9" width="3" height="11" rx="1" opacity="0.7"/>
+      <rect x="19" y="6" width="3" height="14" rx="1" opacity="0.2" transform="translate(-1)"/>
+    </symbol>
+    <symbol id="energy-4" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="1"/>
+      <rect x="9" y="12" width="3" height="8" rx="1"/>
+      <rect x="14" y="9" width="3" height="11" rx="1"/>
+      <rect x="19" y="6" width="3" height="14" rx="1" opacity="0.7" transform="translate(-1)"/>
+    </symbol>
+    <symbol id="energy-5" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="1"/>
+      <rect x="9" y="12" width="3" height="8" rx="1"/>
+      <rect x="14" y="9" width="3" height="11" rx="1"/>
+      <rect x="19" y="6" width="3" height="14" rx="1" transform="translate(-1)"/>
+    </symbol>
+    <!-- Tracker icons -->
+    <symbol id="i-water" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+      <path d="M12 3 C 7 11 6 14 6 17 a 6 6 0 0 0 12 0 C 18 14 17 11 12 3 z"/>
+    </symbol>
+    <symbol id="i-bath" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 11 V 16 a 2 2 0 0 0 2 2 h 10 a 2 2 0 0 0 2 -2 V 11"/>
+      <path d="M3 11 H 21"/>
+      <path d="M8 18 V 21 M16 18 V 21"/>
+      <path d="M9 8 a 3 3 0 0 1 6 0"/>
+    </symbol>
+    <symbol id="i-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 9 H 17 V 16 a 3 3 0 0 1 -3 3 H 8 a 3 3 0 0 1 -3 -3 z"/>
+      <path d="M17 11 H 19 a 2 2 0 0 1 0 4 H 17"/>
+      <path d="M8 5 Q 9 6 8 7 M11 5 Q 12 6 11 7 M14 5 Q 15 6 14 7"/>
+    </symbol>
+    <symbol id="i-walk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="13" cy="4" r="1.5"/>
+      <path d="M8 21 L11 14 L9 11 L11 8 L14 11 L17 13"/>
+      <path d="M11 14 L13 17 L11 21"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2 V 4 M12 20 V 22 M2 12 H 4 M20 12 H 22 M4.9 4.9 L 6.3 6.3 M17.7 17.7 L 19.1 19.1 M4.9 19.1 L 6.3 17.7 M17.7 6.3 L 19.1 4.9"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 19 C 5 11 11 5 19 5 C 19 13 13 19 5 19 z"/>
+      <path d="M5 19 L 12 12"/>
+    </symbol>
+    <!-- Botanical sprig for header -->
+    <symbol id="sprig" viewBox="0 0 80 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+      <path d="M2 12 H 78"/>
+      <path d="M40 12 V 4 M40 12 V 20"/>
+      <path d="M40 6 Q 36 4 33 6 M40 6 Q 44 4 47 6 M40 9 Q 35 8 32 10 M40 9 Q 45 8 48 10 M40 15 Q 36 16 33 14 M40 15 Q 44 16 47 14 M40 18 Q 35 17 32 19 M40 18 Q 45 17 48 19"/>
+    </symbol>
+    <!-- Wreath -->
+    <symbol id="botanical-deco" viewBox="0 0 80 20" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+      <path d="M5 10 H 35"/>
+      <path d="M45 10 H 75"/>
+      <circle cx="40" cy="10" r="3"/>
+      <path d="M40 5 L 40 7 M40 13 L 40 15 M35 10 L 37 10 M43 10 L 45 10"/>
+      <path d="M15 7 Q 18 5 21 7 M25 13 Q 28 15 31 13 M55 7 Q 58 5 61 7 M65 13 Q 68 15 71 13"/>
+    </symbol>
+    <!-- Moon phases -->
+    <symbol id="moon-new" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+      <circle cx="16" cy="16" r="9"/>
+    </symbol>
+    <symbol id="moon-half" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+      <circle cx="16" cy="16" r="9"/>
+      <path d="M16 7 A 9 9 0 0 1 16 25 z" fill="currentColor"/>
+    </symbol>
+    <symbol id="moon-gibbous" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
+      <circle cx="16" cy="16" r="9"/>
+      <path d="M11 9 A 9 9 0 0 1 11 23 A 7 9 0 0 0 11 9 z" fill="currentColor"/>
+    </symbol>
+    <symbol id="moon-full" viewBox="0 0 32 32" fill="currentColor" stroke="currentColor" stroke-width="1.4">
+      <circle cx="16" cy="16" r="9"/>
+    </symbol>
+    <!-- Practice icons for cards -->
+    <symbol id="i-breath" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7">
+      <circle cx="30" cy="30" r="14"/>
+      <circle cx="30" cy="30" r="20" opacity="0.6"/>
+      <circle cx="30" cy="30" r="26" opacity="0.3"/>
+    </symbol>
+    <symbol id="i-anchor" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7" stroke-linecap="round">
+      <circle cx="30" cy="14" r="3"/>
+      <path d="M30 17 V 48"/>
+      <path d="M22 27 H 38"/>
+      <path d="M14 38 Q 14 50 30 50 Q 46 50 46 38"/>
+    </symbol>
+    <symbol id="flourish-svg" viewBox="0 0 90 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+      <path d="M2 8 H 35"/>
+      <path d="M55 8 H 88"/>
+      <circle cx="45" cy="8" r="2"/>
+      <path d="M40 8 L 42 8 M48 8 L 50 8"/>
+      <path d="M30 5 Q 33 3 36 5 M59 11 Q 62 13 65 11"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- ═══════════════════════════════════════════════════════
+       TODAY VIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="view active" id="view-today">
+
+    <!-- Title plate -->
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Stillness</span></div>
+      <h1 class="greeting" id="greeting">Good morning.</h1>
+      <div class="date-line" id="date">—</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <!-- Daily intention -->
+    <section class="leaf intention">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Today's <em>anchor</em></h2>
+        <span class="leaf-num">№ 01</span>
+      </div>
+      <p class="leaf-sub">One word, or a short phrase, to return to.</p>
+      <input type="text" class="intention-input" id="intentionInput" maxlength="60" placeholder="patience · softness · enough · here…" />
+      <div class="affirmation" id="affirmation">—</div>
+    </section>
+
+    <!-- Quote of the day -->
+    <section class="quote-frame">
+      <div class="quote-mark">"</div>
+      <p class="quote-text" id="quoteText">—</p>
+      <div class="quote-author" id="quoteAuthor">—</div>
+    </section>
+
+    <!-- Mood + Energy -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">How are you, <em>really?</em></h2>
+        <span class="leaf-num">№ 02</span>
+      </div>
+      <p class="leaf-sub">Mood and energy are different — both deserve a check-in.</p>
+
+      <div class="picker-label">Mood</div>
+      <div class="picker-row" id="moodRow">
+        <button class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy</span></button>
+        <button class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off</span></button>
+        <button class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Steady</span></button>
+        <button class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Bright</span></button>
+        <button class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Glowing</span></button>
+      </div>
+
+      <div class="picker-label">Energy</div>
+      <div class="picker-row energy-row" id="energyRow">
+        <button class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Drained</span></button>
+        <button class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low</span></button>
+        <button class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Even</span></button>
+        <button class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Lively</span></button>
+        <button class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Vital</span></button>
+      </div>
+
+      <textarea class="mood-note" id="moodNote" rows="2" placeholder="A note for yourself, if you like…"></textarea>
+    </section>
+
+    <!-- Body weather (chips) -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Body <em>weather</em></h2>
+        <span class="leaf-num">№ 03</span>
+      </div>
+      <p class="leaf-sub">Tap whatever feels true right now. No need to fix anything.</p>
+      <div class="chips" id="chips">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- Practice tools -->
+    <div class="practices-row">
+      <button class="practice-btn" id="breatheBtn">
+        <div class="ptitle">Take a breath</div>
+        <div class="pdesc">3 techniques · choose</div>
+        <svg class="pic"><use href="#i-breath"/></svg>
+      </button>
+      <button class="practice-btn alt" id="groundBtn">
+        <div class="ptitle">Come back home</div>
+        <div class="pdesc">5-4-3-2-1 grounding</div>
+        <svg class="pic"><use href="#i-anchor"/></svg>
+      </button>
+    </div>
+
+    <div class="flourish"><svg><use href="#flourish-svg"/></svg></div>
+
+    <!-- Quick trackers grid -->
+    <div class="grid-trackers">
+      <div class="tracker">
+        <div class="tracker-head"><svg><use href="#i-water"/></svg><span class="name">Water</span></div>
+        <div class="water-vessel"><div class="water-fill" id="waterFill" style="height:0%"></div></div>
+        <div class="tracker-value"><span id="waterValue">0</span></div>
+        <div class="tracker-unit">cups today</div>
+        <div class="tracker-controls">
+          <button class="pill minus" data-action="water-minus">−</button>
+          <button class="pill" data-action="water-plus">+ cup</button>
+        </div>
+      </div>
+
+      <div class="tracker">
+        <div class="tracker-head"><svg><use href="#i-bath"/></svg><span class="name">Bathroom</span></div>
+        <div style="height: 36px; margin-bottom: 12px;"></div>
+        <div class="tracker-value"><span id="peeValue">0</span></div>
+        <div class="tracker-unit">visits today</div>
+        <div class="tracker-controls">
+          <button class="pill minus" data-action="pee-minus">−</button>
+          <button class="pill" data-action="pee-plus">+ visit</button>
+        </div>
+      </div>
+
+      <div class="tracker">
+        <div class="tracker-head"><svg><use href="#i-coffee"/></svg><span class="name">Caffeine</span></div>
+        <div class="water-vessel"><div class="coffee-fill" id="coffeeFill" style="height:0%"></div></div>
+        <div class="tracker-value"><span id="coffeeValue">0</span></div>
+        <div class="tracker-unit">cups today</div>
+        <div class="tracker-controls">
+          <button class="pill minus" data-action="coffee-minus">−</button>
+          <button class="pill" data-action="coffee-plus">+ cup</button>
+        </div>
+      </div>
+
+      <div class="tracker">
+        <div class="tracker-head"><svg><use href="#i-walk"/></svg><span class="name">Movement</span></div>
+        <div style="height: 36px; margin-bottom: 12px;"></div>
+        <div class="tracker-value"><span id="moveValue">0</span></div>
+        <div class="tracker-unit">minutes</div>
+        <div class="tracker-controls">
+          <button class="pill minus" data-action="move-minus">−5</button>
+          <button class="pill" data-action="move-plus">+ 5 min</button>
+        </div>
+      </div>
+
+      <div class="tracker" style="grid-column: 1 / -1;">
+        <svg class="sun-decoration"><use href="#i-sun"/></svg>
+        <div class="tracker-head"><svg><use href="#i-sun"/></svg><span class="name">Outdoor light</span></div>
+        <div class="tracker-value"><span id="sunValue">0</span></div>
+        <div class="tracker-unit">minutes in daylight today</div>
+        <div class="tracker-controls">
+          <button class="pill minus" data-action="sun-minus">−10</button>
+          <button class="pill" data-action="sun-plus">+ 10 min</button>
+          <button class="pill" data-action="sun-plus30">+ 30 min</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food log -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Food &amp; <em>nourishment</em></h2>
+        <span class="leaf-num">№ 04</span>
+      </div>
+      <p class="leaf-sub">Without judgment — only noticing.</p>
+      <div class="meal-types" id="mealTypes">
+        <button class="meal-type on" data-meal="breakfast">Breakfast</button>
+        <button class="meal-type" data-meal="lunch">Lunch</button>
+        <button class="meal-type" data-meal="dinner">Dinner</button>
+        <button class="meal-type" data-meal="snack">Snack</button>
+      </div>
+      <div class="input-row">
+        <input type="text" class="text-in" id="mealInput" placeholder="What did you eat?" maxlength="100" />
+        <button class="add-btn" id="mealAdd">Add</button>
+      </div>
+      <div class="log-list" id="mealList"></div>
+    </section>
+
+    <!-- Pain -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Body &amp; <em>pain</em></h2>
+        <span class="leaf-num">№ 05</span>
+      </div>
+      <p class="leaf-sub">Honor what your body is carrying today.</p>
+      <div class="pain-input">
+        <input type="text" class="text-in" id="painLocation" placeholder="Where? (head, back, neck…)" maxlength="40" />
+        <input type="text" class="text-in" id="painNote" placeholder="A note (optional)" maxlength="60" />
+      </div>
+      <div class="pain-add-row">
+        <div class="severity" id="painSeverity">
+          <button class="sev-btn" data-sev="1">Mild</button>
+          <button class="sev-btn" data-sev="2">Moderate</button>
+          <button class="sev-btn" data-sev="3">Strong</button>
+          <button class="sev-btn" data-sev="4">Severe</button>
+        </div>
+        <button class="add-btn" id="painAdd">Add</button>
+      </div>
+      <div class="log-list" id="painList"></div>
+    </section>
+
+    <!-- Sleep -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Last night's <em>rest</em></h2>
+        <span class="leaf-num">№ 06</span>
+      </div>
+      <p class="leaf-sub">Sleep is sacred. Honor whatever it gave you.</p>
+      <div class="sleep-row">
+        <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
+        <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
+      </div>
+      <div class="picker-label">Quality</div>
+      <div class="moon-row" id="moonRow">
+        <button class="moon-btn" data-quality="1"><svg class="moon-svg"><use href="#moon-new"/></svg><div class="lbl">Restless</div></button>
+        <button class="moon-btn" data-quality="2"><svg class="moon-svg"><use href="#moon-half"/></svg><div class="lbl">Light</div></button>
+        <button class="moon-btn" data-quality="3"><svg class="moon-svg"><use href="#moon-gibbous"/></svg><div class="lbl">Decent</div></button>
+        <button class="moon-btn" data-quality="4"><svg class="moon-svg"><use href="#moon-full"/></svg><div class="lbl">Deep</div></button>
+      </div>
+    </section>
+
+    <!-- Gratitude -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">A small <em>gratitude</em></h2>
+        <span class="leaf-num">№ 07</span>
+      </div>
+      <p class="leaf-sub">Something — anything — you're thankful for today.</p>
+      <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
+    </section>
+
+    <!-- Reflection with rotating prompt -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">A <em>reflection</em></h2>
+        <span class="leaf-num">№ 08</span>
+      </div>
+      <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
+      <div class="prompt-pill" id="promptPill">Today's prompt</div>
+      <textarea class="deep-input" id="reflectionInput" rows="4"></textarea>
+    </section>
+
+    <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
+
+    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;">
+      <span id="mindfulMinutes">0</span> mindful minutes today
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HISTORY VIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-history">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Your Garden</span></div>
+      <h1 class="greeting">A gentle look back.</h1>
+      <div class="date-line">Each day · a small offering</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <div class="streak-card" id="streakCard">
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">days you've shown up</div>
+    </div>
+
+    <div class="insight-row" id="insightRow"></div>
+
+    <div class="mood-graph" id="moodGraphCard">
+      <h3>Last 30 days · mood</h3>
+      <svg id="moodGraph" viewBox="0 0 400 100" preserveAspectRatio="none" style="width:100%;height:100px"></svg>
+    </div>
+
+    <div id="historyList"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       QUOTES VIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-quotes">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">The Library</span></div>
+      <h1 class="greeting">Words to return to.</h1>
+      <div class="date-line">25 quiet teachings</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+    <div class="quotes-list" id="quotesList"></div>
+  </div>
+
+</div>
+
+<!-- Bottom navigation -->
+<nav class="nav">
+  <button class="nav-btn active" data-view="today">Today</button>
+  <button class="nav-btn" data-view="history">Garden</button>
+  <button class="nav-btn" data-view="quotes">Library</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     BREATHING OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div class="overlay" id="breatheOverlay">
+  <button class="overlay-close" id="breatheClose">close</button>
+  <div class="technique-tabs" id="techTabs">
+    <button class="tech-tab on" data-tech="478">4 · 7 · 8</button>
+    <button class="tech-tab" data-tech="box">Box</button>
+    <button class="tech-tab" data-tech="calm">Calm</button>
+  </div>
+  <div class="breathe-circle" id="breatheCircle"></div>
+  <div class="breathe-text" id="breatheText">Settle in…</div>
+  <div class="breathe-counter" id="breatheCounter">cycle 0</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     GROUNDING OVERLAY
+═══════════════════════════════════════════════════════ -->
+<div class="overlay grounding-overlay" id="groundOverlay">
+  <button class="overlay-close" id="groundClose">close</button>
+  <div class="grounding-content">
+    <div class="grounding-step" id="groundStep">5</div>
+    <div class="grounding-prompt" id="groundPrompt">things you can <em>see</em></div>
+    <input type="text" class="grounding-input" id="groundInput" placeholder="name one…" />
+    <button class="grounding-next" id="groundNext">next →</button>
+  </div>
+</div>
+
+<script>
+  /* ────────────────────────────────────────────────────────
+     Storage layer — uses localStorage when available
+     (works offline as a downloaded file), with memory fallback.
+  ──────────────────────────────────────────────────────── */
+  const memStore = {};
+  const Storage = {
+    get(key) {
+      try { return localStorage.getItem(key); } catch { return memStore[key] || null; }
+    },
+    set(key, val) {
+      try { localStorage.setItem(key, val); } catch { memStore[key] = val; }
+    },
+    listKeys(prefix) {
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(prefix)) keys.push(k);
+        }
+        return keys;
+      } catch {
+        return Object.keys(memStore).filter(k => k.startsWith(prefix));
+      }
+    }
+  };
+
+  /* ────────────────────────────────────────────────────────
+     Curated quotes — from Calm, Headspace, Insight Timer
+     traditions and the great teachers
+  ──────────────────────────────────────────────────────── */
+  const QUOTES = [
+    { t: "You are the sky. Everything else — it's just the weather.", a: "Pema Chödrön" },
+    { t: "The present moment is the only moment available to us, and it is the door to all moments.", a: "Thich Nhat Hanh" },
+    { t: "Wherever you are, be there totally.", a: "Eckhart Tolle" },
+    { t: "Peace comes from within. Do not seek it without.", a: "Buddha" },
+    { t: "Quiet the mind, and the soul will speak.", a: "Ma Jaya Sati Bhagavati" },
+    { t: "Almost everything will work again if you unplug it for a few minutes — including you.", a: "Anne Lamott" },
+    { t: "Within you there is a stillness and a sanctuary to which you can retreat at any time.", a: "Hermann Hesse" },
+    { t: "The mind is everything. What you think, you become.", a: "Buddha" },
+    { t: "Feelings come and go like clouds in a windy sky. Conscious breathing is my anchor.", a: "Thich Nhat Hanh" },
+    { t: "Restore your attention by dramatically slowing down whatever you're doing.", a: "Sharon Salzberg" },
+    { t: "Smile, breathe, and go slowly.", a: "Thich Nhat Hanh" },
+    { t: "You don't have to control your thoughts. You just have to stop letting them control you.", a: "Dan Millman" },
+    { t: "Nature does not hurry, yet everything is accomplished.", a: "Lao Tzu" },
+    { t: "When you arise in the morning, think of what a precious privilege it is to be alive.", a: "Marcus Aurelius" },
+    { t: "Be where your feet are.", a: "An old reminder" },
+    { t: "Drink your tea slowly and reverently, as if it is the axis on which the world turns.", a: "Thich Nhat Hanh" },
+    { t: "Breathe in. Breathe out. Begin again.", a: "A gentle truth" },
+    { t: "Rest is not idleness. Lying in the grass on a summer day is by no means a waste of time.", a: "John Lubbock" },
+    { t: "The little things? The little moments? They aren't little.", a: "Jon Kabat-Zinn" },
+    { t: "You yourself, as much as anybody, deserve your love and affection.", a: "Buddha" },
+    { t: "Do not let the behavior of others destroy your inner peace.", a: "Dalai Lama" },
+    { t: "Silence isn't empty. It's full of answers.", a: "Anonymous" },
+    { t: "An early-morning walk is a blessing for the whole day.", a: "Henry David Thoreau" },
+    { t: "Slow down, breathe deep, and trust the process.", a: "An old proverb" },
+    { t: "Compassion for yourself first, then compassion for others.", a: "Pema Chödrön" }
+  ];
+
+  const AFFIRMATIONS = [
+    "I am allowed to take up space exactly as I am.",
+    "I do not have to earn my rest.",
+    "My pace is enough. My way is enough.",
+    "I can begin again, as many times as I need.",
+    "Softness is not weakness.",
+    "I belong to this moment.",
+    "I trust what my body is telling me.",
+    "Today, I will be a friend to myself.",
+    "I am allowed to feel everything I feel.",
+    "I am the keeper of my own peace.",
+    "Small steps are still steps.",
+    "I am becoming, not behind.",
+    "My presence is a gift to this day.",
+    "I release what was never mine to hold.",
+    "Breath by breath, I come home."
+  ];
+
+  const PROMPTS = [
+    "What is one thing today asked of you that you didn't expect?",
+    "Who or what made you feel held today, even briefly?",
+    "What has been quietly working out, even while you worried?",
+    "What would you say to yourself, if you were the kindest person in your life?",
+    "Where in your body do you feel most at ease right now?",
+    "What is something small that brought you back to yourself today?",
+    "What would 'enough' look like for the rest of this day?",
+    "What is one thing you can let go of before you sleep?",
+    "What is your body asking for that you've been ignoring?",
+    "When did you feel most like yourself today?",
+    "What softness can you offer the version of you who is tired?",
+    "Where did beauty meet you today, even for a moment?",
+    "What is one thing you did today that took courage, however small?",
+    "What truth has been waiting patiently for you to acknowledge it?",
+    "What would tomorrow's you thank today's you for?"
+  ];
+
+  const SYMPTOMS = [
+    { id: 'calm',    label: 'calm',     bad: false },
+    { id: 'focused', label: 'focused',  bad: false },
+    { id: 'content', label: 'content',  bad: false },
+    { id: 'grateful',label: 'grateful', bad: false },
+    { id: 'peaceful',label: 'peaceful', bad: false },
+    { id: 'creative',label: 'creative', bad: false },
+    { id: 'connected',label:'connected',bad: false },
+    { id: 'rested',  label: 'rested',   bad: false },
+    { id: 'divider', divider: true },
+    { id: 'anxious', label: 'anxious',  bad: true },
+    { id: 'foggy',   label: 'foggy',    bad: true },
+    { id: 'tired',   label: 'tired',    bad: true },
+    { id: 'tense',   label: 'tense',    bad: true },
+    { id: 'lonely',  label: 'lonely',   bad: true },
+    { id: 'sad',     label: 'sad',      bad: true },
+    { id: 'restless',label: 'restless', bad: true },
+    { id: 'overwhelmed',label:'overwhelmed',bad:true },
+    { id: 'irritable',label:'irritable',bad: true },
+    { id: 'numb',    label: 'numb',     bad: true },
+    { id: 'achy',    label: 'achy',     bad: true },
+    { id: 'nauseous',label: 'nauseous', bad: true }
+  ];
+
+  /* ────────────────────────────────────────────────────────
+     Time / date helpers
+  ──────────────────────────────────────────────────────── */
+  const dateKey = (d) => {
+    d = d || new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const todayKey = () => `mindful:day:${dateKey()}`;
+  const seedFromDate = (d) => (d.getFullYear() * 1000 + d.getMonth() * 31 + d.getDate());
+  const formatDate = (str) => {
+    const d = str ? new Date(str + 'T12:00:00') : new Date();
+    return d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  };
+  const formatDateLine = () => {
+    const d = new Date();
+    const day = d.toLocaleDateString(undefined, { weekday: 'long' });
+    const month = d.toLocaleDateString(undefined, { month: 'long' });
+    return `${day} · ${month} ${d.getDate()} · ${d.getFullYear()}`;
+  };
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 5)  return "A peaceful late hour.";
+    if (h < 12) return "Good morning.";
+    if (h < 17) return "Good afternoon.";
+    if (h < 21) return "Good evening.";
+    return "A peaceful night.";
+  };
+
+  /* ────────────────────────────────────────────────────────
+     Day record
+  ──────────────────────────────────────────────────────── */
+  const blankDay = () => ({
+    intention: '',
+    mood: 0, energy: 0, moodNote: '',
+    symptoms: [],
+    water: 0, pee: 0, coffee: 0,
+    movement: 0, sun: 0,
+    meals: [], pains: [],
+    sleepHours: 7.0, sleepQuality: 0,
+    gratitude: '', reflection: '',
+    activeMeal: 'breakfast', activeSeverity: 0,
+    mindfulMinutes: 0
+  });
+
+  let day = blankDay();
+  const KEY = todayKey();
+
+  function loadDay() {
+    const raw = Storage.get(KEY);
+    if (raw) {
+      try { day = { ...blankDay(), ...JSON.parse(raw) }; }
+      catch { day = blankDay(); }
+    }
+  }
+  let saveTimer = null;
+  function saveDay() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => Storage.set(KEY, JSON.stringify(day)), 220);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  /* ────────────────────────────────────────────────────────
+     Renders
+  ──────────────────────────────────────────────────────── */
+  function renderHeader() {
+    document.getElementById('greeting').textContent = greeting();
+    document.getElementById('date').textContent = formatDateLine();
+  }
+  function renderQuoteAndAffirmation() {
+    const seed = seedFromDate(new Date());
+    const q = QUOTES[seed % QUOTES.length];
+    const a = AFFIRMATIONS[seed % AFFIRMATIONS.length];
+    const p = PROMPTS[seed % PROMPTS.length];
+    document.getElementById('quoteText').textContent = q.t;
+    document.getElementById('quoteAuthor').textContent = q.a;
+    document.getElementById('affirmation').textContent = a;
+    document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em>';
+  }
+  function renderIntention() {
+    document.getElementById('intentionInput').value = day.intention || '';
+  }
+  function renderMood() {
+    document.querySelectorAll('#moodRow .picker-btn').forEach(b =>
+      b.classList.toggle('on', Number(b.dataset.mood) === day.mood));
+    document.querySelectorAll('#energyRow .picker-btn').forEach(b =>
+      b.classList.toggle('on', Number(b.dataset.energy) === day.energy));
+    document.getElementById('moodNote').value = day.moodNote || '';
+  }
+  function renderChips() {
+    const wrap = document.getElementById('chips');
+    wrap.innerHTML = '';
+    SYMPTOMS.forEach(s => {
+      if (s.divider) {
+        const d = document.createElement('div');
+        d.className = 'chip-divider';
+        wrap.appendChild(d);
+        return;
+      }
+      const c = document.createElement('button');
+      c.className = 'chip' + (s.bad ? ' bad' : '') + (day.symptoms.includes(s.id) ? ' on' : '');
+      c.textContent = s.label;
+      c.dataset.id = s.id;
+      c.addEventListener('click', () => {
+        const i = day.symptoms.indexOf(s.id);
+        if (i === -1) day.symptoms.push(s.id);
+        else day.symptoms.splice(i, 1);
+        c.classList.toggle('on');
+        saveDay();
+      });
+      wrap.appendChild(c);
+    });
+  }
+  function renderWater() {
+    document.getElementById('waterValue').textContent = day.water;
+    const pct = Math.min(100, (day.water / 8) * 100);
+    document.getElementById('waterFill').style.height = pct + '%';
+  }
+  function renderPee()    { document.getElementById('peeValue').textContent = day.pee; }
+  function renderCoffee() {
+    document.getElementById('coffeeValue').textContent = day.coffee;
+    const pct = Math.min(100, (day.coffee / 4) * 100);
+    document.getElementById('coffeeFill').style.height = pct + '%';
+  }
+  function renderMove()   { document.getElementById('moveValue').textContent = day.movement; }
+  function renderSun()    { document.getElementById('sunValue').textContent = day.sun; }
+  function renderMeals() {
+    document.querySelectorAll('.meal-type').forEach(b =>
+      b.classList.toggle('on', b.dataset.meal === day.activeMeal));
+    const list = document.getElementById('mealList');
+    list.innerHTML = '';
+    day.meals.forEach((m, i) => {
+      const el = document.createElement('div');
+      el.className = 'log-item';
+      el.innerHTML = `
+        <span class="badge">${m.type}</span>
+        <span class="desc">${escapeHtml(m.description)}</span>
+        <span class="time">${m.time || ''}</span>
+        <button class="del" aria-label="remove">×</button>
+      `;
+      el.querySelector('.del').addEventListener('click', () => {
+        day.meals.splice(i, 1);
+        renderMeals(); saveDay();
+      });
+      list.appendChild(el);
+    });
+  }
+  function renderPains() {
+    document.querySelectorAll('#painSeverity .sev-btn').forEach(b =>
+      b.classList.toggle('on', Number(b.dataset.sev) === day.activeSeverity));
+    const list = document.getElementById('painList');
+    list.innerHTML = '';
+    const labels = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
+    day.pains.forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'log-item pain-item';
+      el.innerHTML = `
+        <span class="badge">${labels[p.severity] || ''}</span>
+        <span class="desc"><strong>${escapeHtml(p.location)}</strong>${p.note ? ' — ' + escapeHtml(p.note) : ''}</span>
+        <button class="del" aria-label="remove">×</button>
+      `;
+      el.querySelector('.del').addEventListener('click', () => {
+        day.pains.splice(i, 1);
+        renderPains(); saveDay();
+      });
+      list.appendChild(el);
+    });
+  }
+  function renderSleep() {
+    document.getElementById('sleepValue').textContent = day.sleepHours.toFixed(1);
+    document.getElementById('sleepSlider').value = day.sleepHours;
+    document.querySelectorAll('#moonRow .moon-btn').forEach(b =>
+      b.classList.toggle('on', Number(b.dataset.quality) === day.sleepQuality));
+  }
+  function renderTextFields() {
+    document.getElementById('gratitudeInput').value = day.gratitude || '';
+    document.getElementById('reflectionInput').value = day.reflection || '';
+  }
+  function renderMindful() {
+    document.getElementById('mindfulMinutes').textContent = day.mindfulMinutes || 0;
+  }
+  function renderAll() {
+    renderHeader();
+    renderQuoteAndAffirmation();
+    renderIntention();
+    renderMood();
+    renderChips();
+    renderWater(); renderPee(); renderCoffee(); renderMove(); renderSun();
+    renderMeals(); renderPains();
+    renderSleep();
+    renderTextFields();
+    renderMindful();
+  }
+
+  /* ────────────────────────────────────────────────────────
+     Event wiring
+  ──────────────────────────────────────────────────────── */
+  document.getElementById('intentionInput').addEventListener('input', e => {
+    day.intention = e.target.value; saveDay();
+  });
+
+  document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
+    b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); renderMood(); saveDay(); });
+  });
+  document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
+    b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDay(); });
+  });
+  document.getElementById('moodNote').addEventListener('input', e => {
+    day.moodNote = e.target.value; saveDay();
+  });
+
+  document.querySelectorAll('[data-action]').forEach(b => {
+    b.addEventListener('click', () => {
+      const a = b.dataset.action;
+      if (a === 'water-plus')    day.water = Math.min(20, day.water + 1);
+      if (a === 'water-minus')   day.water = Math.max(0, day.water - 1);
+      if (a === 'pee-plus')      day.pee = Math.min(30, day.pee + 1);
+      if (a === 'pee-minus')     day.pee = Math.max(0, day.pee - 1);
+      if (a === 'coffee-plus')   day.coffee = Math.min(10, day.coffee + 1);
+      if (a === 'coffee-minus')  day.coffee = Math.max(0, day.coffee - 1);
+      if (a === 'move-plus')     day.movement = Math.min(600, day.movement + 5);
+      if (a === 'move-minus')    day.movement = Math.max(0, day.movement - 5);
+      if (a === 'sun-plus')      day.sun = Math.min(720, day.sun + 10);
+      if (a === 'sun-plus30')    day.sun = Math.min(720, day.sun + 30);
+      if (a === 'sun-minus')     day.sun = Math.max(0, day.sun - 10);
+      if (a.startsWith('water'))  renderWater();
+      if (a.startsWith('pee'))    renderPee();
+      if (a.startsWith('coffee')) renderCoffee();
+      if (a.startsWith('move'))   renderMove();
+      if (a.startsWith('sun'))    renderSun();
+      saveDay();
+    });
+  });
+
+  document.querySelectorAll('.meal-type').forEach(b => {
+    b.addEventListener('click', () => { day.activeMeal = b.dataset.meal; renderMeals(); });
+  });
+  function addMeal() {
+    const input = document.getElementById('mealInput');
+    const val = input.value.trim();
+    if (!val) return;
+    day.meals.push({
+      type: day.activeMeal,
+      description: val,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+    input.value = '';
+    renderMeals(); saveDay();
+  }
+  document.getElementById('mealAdd').addEventListener('click', addMeal);
+  document.getElementById('mealInput').addEventListener('keydown', e => { if (e.key === 'Enter') addMeal(); });
+
+  document.querySelectorAll('#painSeverity .sev-btn').forEach(b => {
+    b.addEventListener('click', () => { day.activeSeverity = Number(b.dataset.sev); renderPains(); });
+  });
+  function addPain() {
+    const loc = document.getElementById('painLocation').value.trim();
+    const note = document.getElementById('painNote').value.trim();
+    if (!loc || !day.activeSeverity) return;
+    day.pains.push({ location: loc, note, severity: day.activeSeverity });
+    document.getElementById('painLocation').value = '';
+    document.getElementById('painNote').value = '';
+    day.activeSeverity = 0;
+    renderPains(); saveDay();
+  }
+  document.getElementById('painAdd').addEventListener('click', addPain);
+
+  document.getElementById('sleepSlider').addEventListener('input', e => {
+    day.sleepHours = Number(e.target.value);
+    document.getElementById('sleepValue').textContent = day.sleepHours.toFixed(1);
+    saveDay();
+  });
+  document.querySelectorAll('#moonRow .moon-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      day.sleepQuality = Number(b.dataset.quality);
+      renderSleep(); saveDay();
+    });
+  });
+
+  document.getElementById('gratitudeInput').addEventListener('input', e => { day.gratitude = e.target.value; saveDay(); });
+  document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
+
+  /* ────────────────────────────────────────────────────────
+     Breathing — three techniques
+  ──────────────────────────────────────────────────────── */
+  const TECHNIQUES = {
+    '478': { name: '4-7-8 · calming', steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 7, label: 'Hold…' }, { phase: 'exhale', dur: 8, label: 'Release…' }] },
+    'box': { name: 'Box · steady',    steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 4, label: 'Hold…' }, { phase: 'exhale', dur: 4, label: 'Breathe out…' }, { phase: 'hold-out', dur: 4, label: 'Pause…' }] },
+    'calm': { name: 'Calm · 4-6',     steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'exhale', dur: 6, label: 'Long, soft exhale…' }] }
+  };
+  let activeTech = '478';
+  let breatheRunning = false, breatheCycle = 0;
+  let breatheStartTime = null;
+
+  document.querySelectorAll('#techTabs .tech-tab').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.tech-tab').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      activeTech = b.dataset.tech;
+    });
+  });
+
+  document.getElementById('breatheBtn').addEventListener('click', () => {
+    document.getElementById('breatheOverlay').classList.add('open');
+    breatheRunning = true;
+    breatheCycle = 0;
+    breatheStartTime = Date.now();
+    runBreathe();
+  });
+  document.getElementById('breatheClose').addEventListener('click', () => {
+    breatheRunning = false;
+    document.getElementById('breatheOverlay').classList.remove('open');
+    document.getElementById('breatheCircle').className = 'breathe-circle';
+    if (breatheStartTime) {
+      const minutes = Math.round((Date.now() - breatheStartTime) / 60000);
+      if (minutes > 0) { day.mindfulMinutes = (day.mindfulMinutes || 0) + minutes; saveDay(); renderMindful(); }
+      breatheStartTime = null;
+    }
+  });
+
+  async function runBreathe() {
+    const circle = document.getElementById('breatheCircle');
+    const text = document.getElementById('breatheText');
+    const counter = document.getElementById('breatheCounter');
+    text.textContent = 'Settle in…';
+    counter.textContent = TECHNIQUES[activeTech].name;
+    await wait(2200);
+    while (breatheRunning) {
+      breatheCycle++;
+      counter.textContent = `cycle ${breatheCycle} · ${TECHNIQUES[activeTech].name}`;
+      for (const step of TECHNIQUES[activeTech].steps) {
+        if (!breatheRunning) return;
+        circle.className = 'breathe-circle ' + step.phase;
+        circle.style.transitionDuration = step.dur + 's';
+        text.textContent = step.label;
+        await wait(step.dur * 1000);
+      }
+    }
+  }
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  /* ────────────────────────────────────────────────────────
+     5-4-3-2-1 grounding
+  ──────────────────────────────────────────────────────── */
+  const GROUND_STEPS = [
+    { n: 5, sense: 'see',   prompt: 'things you can <em>see</em>' },
+    { n: 4, sense: 'feel',  prompt: 'things you can <em>feel</em>' },
+    { n: 3, sense: 'hear',  prompt: 'things you can <em>hear</em>' },
+    { n: 2, sense: 'smell', prompt: 'things you can <em>smell</em>' },
+    { n: 1, sense: 'taste', prompt: 'thing you can <em>taste</em>' }
+  ];
+  let groundIdx = 0, groundCount = 0, groundStart = null;
+
+  document.getElementById('groundBtn').addEventListener('click', () => {
+    document.getElementById('groundOverlay').classList.add('open');
+    groundIdx = 0; groundCount = 0;
+    groundStart = Date.now();
+    showGroundStep();
+  });
+  document.getElementById('groundClose').addEventListener('click', () => {
+    document.getElementById('groundOverlay').classList.remove('open');
+    if (groundStart) {
+      const minutes = Math.round((Date.now() - groundStart) / 60000);
+      if (minutes > 0) { day.mindfulMinutes = (day.mindfulMinutes || 0) + minutes; saveDay(); renderMindful(); }
+      groundStart = null;
+    }
+  });
+  function showGroundStep() {
+    if (groundIdx >= GROUND_STEPS.length) {
+      document.getElementById('groundStep').textContent = '✦';
+      document.getElementById('groundPrompt').innerHTML = 'You are <em>here</em>.';
+      document.getElementById('groundInput').style.display = 'none';
+      document.getElementById('groundNext').textContent = 'finish';
+      document.getElementById('groundNext').onclick = () => document.getElementById('groundClose').click();
+      return;
+    }
+    const step = GROUND_STEPS[groundIdx];
+    document.getElementById('groundStep').textContent = step.n;
+    document.getElementById('groundPrompt').innerHTML = step.prompt;
+    document.getElementById('groundInput').value = '';
+    document.getElementById('groundInput').style.display = 'block';
+    document.getElementById('groundInput').focus();
+    groundCount = 0;
+    document.getElementById('groundNext').textContent = `next →`;
+  }
+  document.getElementById('groundNext').addEventListener('click', () => {
+    const step = GROUND_STEPS[groundIdx];
+    if (!step) return;
+    const val = document.getElementById('groundInput').value.trim();
+    if (val) {
+      groundCount++;
+      document.getElementById('groundInput').value = '';
+      if (groundCount >= step.n) { groundIdx++; showGroundStep(); }
+    } else {
+      groundIdx++;
+      showGroundStep();
+    }
+  });
+  document.getElementById('groundInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('groundNext').click();
+  });
+
+  /* ────────────────────────────────────────────────────────
+     Navigation
+  ──────────────────────────────────────────────────────── */
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const target = b.dataset.view;
+      document.getElementById('view-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (target === 'history') renderHistory();
+      if (target === 'quotes') renderQuotes();
+    });
+  });
+
+  /* ────────────────────────────────────────────────────────
+     History view
+  ──────────────────────────────────────────────────────── */
+  function renderHistory() {
+    const keys = Storage.listKeys('mindful:day:').sort().reverse();
+    const days = [];
+    keys.forEach(k => {
+      const raw = Storage.get(k);
+      if (raw) {
+        try {
+          const d = JSON.parse(raw);
+          days.push({ key: k, date: k.replace('mindful:day:', ''), ...d });
+        } catch {}
+      }
+    });
+
+    // Streak: count consecutive days back from today with any data
+    let streak = 0;
+    const dayMap = {};
+    days.forEach(d => dayMap[d.date] = d);
+    let cursor = new Date();
+    while (true) {
+      const key = dateKey(cursor);
+      if (dayMap[key] && hasAnyData(dayMap[key])) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else break;
+    }
+    document.getElementById('streakNum').textContent = streak;
+
+    // Insights — averages
+    const validMoods = days.filter(d => d.mood > 0).map(d => d.mood);
+    const validSleep = days.filter(d => d.sleepHours > 0).map(d => d.sleepHours);
+    const totalMindful = days.reduce((s, d) => s + (d.mindfulMinutes || 0), 0);
+    const avgMood = validMoods.length ? (validMoods.reduce((a,b)=>a+b,0)/validMoods.length) : 0;
+    const avgSleep = validSleep.length ? (validSleep.reduce((a,b)=>a+b,0)/validSleep.length) : 0;
+    document.getElementById('insightRow').innerHTML = `
+      <div class="insight-stat"><div class="num">${avgMood ? avgMood.toFixed(1) : '—'}</div><div class="lbl">Avg mood</div></div>
+      <div class="insight-stat"><div class="num">${avgSleep ? avgSleep.toFixed(1) + 'h' : '—'}</div><div class="lbl">Avg sleep</div></div>
+      <div class="insight-stat"><div class="num">${totalMindful}</div><div class="lbl">Mindful min</div></div>
+    `;
+
+    // Mood graph — last 30 days
+    drawMoodGraph(days);
+
+    // List
+    const list = document.getElementById('historyList');
+    if (days.length === 0) {
+      list.innerHTML = '<div class="history-empty">No days yet — every journey begins here. ✦</div>';
+      return;
+    }
+    list.innerHTML = '';
+    const moodMap = ['—','heavy','off','steady','bright','glowing'];
+    days.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'history-day';
+      const moodPill = d.mood ? `<div class="history-mood-pill"><svg width="20" height="20" style="color:var(--moss-deep)"><use href="#mood-${d.mood}"/></svg></div>` : '';
+      const meta = [];
+      if (d.intention) meta.push(`<span>✦ ${escapeHtml(d.intention)}</span>`);
+      if (d.water) meta.push(`<span>💧 ${d.water}</span>`);
+      if (d.pee) meta.push(`<span>🚻 ${d.pee}</span>`);
+      if (d.coffee) meta.push(`<span>☕ ${d.coffee}</span>`);
+      if (d.movement) meta.push(`<span>🌿 ${d.movement}m</span>`);
+      if (d.sun) meta.push(`<span>☼ ${d.sun}m</span>`);
+      if (d.meals && d.meals.length) meta.push(`<span>🍽 ${d.meals.length}</span>`);
+      if (d.pains && d.pains.length) meta.push(`<span>~ ${d.pains.length} pains</span>`);
+      if (d.sleepHours) meta.push(`<span>☽ ${d.sleepHours.toFixed(1)}h</span>`);
+      if (d.mindfulMinutes) meta.push(`<span>○ ${d.mindfulMinutes}m mindful</span>`);
+      el.innerHTML = `
+        ${moodPill}
+        <div class="history-date">${formatDate(d.date)}</div>
+        <div class="history-meta">${meta.join('')}</div>
+        ${d.gratitude ? `<div class="history-quote">✦ ${escapeHtml(d.gratitude)}</div>` : ''}
+        ${d.reflection ? `<div class="history-quote">${escapeHtml(d.reflection)}</div>` : ''}
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function hasAnyData(d) {
+    return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
+           d.water || d.pee || d.coffee || d.movement || d.sun ||
+           (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
+           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes;
+  }
+
+  function drawMoodGraph(days) {
+    const svg = document.getElementById('moodGraph');
+    const w = 400, h = 100, pad = 8;
+    const today = new Date();
+    const points = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k = dateKey(d);
+      const found = days.find(x => x.date === k);
+      points.push({ idx: 29 - i, mood: found && found.mood ? found.mood : null });
+    }
+    const xStep = (w - pad * 2) / 29;
+    let path = '';
+    let lastValid = null;
+    points.forEach((p, i) => {
+      if (p.mood !== null) {
+        const x = pad + i * xStep;
+        const y = h - pad - ((p.mood - 1) / 4) * (h - pad * 2);
+        path += (lastValid === null ? `M ${x} ${y}` : ` L ${x} ${y}`);
+        lastValid = i;
+      }
+    });
+    let dots = '';
+    points.forEach((p, i) => {
+      if (p.mood !== null) {
+        const x = pad + i * xStep;
+        const y = h - pad - ((p.mood - 1) / 4) * (h - pad * 2);
+        dots += `<circle cx="${x}" cy="${y}" r="3" fill="var(--moss-deep)"/>`;
+      }
+    });
+    // grid lines
+    let grid = '';
+    for (let i = 1; i <= 5; i++) {
+      const y = h - pad - ((i - 1) / 4) * (h - pad * 2);
+      grid += `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="var(--line)" stroke-width="0.5" opacity="0.4"/>`;
+    }
+    svg.innerHTML = `${grid}<path d="${path}" fill="none" stroke="var(--moss-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${dots}`;
+  }
+
+  /* ────────────────────────────────────────────────────────
+     Quotes view
+  ──────────────────────────────────────────────────────── */
+  function renderQuotes() {
+    const list = document.getElementById('quotesList');
+    list.innerHTML = '';
+    QUOTES.forEach(q => {
+      const el = document.createElement('div');
+      el.className = 'quote-frame';
+      el.innerHTML = `
+        <div class="quote-mark">"</div>
+        <div class="quote-text">${escapeHtml(q.t)}</div>
+        <div class="quote-author">${escapeHtml(q.a)}</div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  /* ────────────────────────────────────────────────────────
+     Boot
+  ──────────────────────────────────────────────────────── */
+  loadDay();
+  renderAll();
+</script>
+</body>
+</html>
