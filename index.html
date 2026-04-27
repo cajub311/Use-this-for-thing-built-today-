@@ -45,10 +45,10 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
 
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label):focus {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn):focus {
     outline: none;
   }
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label):focus-visible {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn):focus-visible {
     outline: 2px solid var(--moss);
     outline-offset: 2px;
   }
@@ -1307,6 +1307,48 @@
   .log-search-wrap { position: relative; }
   .log-noresult { text-align: center; color: var(--ink-faint); font-style: italic; padding: 24px 12px; }
 
+  .today-summary {
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    border-radius: var(--r-lg);
+    padding: 16px 18px;
+    margin-top: 8px;
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .sum-btn {
+    display: inline-block;
+    background: var(--paper);
+    color: var(--moss-deep);
+    border: 1px solid rgba(201, 187, 164, 0.6);
+    border-radius: var(--r);
+    padding: 9px 14px;
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .sum-btn:hover { background: var(--moss-mist); }
+  .sum-hint { font-size: 0.8rem; color: var(--ink-faint); margin-top: 8px; }
+  .print-only { display: none; }
+
+  @media print {
+    .no-print, .save-bar, .nav, .skip-link, body::before, body::after { display: none !important; }
+    .print-only { display: block !important; }
+    body { background: #fff !important; background-image: none !important; padding-bottom: 24px !important; }
+    .app { padding-top: 12px !important; }
+    .view { display: none !important; }
+    #view-today { display: block !important; }
+    #view-today > *:not(#summaryCard) { display: none !important; }
+    #summaryCard { break-inside: avoid; box-shadow: none !important; border: 1px solid #ccc !important; }
+    .today-summary { max-height: none !important; border: 1px solid #ddd; }
+  }
+
   .sr-only {
     position: absolute;
     width: 1px; height: 1px;
@@ -1506,6 +1548,22 @@
       <p class="date-line" id="syncNote" style="margin-top:6px;font-size:0.7rem;max-width:28em;margin-left:auto;margin-right:auto;line-height:1.45">Your journal is kept on <strong>this device</strong> in the browser. It does not sync to the server when you deploy—use Memory → backup file to keep a copy.</p>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+
+    <section class="leaf" id="summaryCard" aria-label="Today summary">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Your <em>session sheet</em></h2>
+        <span class="leaf-num">print</span>
+      </div>
+      <p class="leaf-sub no-print">All of today’s saved fields in one place — copy, print, or share from the browser.</p>
+      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
+      <pre class="today-summary" id="todaySummary" role="status" aria-live="polite">—</pre>
+      <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
+        <a href="#eveningSection" class="sum-hint" style="align-self:center; margin:0; text-decoration:underline; color:var(--moss-deep)">Scroll to evening check-in ↓</a>
+        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
+        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
+      </div>
+      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
+    </section>
 
     <!-- Daily intention -->
     <section class="leaf intention">
@@ -1878,11 +1936,11 @@
 
 <!-- Bottom navigation -->
 <nav class="nav" aria-label="Main">
-  <button class="nav-btn active" data-view="today">Today</button>
-  <button class="nav-btn" data-view="history">Garden</button>
-  <button class="nav-btn" data-view="log">Log</button>
-  <button class="nav-btn" data-view="quotes">Library</button>
-  <button class="nav-btn" data-view="memory">Memory</button>
+  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
+  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
+  <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
+  <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library — quotes">Library</button>
+  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -2361,6 +2419,50 @@
   function renderMindful() {
     document.getElementById('mindfulMinutes').textContent = day.mindfulMinutes || 0;
   }
+  const MOOD_L = ['', 'Heavy', 'Off', 'Steady', 'Bright', 'Glowing'];
+  const ENERGY_L = ['', 'Drained', 'Low', 'Even', 'Lively', 'Vital'];
+  const SLEEP_Q = ['', 'Restless', 'Light', 'Decent', 'Deep'];
+  function buildTodaySummaryText() {
+    const lines = [];
+    lines.push('Stillness — ' + formatDate(currentDateKey));
+    lines.push('');
+    if (day.intention) lines.push('Intention: ' + day.intention);
+    if (day.mood) lines.push('Mood: ' + MOOD_L[day.mood] + ' (' + day.mood + '/5)');
+    if (day.energy) lines.push('Energy: ' + ENERGY_L[day.energy] + ' (' + day.energy + '/5)');
+    if (day.moodNote) lines.push('Mood note: ' + day.moodNote);
+    if (day.symptoms && day.symptoms.length) {
+      const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
+      if (lbs.length) lines.push('Body weather: ' + lbs.join(', '));
+    }
+    lines.push('Water: ' + (day.water || 0) + ' cups · Bathroom: ' + (day.pee || 0) + ' · Caffeine: ' + (day.coffee || 0) + ' · Movement: ' + (day.movement || 0) + ' min · Sun: ' + (day.sun || 0) + ' min');
+    if (day.meals && day.meals.length) {
+      lines.push('Meals:');
+      day.meals.forEach(m => lines.push('  · ' + m.type + ': ' + m.description + (m.time ? ' (' + m.time + ')' : '')));
+    }
+    if (day.pains && day.pains.length) {
+      lines.push('Pain log:');
+      const sev = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
+      day.pains.forEach(p => lines.push('  · ' + (sev[p.severity] || '') + ' — ' + p.location + (p.note ? ' — ' + p.note : '')));
+    }
+    lines.push('Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · quality: ' + (SLEEP_Q[day.sleepQuality] || '') : ''));
+    if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
+    if (day.reflection) lines.push('Reflection: ' + day.reflection);
+    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
+      lines.push('Evening:');
+      if (day.eveningWin) lines.push('  · Smallest win: ' + day.eveningWin);
+      if (day.eveningNote) lines.push('  · Carrying: ' + day.eveningNote);
+      if (day.eveningObstacle) lines.push('  · In the way: ' + day.eveningObstacle);
+      if (day.eveningTomorrow) lines.push('  · Tomorrow: ' + day.eveningTomorrow);
+    }
+    lines.push('Mindful minutes: ' + (day.mindfulMinutes || 0));
+    return lines.filter((l, i) => i < 2 || l).join('\n');
+  }
+  function renderTodaySummary() {
+    const pre = document.getElementById('todaySummary');
+    const dlabel = document.getElementById('summaryDatePrint');
+    if (dlabel) dlabel.textContent = formatDate(currentDateKey);
+    if (pre) pre.textContent = buildTodaySummaryText();
+  }
   function formatActivityTime(t) {
     return new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
@@ -2500,6 +2602,7 @@
     renderSleep();
     renderTextFields();
     renderMindful();
+    renderTodaySummary();
     setRetentionSelect();
     renderRetentionStatus();
   }
@@ -2628,9 +2731,15 @@
     });
   });
   document.getElementById('goToLogFromToday').addEventListener('click', () => {
-    document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(x => {
+      x.classList.remove('active');
+      x.setAttribute('aria-pressed', 'false');
+    });
     const logBtn = document.querySelector('.nav-btn[data-view="log"]');
-    if (logBtn) logBtn.classList.add('active');
+    if (logBtn) {
+      logBtn.classList.add('active');
+      logBtn.setAttribute('aria-pressed', 'true');
+    }
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-log').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2774,8 +2883,12 @@
   ──────────────────────────────────────────────────────── */
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.addEventListener('click', () => {
-      document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(x => {
+        x.classList.remove('active');
+        x.setAttribute('aria-pressed', 'false');
+      });
       b.classList.add('active');
+      b.setAttribute('aria-pressed', 'true');
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       const target = b.dataset.view;
       document.getElementById('view-' + target).classList.add('active');
@@ -2784,6 +2897,7 @@
       if (target === 'quotes') renderQuotes();
       if (target === 'log') renderLogView();
       if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
+      if (target === 'today') renderTodaySummary();
     });
   });
 
@@ -2906,7 +3020,21 @@
     });
   }
 
-  document.getElementById('logSearch').addEventListener('input', () => renderLogView());
+  document.getElementById('copySummary').addEventListener('click', () => {
+    const t = buildTodaySummaryText();
+    (navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(t)
+      : Promise.resolve())
+    .then(() => { pushActivity('Copied today’s session sheet to clipboard.'); })
+    .catch(() => { pushActivity('Could not copy — try selecting the text in the box.'); });
+  });
+  document.getElementById('printPage').addEventListener('click', () => window.print());
+
+  let logSearchTimer = null;
+  document.getElementById('logSearch').addEventListener('input', () => {
+    clearTimeout(logSearchTimer);
+    logSearchTimer = setTimeout(() => renderLogView(), 200);
+  });
 
   window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
   window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
