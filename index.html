@@ -1353,9 +1353,69 @@
     color: var(--ink-soft);
     font-size: 0.98rem;
   }
+  .soundscape-panel {
+    background:
+      linear-gradient(135deg, rgba(214, 220, 201, 0.82), rgba(244, 236, 218, 0.92)),
+      var(--paper-3);
+  }
+  .soundscape-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .soundscape-btn {
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-radius: var(--r);
+    min-height: 58px;
+    padding: 10px 8px;
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    font-size: 0.86rem;
+    transition: all .22s ease;
+  }
+  .soundscape-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--moss);
+    background: var(--paper-3);
+  }
+  .soundscape-btn.on {
+    background: var(--moss);
+    border-color: var(--moss-deep);
+    color: var(--paper-3);
+    box-shadow: 0 6px 18px rgba(74, 107, 79, 0.24);
+  }
+  .soundscape-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .soundscape-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    flex: 1;
+  }
+  .mini-stop {
+    border: 1px solid rgba(201, 187, 164, 0.55);
+    background: var(--paper);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
   @media (max-width: 560px) {
     .peace-gallery { grid-template-columns: 1fr; }
     .peace-visual img { height: 220px; }
+    .soundscape-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   /* ── Bottom navigation ──────────────────────────────────── */
@@ -2068,6 +2128,25 @@
       <div class="quote-mark">"</div>
       <p class="quote-text" id="quoteText">—</p>
       <div class="quote-author" id="quoteAuthor">—</div>
+    </section>
+
+    <section class="leaf soundscape-panel no-print" aria-label="Peaceful soundscapes">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Soundscape <em>mixer</em></h2>
+        <span class="leaf-num">offline</span>
+      </div>
+      <p class="leaf-sub">A quiet layer for breathing, journaling, or winding down.</p>
+      <div class="soundscape-grid" id="soundscapeGrid">
+        <button type="button" class="soundscape-btn" data-soundscape="rain">Rain</button>
+        <button type="button" class="soundscape-btn" data-soundscape="forest">Forest</button>
+        <button type="button" class="soundscape-btn" data-soundscape="stream">Stream</button>
+        <button type="button" class="soundscape-btn" data-soundscape="bowl">Bowl drone</button>
+      </div>
+      <div class="soundscape-controls">
+        <span class="soundscape-status" id="soundscapeStatus">silent</span>
+        <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
+        <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
+      </div>
     </section>
 
     <!-- Mood + Energy -->
@@ -3789,6 +3868,9 @@
   let breatheStartTime = null;
   let audioCtx = null;
   let audioEnabled = (Storage.get(AUDIO_KEY) || 'on') === 'on';
+  let activeSoundscape = null;
+  let soundscapeMaster = null;
+  let soundscapeNodes = [];
 
   function getAudioCtx() {
     if (!audioCtx) {
@@ -3815,6 +3897,91 @@
       osc.stop(now + duration);
     });
   }
+  function createNoiseSource(ctx) {
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  }
+  function stopSoundscape() {
+    soundscapeNodes.forEach(node => {
+      try { if (node.stop) node.stop(); } catch {}
+      try { if (node.disconnect) node.disconnect(); } catch {}
+    });
+    soundscapeNodes = [];
+    if (soundscapeMaster) {
+      try { soundscapeMaster.disconnect(); } catch {}
+      soundscapeMaster = null;
+    }
+    activeSoundscape = null;
+    renderSoundscapeState();
+  }
+  function startSoundscape(kind) {
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    stopSoundscape();
+    activeSoundscape = kind;
+    const volume = document.getElementById('soundscapeVolume');
+    const amount = volume ? Number(volume.value) / 100 : 0.38;
+    soundscapeMaster = ctx.createGain();
+    soundscapeMaster.gain.value = amount * 0.38;
+    soundscapeMaster.connect(ctx.destination);
+
+    const addNoise = (filterType, frequency, q, gainValue) => {
+      const source = createNoiseSource(ctx);
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+      filter.type = filterType;
+      filter.frequency.value = frequency;
+      filter.Q.value = q;
+      gain.gain.value = gainValue;
+      source.connect(filter).connect(gain).connect(soundscapeMaster);
+      source.start();
+      soundscapeNodes.push(source, filter, gain);
+    };
+    const addOsc = (freq, type, gainValue) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.value = gainValue;
+      osc.connect(gain).connect(soundscapeMaster);
+      osc.start();
+      soundscapeNodes.push(osc, gain);
+    };
+
+    if (kind === 'rain') {
+      addNoise('highpass', 1300, 0.5, 0.42);
+      addNoise('bandpass', 2600, 0.9, 0.16);
+    } else if (kind === 'forest') {
+      addNoise('bandpass', 1700, 2.2, 0.10);
+      addNoise('lowpass', 420, 0.8, 0.12);
+      addOsc(660, 'sine', 0.018);
+      addOsc(880, 'sine', 0.012);
+    } else if (kind === 'stream') {
+      addNoise('bandpass', 760, 1.0, 0.25);
+      addNoise('highpass', 2200, 0.7, 0.08);
+    } else if (kind === 'bowl') {
+      addOsc(196, 'sine', 0.16);
+      addOsc(392, 'sine', 0.075);
+      addOsc(588, 'sine', 0.035);
+    }
+    renderSoundscapeState();
+    pushActivity('Soundscape: ' + kind + '.');
+  }
+  function renderSoundscapeState() {
+    document.querySelectorAll('.soundscape-btn').forEach(btn => {
+      const on = btn.dataset.soundscape === activeSoundscape;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const status = document.getElementById('soundscapeStatus');
+    if (status) status.textContent = activeSoundscape ? activeSoundscape : 'silent';
+  }
   function updateAudioToggle() {
     const icon = document.getElementById('audioIcon');
     const label = document.getElementById('audioLbl');
@@ -3830,6 +3997,17 @@
     if (audioEnabled) playBell(528, 0.9);
   });
   updateAudioToggle();
+
+  document.querySelectorAll('.soundscape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (activeSoundscape === btn.dataset.soundscape) stopSoundscape();
+      else startSoundscape(btn.dataset.soundscape);
+    });
+  });
+  document.getElementById('soundscapeStop').addEventListener('click', stopSoundscape);
+  document.getElementById('soundscapeVolume').addEventListener('input', e => {
+    if (soundscapeMaster) soundscapeMaster.gain.value = (Number(e.target.value) / 100) * 0.38;
+  });
 
   document.querySelectorAll('#techTabs .tech-tab').forEach(b => {
     b.addEventListener('click', () => {
@@ -4442,6 +4620,7 @@
   });
 
   window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('beforeunload', stopSoundscape);
   window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') ensureCurrentDay();
