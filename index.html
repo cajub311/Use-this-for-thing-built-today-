@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
+<meta name="theme-color" content="#EDE3D2" />
+<meta name="color-scheme" content="light" />
 <title>Stillness — a botanical journal for your days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +39,14 @@
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
+
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del):focus {
+    outline: none;
+  }
+  :where(input, textarea, .slider, .intention-input, .mood-note, .deep-input, .grounding-input, .text-in):focus { outline: none; }
+  :where(input, textarea, .slider, .intention-input, .mood-note, .deep-input, .grounding-input, .text-in):focus-visible {
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--moss);
+  }
 
   /* ── Paper background with grain ────────────────────────── */
   body {
@@ -1158,9 +1169,38 @@
     opacity: 0.5;
   }
   .flourish svg { width: 90px; height: 16px; }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    z-index: 200;
+    padding: 10px 16px;
+    background: var(--moss);
+    color: var(--paper-3);
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    border-radius: var(--r);
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 16px;
+    top: 16px;
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plate, .leaf, .quote-frame, .view, .log-item { animation: none; }
+    .water-fill::before { animation: none; }
+    .breathe-circle { transition: transform 0.2s ease !important; }
+    .picker-btn:hover, .chip:hover, .add-btn:hover, .practice-btn:hover, .pill:hover { transform: none; }
+    .history-day:hover { transform: none; }
+  }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to journal</a>
 <!-- Reusable SVG icons (defined once, used everywhere) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -1303,7 +1343,7 @@
   </defs>
 </svg>
 
-<div class="app">
+<div class="app" id="main" tabindex="-1">
 
   <!-- ═══════════════════════════════════════════════════════
        TODAY VIEW
@@ -1595,7 +1635,7 @@
 <!-- ═══════════════════════════════════════════════════════
      BREATHING OVERLAY
 ═══════════════════════════════════════════════════════ -->
-<div class="overlay" id="breatheOverlay">
+<div class="overlay" id="breatheOverlay" role="dialog" aria-modal="true" aria-label="Guided breathing" aria-hidden="true">
   <button class="overlay-close" id="breatheClose">close</button>
   <div class="technique-tabs" id="techTabs">
     <button class="tech-tab on" data-tech="478">4 · 7 · 8</button>
@@ -1610,7 +1650,7 @@
 <!-- ═══════════════════════════════════════════════════════
      GROUNDING OVERLAY
 ═══════════════════════════════════════════════════════ -->
-<div class="overlay grounding-overlay" id="groundOverlay">
+<div class="overlay grounding-overlay" id="groundOverlay" role="dialog" aria-modal="true" aria-labelledby="groundPrompt" aria-hidden="true">
   <button class="overlay-close" id="groundClose">close</button>
   <div class="grounding-content">
     <div class="grounding-step" id="groundStep">5</div>
@@ -1746,7 +1786,6 @@
     d = d || new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   };
-  const todayKey = () => `mindful:day:${dateKey()}`;
   const seedFromDate = (d) => (d.getFullYear() * 1000 + d.getMonth() * 31 + d.getDate());
   const formatDate = (str) => {
     const d = str ? new Date(str + 'T12:00:00') : new Date();
@@ -1784,19 +1823,37 @@
   });
 
   let day = blankDay();
-  const KEY = todayKey();
+  let currentDateKey = dateKey();
+  const getStorageKey = () => 'mindful:day:' + currentDateKey;
 
   function loadDay() {
-    const raw = Storage.get(KEY);
+    const raw = Storage.get(getStorageKey());
     if (raw) {
       try { day = { ...blankDay(), ...JSON.parse(raw) }; }
       catch { day = blankDay(); }
+    } else {
+      day = blankDay();
     }
   }
   let saveTimer = null;
   function saveDay() {
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => Storage.set(KEY, JSON.stringify(day)), 220);
+    saveTimer = setTimeout(() => Storage.set(getStorageKey(), JSON.stringify(day)), 220);
+  }
+  function ensureCurrentDay() {
+    const k = dateKey();
+    if (k !== currentDateKey) {
+      currentDateKey = k;
+      loadDay();
+      renderAll();
+    }
+  }
+  function addMindfulSeconds(elapsedMs) {
+    if (elapsedMs <= 0) return;
+    const add = Math.max(1, Math.round(elapsedMs / 60000));
+    day.mindfulMinutes = (day.mindfulMinutes || 0) + add;
+    saveDay();
+    renderMindful();
   }
 
   function escapeHtml(s) {
@@ -2044,7 +2101,10 @@
   });
 
   document.getElementById('breatheBtn').addEventListener('click', () => {
-    document.getElementById('breatheOverlay').classList.add('open');
+    const ov = document.getElementById('breatheOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    document.getElementById('breatheClose').focus();
     breatheRunning = true;
     breatheCycle = 0;
     breatheStartTime = Date.now();
@@ -2052,11 +2112,12 @@
   });
   document.getElementById('breatheClose').addEventListener('click', () => {
     breatheRunning = false;
-    document.getElementById('breatheOverlay').classList.remove('open');
+    const ov = document.getElementById('breatheOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
     document.getElementById('breatheCircle').className = 'breathe-circle';
     if (breatheStartTime) {
-      const minutes = Math.round((Date.now() - breatheStartTime) / 60000);
-      if (minutes > 0) { day.mindfulMinutes = (day.mindfulMinutes || 0) + minutes; saveDay(); renderMindful(); }
+      addMindfulSeconds(Date.now() - breatheStartTime);
       breatheStartTime = null;
     }
   });
@@ -2095,18 +2156,23 @@
   let groundIdx = 0, groundCount = 0, groundStart = null;
 
   document.getElementById('groundBtn').addEventListener('click', () => {
-    document.getElementById('groundOverlay').classList.add('open');
+    const ov = document.getElementById('groundOverlay');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
     groundIdx = 0; groundCount = 0;
     groundStart = Date.now();
     showGroundStep();
+    document.getElementById('groundClose').focus();
   });
   document.getElementById('groundClose').addEventListener('click', () => {
-    document.getElementById('groundOverlay').classList.remove('open');
+    const ov = document.getElementById('groundOverlay');
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
     if (groundStart) {
-      const minutes = Math.round((Date.now() - groundStart) / 60000);
-      if (minutes > 0) { day.mindfulMinutes = (day.mindfulMinutes || 0) + minutes; saveDay(); renderMindful(); }
+      addMindfulSeconds(Date.now() - groundStart);
       groundStart = null;
     }
+    document.getElementById('groundBtn').focus();
   });
   function showGroundStep() {
     if (groundIdx >= GROUND_STEPS.length) {
@@ -2114,7 +2180,6 @@
       document.getElementById('groundPrompt').innerHTML = 'You are <em>here</em>.';
       document.getElementById('groundInput').style.display = 'none';
       document.getElementById('groundNext').textContent = 'finish';
-      document.getElementById('groundNext').onclick = () => document.getElementById('groundClose').click();
       return;
     }
     const step = GROUND_STEPS[groundIdx];
@@ -2126,9 +2191,12 @@
     groundCount = 0;
     document.getElementById('groundNext').textContent = `next →`;
   }
-  document.getElementById('groundNext').addEventListener('click', () => {
+  function handleGroundNext() {
+    if (groundIdx >= GROUND_STEPS.length) {
+      document.getElementById('groundClose').click();
+      return;
+    }
     const step = GROUND_STEPS[groundIdx];
-    if (!step) return;
     const val = document.getElementById('groundInput').value.trim();
     if (val) {
       groundCount++;
@@ -2138,9 +2206,10 @@
       groundIdx++;
       showGroundStep();
     }
-  });
+  }
+  document.getElementById('groundNext').addEventListener('click', handleGroundNext);
   document.getElementById('groundInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('groundNext').click();
+    if (e.key === 'Enter') { e.preventDefault(); handleGroundNext(); }
   });
 
   /* ────────────────────────────────────────────────────────
@@ -2302,6 +2371,17 @@
       list.appendChild(el);
     });
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') ensureCurrentDay();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const b = document.getElementById('breatheOverlay');
+    const g = document.getElementById('groundOverlay');
+    if (b.classList.contains('open')) document.getElementById('breatheClose').click();
+    else if (g.classList.contains('open')) document.getElementById('groundClose').click();
+  });
 
   /* ────────────────────────────────────────────────────────
      Boot
