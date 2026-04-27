@@ -826,6 +826,7 @@
   }
   .deep-input:focus { outline: none; border-color: var(--moss); background-color: var(--paper-3); }
   .prompt-pill {
+    position: relative;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 0.95rem;
@@ -837,6 +838,72 @@
     display: inline-block;
   }
   .prompt-pill::before { content: '✦  '; color: var(--gold); }
+  .prompt-shuffle {
+    background: none; border: none; color: var(--moss);
+    cursor: pointer; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 0.85rem; margin-left: 10px;
+    text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px;
+  }
+  .prompt-shuffle:hover { color: var(--moss-deep); }
+
+  .heatmap-wrap {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 22px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    box-shadow: 0 6px 22px var(--shadow-warm);
+  }
+  .heatmap-wrap h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0 0 14px;
+  }
+  .heatmap { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; }
+  .heat-cell { aspect-ratio: 1; border-radius: 4px; background: var(--paper); border: 1px solid rgba(201, 187, 164, 0.25); }
+  .heat-cell.m1 { background: #BDA8A0; border-color: #BDA8A0; }
+  .heat-cell.m2 { background: #C9B5A8; border-color: #C9B5A8; }
+  .heat-cell.m3 { background: #D5C8A8; border-color: #D5C8A8; }
+  .heat-cell.m4 { background: #B8C5A0; border-color: #B8C5A0; }
+  .heat-cell.m5 { background: #94B488; border-color: #4A6B4F; }
+  .heatmap-legend {
+    display: flex; align-items: center; gap: 8px; margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--ink-faint);
+    letter-spacing: 0.1em; flex-wrap: wrap;
+  }
+  .heatmap-legend .legend-cells { display: flex; gap: 3px; }
+  .heatmap-legend .heat-cell { width: 11px; max-height: 11px; }
+
+  .breathe-soundbar {
+    position: absolute; top: 22px; left: 22px; right: 100px; z-index: 2;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  }
+  .audio-toggle {
+    background: rgba(237, 227, 210, 0.1);
+    border: 1px solid rgba(237, 227, 210, 0.25);
+    color: #EDE3D2;
+    border-radius: 999px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+  .breathe-soundbar select, .breathe-soundbar .form-select {
+    background: rgba(20, 24, 18, 0.55);
+    border: 1px solid rgba(237, 227, 210, 0.2);
+    color: #EDE3D2;
+    border-radius: 10px;
+    padding: 7px 10px;
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    max-width: min(220px, 100%);
+  }
+  @media (max-width: 520px) {
+    .breathe-soundbar { right: 20px; flex-direction: column; align-items: flex-start; }
+  }
 
   /* ── Practice tools (breathe + grounding) ───────────────── */
   .practices-row {
@@ -1912,7 +1979,7 @@
         <span class="leaf-num">№ 08</span>
       </div>
       <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
-      <div class="prompt-pill" id="promptPill">Today's prompt</div>
+      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button></div>
       <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
     </section>
 
@@ -1979,6 +2046,23 @@
 
     <div class="insight-row" id="insightRow"></div>
 
+    <div class="heatmap-wrap" id="moodHeatmapCard">
+      <h3>Last 90 days · mood</h3>
+      <div class="heatmap" id="moodHeatmap" aria-label="Mood color for each of the last 90 days, oldest to newest"></div>
+      <div class="heatmap-legend">
+        <span>lighter</span>
+        <div class="legend-cells" aria-hidden="true">
+          <div class="heat-cell"></div>
+          <div class="heat-cell m1"></div>
+          <div class="heat-cell m2"></div>
+          <div class="heat-cell m3"></div>
+          <div class="heat-cell m4"></div>
+          <div class="heat-cell m5"></div>
+        </div>
+        <span>brighter</span>
+      </div>
+    </div>
+
     <div class="mood-graph" id="moodGraphCard">
       <h3>Last 30 days · mood</h3>
       <svg id="moodGraph" viewBox="0 0 400 100" preserveAspectRatio="none" style="width:100%;height:100px"></svg>
@@ -2028,6 +2112,20 @@
         </button>
       </div>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
+      <p class="picker-label" style="margin-top:20px">Breathing sound</p>
+      <p class="leaf-sub" style="margin-bottom:8px">Soft tones during guided breathing (generated in the browser, works offline). Does not play automatically — open <em>Take a breath</em> to hear it.</p>
+      <label class="data-hint" for="breatheSoundSelect" style="display:block;margin-bottom:6px">Sound style</label>
+      <select class="retention-select" id="breatheSoundSelect" title="Breathing meditation sound">
+        <option value="chimes">Chimes (default)</option>
+        <option value="bowl">Singing bowl</option>
+        <option value="bamboo">Bamboo (wood)</option>
+        <option value="strings">Strings pad</option>
+        <option value="rain">Gentle rain</option>
+        <option value="stream">Soft stream</option>
+        <option value="breeze">Breeze hush</option>
+        <option value="cave">Deep room</option>
+        <option value="silent">Silent</option>
+      </select>
     </section>
     <section class="leaf">
       <div class="leaf-head">
@@ -2115,11 +2213,26 @@
      BREATHING OVERLAY
 ═══════════════════════════════════════════════════════ -->
 <div class="overlay" id="breatheOverlay" role="dialog" aria-modal="true" aria-label="Guided breathing" aria-hidden="true">
+  <div class="breathe-soundbar" id="breatheSoundbar">
+    <select id="breatheSoundFromOverlay" class="form-select" aria-label="Meditation sound" title="Meditation sound for this session">
+      <option value="chimes">Chimes</option>
+      <option value="bowl">Bowl</option>
+      <option value="bamboo">Bamboo</option>
+      <option value="strings">Strings</option>
+      <option value="rain">Rain</option>
+      <option value="stream">Stream</option>
+      <option value="breeze">Breeze</option>
+      <option value="cave">Deep room</option>
+      <option value="silent">Mute</option>
+    </select>
+    <button type="button" class="audio-toggle" id="breatheAudioToggle" aria-pressed="true" title="Toggle breath cues">cues: on</button>
+  </div>
   <button class="overlay-close" id="breatheClose">close</button>
   <div class="technique-tabs" id="techTabs">
     <button class="tech-tab on" data-tech="478">4 · 7 · 8</button>
     <button class="tech-tab" data-tech="box">Box</button>
     <button class="tech-tab" data-tech="calm">Calm</button>
+    <button class="tech-tab" data-tech="coh">5 · 5</button>
   </div>
   <div class="breathe-circle" id="breatheCircle"></div>
   <div class="breathe-text" id="breatheText">Settle in…</div>
@@ -2384,7 +2497,7 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   };
 
-  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment' };
+  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'chimes', breatheCues: true };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -2394,6 +2507,8 @@
           if (j.retentionDays != null) config.retentionDays = Math.max(0, Math.min(2000, Number(j.retentionDays) || 30));
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
           if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
+          if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
+          if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
         }
       } catch {}
     }
@@ -2402,7 +2517,9 @@
     Storage.set(CONFIG_KEY, JSON.stringify({
       retentionDays: config.retentionDays,
       activityCap: config.activityCap,
-      theme: config.theme
+      theme: config.theme,
+      breatheSound: config.breatheSound,
+      breatheCues: config.breatheCues
     }));
   }
 
@@ -2418,6 +2535,248 @@
   function updateThemeSwatches() {
     const t = config.theme || 'parchment';
     document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('on', s.dataset.setTheme === t));
+  }
+
+  const BREATHE_SOUNDS = ['chimes', 'bowl', 'bamboo', 'strings', 'rain', 'stream', 'breeze', 'cave', 'silent'];
+  let breatheAudioCtx = null;
+  let ambientNodes = { noise: null, gain: null, filt: null, hpf: null, osc1: null, osc2: null, conv: null };
+
+  function getBreatheAudioCtx() {
+    if (!breatheAudioCtx) {
+      try { breatheAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; }
+    }
+    if (breatheAudioCtx.state === 'suspended') breatheAudioCtx.resume();
+    return breatheAudioCtx;
+  }
+
+  function stopAmbientBed() {
+    [ambientNodes.noise, ambientNodes.osc1, ambientNodes.osc2, ambientNodes.conv].forEach(n => {
+      try { if (n && n.stop) n.stop(0); } catch {}
+      try { if (n && n.disconnect) n.disconnect(); } catch {}
+    });
+    try { if (ambientNodes.gain) ambientNodes.gain.disconnect(); } catch {}
+    ambientNodes = { noise: null, gain: null, filt: null, hpf: null, osc1: null, osc2: null, conv: null };
+  }
+
+  function startAmbientBed(sound) {
+    stopAmbientBed();
+    if (sound === 'silent' || !['rain', 'stream', 'breeze', 'cave', 'strings'].includes(sound)) return;
+    const ctx = getBreatheAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(sound === 'breeze' ? 0.07 : 0.11, now + 1.5);
+    g.connect(ctx.destination);
+    if (sound === 'strings' || sound === 'cave') {
+      const o1 = ctx.createOscillator();
+      o1.type = 'sine';
+      o1.frequency.setValueAtTime(120, now);
+      const o2 = ctx.createOscillator();
+      o2.type = 'sine';
+      o2.frequency.setValueAtTime(180, now);
+      const og = ctx.createGain();
+      og.gain.setValueAtTime(0.04, now);
+      o1.connect(og);
+      o2.connect(og);
+      if (sound === 'cave') {
+        const c = ctx.createConvolver();
+        const len = ctx.sampleRate * 0.6;
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+        const b = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) b[i] = (Math.random() * 2 - 1) * (1 - i / len) * 0.8;
+        c.buffer = buf;
+        const fp = ctx.createBiquadFilter();
+        fp.type = 'lowpass';
+        fp.frequency.setValueAtTime(500, now);
+        og.connect(fp);
+        fp.connect(c);
+        c.connect(g);
+        ambientNodes.conv = c; ambientNodes.filt = fp;
+        o1.start(now); o2.start(now);
+        ambientNodes.osc1 = o1; ambientNodes.osc2 = o2; ambientNodes.gain = g;
+        return;
+      }
+      const fp = ctx.createBiquadFilter();
+      fp.type = 'lowpass';
+      fp.frequency.setValueAtTime(500, now);
+      og.connect(fp);
+      fp.connect(g);
+      o1.start(now); o2.start(now);
+      ambientNodes.osc1 = o1; ambientNodes.osc2 = o2; ambientNodes.filt = fp; ambientNodes.gain = g;
+      return;
+    }
+    const N = Math.max(1, 2 * (ctx.sampleRate | 0));
+    const buffer = ctx.createBuffer(1, N, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < N; i++) data[i] = (Math.random() * 2 - 1) * 0.45;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+    const f = ctx.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.setValueAtTime(0.5, now);
+    if (sound === 'stream') f.frequency.setValueAtTime(3000, now);
+    else if (sound === 'breeze') f.frequency.setValueAtTime(1200, now);
+    else f.frequency.setValueAtTime(5000, now);
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.setValueAtTime(150, now);
+    noise.connect(f);
+    f.connect(hp);
+    hp.connect(g);
+    noise.start(now);
+    ambientNodes.noise = noise; ambientNodes.filt = f; ambientNodes.hpf = hp; ambientNodes.gain = g;
+  }
+
+  const PHASE_TONE = { inhale: 0, hold: 1, exhale: 2, 'hold-out': 3 };
+  function playBreathTone(phase, style, stepDurSec) {
+    if (style === 'silent' || config.breatheCues === false) return;
+    const ctx = getBreatheAudioCtx();
+    if (!ctx) return;
+    const t = PHASE_TONE[phase] != null ? PHASE_TONE[phase] : 0;
+    const now = ctx.currentTime;
+    if (['rain', 'stream', 'breeze', 'cave'].includes(style) && t === 0) {
+      [261.6, 329.6, 392].forEach(freq => {
+        const o = ctx.createOscillator();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, now);
+        const g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0, now);
+        g2.gain.linearRampToValueAtTime(0.04, now + 0.04);
+        g2.gain.exponentialRampToValueAtTime(0.0006, now + 0.32);
+        o.connect(g2);
+        g2.connect(ctx.destination);
+        o.start(now);
+        o.stop(now + 0.35);
+      });
+      return;
+    }
+    if (style === 'bamboo') {
+      const o = ctx.createOscillator();
+      o.type = 'square';
+      o.frequency.setValueAtTime(phase === 'exhale' || phase === 'hold-out' ? 200 : 260, now);
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.setValueAtTime(2000, now);
+      f.frequency.exponentialRampToValueAtTime(250, now + 0.12);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, now);
+      g2.gain.linearRampToValueAtTime(0.1, now + 0.02);
+      g2.gain.exponentialRampToValueAtTime(0.0005, now + Math.min(0.4, 0.15 * (stepDurSec || 1)));
+      o.connect(f);
+      f.connect(g2);
+      g2.connect(ctx.destination);
+      o.start(now);
+      o.stop(now + 0.55);
+      return;
+    }
+    if (style === 'bowl') {
+      const freq = phase === 'exhale' || phase === 'hold-out' ? 310 : 528;
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, now);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, now);
+      g2.gain.linearRampToValueAtTime(0.18, now + 0.04);
+      g2.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+      o.connect(g2);
+      g2.connect(ctx.destination);
+      o.start(now);
+      o.stop(now + 1.3);
+      const o2 = ctx.createOscillator();
+      o2.type = 'sine';
+      o2.frequency.setValueAtTime(freq * 1.5, now);
+      const g3 = ctx.createGain();
+      g3.gain.setValueAtTime(0, now);
+      g3.gain.linearRampToValueAtTime(0.05, now + 0.04);
+      g3.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      o2.connect(g3);
+      g3.connect(ctx.destination);
+      o2.start(now);
+      o2.stop(now + 1.1);
+      return;
+    }
+    if (style === 'strings') {
+      const freq = phase === 'exhale' || phase === 'hold-out' ? 320 : 440;
+      const o = ctx.createOscillator();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(freq, now);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, now);
+      g2.gain.linearRampToValueAtTime(0.1, now + 0.04);
+      g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      o.connect(g2);
+      g2.connect(ctx.destination);
+      o.start(now);
+      o.stop(now + 1.1);
+      return;
+    }
+    // chimes (default)
+    [396 + t * 20, 528, 400 + t * 18].forEach((fHz, j) => {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(fHz, now);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, now);
+      g2.gain.linearRampToValueAtTime(0.12 - j * 0.02, now + 0.02);
+      g2.gain.exponentialRampToValueAtTime(0.0005, now + 0.5 + (phase === 'hold' || phase === 'hold-out' ? 0.2 : 0));
+      o.connect(g2);
+      g2.connect(ctx.destination);
+      o.start(now);
+      o.stop(now + 1.6);
+    });
+  }
+
+  function getEffectiveBreatheSound() {
+    const s = (config && config.breatheSound) || 'chimes';
+    return BREATHE_SOUNDS.includes(s) ? s : 'chimes';
+  }
+
+  function syncBreatheSoundSelects() {
+    const v = getEffectiveBreatheSound();
+    const a = document.getElementById('breatheSoundSelect');
+    const b = document.getElementById('breatheSoundFromOverlay');
+    if (a) a.value = v;
+    if (b) b.value = v;
+  }
+
+  function setBreatheSound(v) {
+    if (!BREATHE_SOUNDS.includes(v)) v = 'chimes';
+    config.breatheSound = v;
+    saveConfig();
+    syncBreatheSoundSelects();
+  }
+
+  function updateBreatheCueToggle() {
+    const el = document.getElementById('breatheAudioToggle');
+    if (!el) return;
+    const on = config.breatheCues !== false;
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    el.textContent = on ? 'cues: on' : 'cues: off';
+  }
+
+  function renderMoodHeatmap() {
+    const wrap = document.getElementById('moodHeatmap');
+    if (!wrap) return;
+    const daysData = {};
+    Storage.listKeys(DAY_KEY_PREFIX).forEach(k => {
+      const raw = Storage.get(k);
+      if (!raw) return;
+      try { daysData[k.replace(DAY_KEY_PREFIX, '')] = JSON.parse(raw); } catch {}
+    });
+    wrap.innerHTML = '';
+    const today = new Date();
+    for (let i = 89; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k = dateKey(d);
+      const data = daysData[k];
+      const cell = document.createElement('div');
+      cell.className = 'heat-cell' + (data && data.mood ? ' m' + data.mood : '');
+      cell.title = formatDate(k) + (data && data.mood ? ' — mood ' + data.mood + '/5' : ' — no mood');
+      wrap.appendChild(cell);
+    }
   }
 
   function getAllDayRecords() {
@@ -2506,15 +2865,22 @@
     document.getElementById('greeting').textContent = greeting();
     document.getElementById('date').textContent = formatDateLine();
   }
-  function renderQuoteAndAffirmation() {
+  function renderQuoteAndAffirmation(forceShufflePrompt) {
     const seed = seedFromDate(new Date());
-    const q = QUOTES[seed % QUOTES.length];
-    const a = AFFIRMATIONS[seed % AFFIRMATIONS.length];
-    const p = PROMPTS[seed % PROMPTS.length];
-    document.getElementById('quoteText').textContent = q.t;
-    document.getElementById('quoteAuthor').textContent = q.a;
-    document.getElementById('affirmation').textContent = a;
-    document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em>';
+    if (!forceShufflePrompt) {
+      const q = QUOTES[seed % QUOTES.length];
+      const a = AFFIRMATIONS[seed % AFFIRMATIONS.length];
+      const p = PROMPTS[seed % PROMPTS.length];
+      document.getElementById('quoteText').textContent = q.t;
+      document.getElementById('quoteAuthor').textContent = q.a;
+      document.getElementById('affirmation').textContent = a;
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
+    } else {
+      const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
+    }
+    const sh = document.getElementById('promptShuffle');
+    if (sh) sh.addEventListener('click', () => renderQuoteAndAffirmation(true));
   }
   function renderIntention() {
     document.getElementById('intentionInput').value = day.intention || '';
@@ -2965,7 +3331,8 @@
   const TECHNIQUES = {
     '478': { name: '4-7-8 · calming', steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 7, label: 'Hold…' }, { phase: 'exhale', dur: 8, label: 'Release…' }] },
     'box': { name: 'Box · steady',    steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 4, label: 'Hold…' }, { phase: 'exhale', dur: 4, label: 'Breathe out…' }, { phase: 'hold-out', dur: 4, label: 'Pause…' }] },
-    'calm': { name: 'Calm · 4-6',     steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'exhale', dur: 6, label: 'Long, soft exhale…' }] }
+    'calm': { name: 'Calm · 4-6',     steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'exhale', dur: 6, label: 'Long, soft exhale…' }] },
+    'coh':  { name: 'Coherent · 5-5', steps: [{ phase: 'inhale', dur: 5, label: 'Breathe in…' }, { phase: 'exhale', dur: 5, label: 'Breathe out…' }] }
   };
   let activeTech = '478';
   let breatheRunning = false, breatheCycle = 0;
@@ -2983,6 +3350,11 @@
     const ov = document.getElementById('breatheOverlay');
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
+    getBreatheAudioCtx();
+    syncBreatheSoundSelects();
+    updateBreatheCueToggle();
+    const snd = getEffectiveBreatheSound();
+    startAmbientBed(snd);
     document.getElementById('breatheClose').focus();
     breatheRunning = true;
     breatheCycle = 0;
@@ -2991,6 +3363,7 @@
   });
   document.getElementById('breatheClose').addEventListener('click', () => {
     breatheRunning = false;
+    stopAmbientBed();
     const ov = document.getElementById('breatheOverlay');
     ov.classList.remove('open');
     ov.setAttribute('aria-hidden', 'true');
@@ -3016,6 +3389,13 @@
         circle.className = 'breathe-circle ' + step.phase;
         circle.style.transitionDuration = step.dur + 's';
         text.textContent = step.label;
+        const s = getEffectiveBreatheSound();
+        if (s === 'silent') { /* */ }
+        else if (s === 'rain' || s === 'stream' || s === 'breeze' || s === 'cave') {
+          if (step.phase === 'inhale' || step.phase === 'exhale') playBreathTone(step.phase, s, step.dur);
+        } else {
+          playBreathTone(step.phase, s, step.dur);
+        }
         await wait(step.dur * 1000);
       }
     }
@@ -3159,6 +3539,7 @@
 
     // Mood graph — last 30 days
     drawMoodGraph(days);
+    renderMoodHeatmap();
 
     // List
     const list = document.getElementById('historyList');
@@ -3446,6 +3827,26 @@
     });
   });
 
+  function onBreatheSoundUserChange(val) {
+    setBreatheSound(val);
+    const ov = document.getElementById('breatheOverlay');
+    if (ov && ov.classList.contains('open')) {
+      startAmbientBed(getEffectiveBreatheSound());
+    }
+  }
+  const bSoundSel = document.getElementById('breatheSoundSelect');
+  if (bSoundSel) bSoundSel.addEventListener('change', (e) => onBreatheSoundUserChange(e.target.value));
+  const bSoundOverlay = document.getElementById('breatheSoundFromOverlay');
+  if (bSoundOverlay) bSoundOverlay.addEventListener('change', (e) => onBreatheSoundUserChange(e.target.value));
+  const bAudioTog = document.getElementById('breatheAudioToggle');
+  if (bAudioTog) {
+    bAudioTog.addEventListener('click', () => {
+      config.breatheCues = !config.breatheCues;
+      saveConfig();
+      updateBreatheCueToggle();
+    });
+  }
+
   document.getElementById('exportBtn').addEventListener('click', () => {
     const payload = {
       version: BACKUP_VERSION,
@@ -3511,7 +3912,7 @@
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
     if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment' };
+    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'chimes', breatheCues: true };
     applyTheme('parchment');
     saveConfig();
     currentDateKey = dateKey();
@@ -3529,6 +3930,8 @@
   ──────────────────────────────────────────────────────── */
   loadConfig();
   applyTheme(config.theme || 'parchment');
+  syncBreatheSoundSelects();
+  updateBreatheCueToggle();
   setRetentionSelect();
   pruneOldDays();
   loadDay();
