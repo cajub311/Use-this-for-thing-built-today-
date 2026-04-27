@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Stillness" />
 <meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Stillness" />
@@ -23,8 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Botanical journal palette */
+  :root, [data-theme="parchment"] {
     --paper: #EDE3D2;
     --paper-2: #E5DAC5;
     --paper-3: #F4ECDA;
@@ -42,20 +43,69 @@
     --shadow-warm: rgba(74, 64, 49, 0.12);
     --shadow-deep: rgba(74, 64, 49, 0.18);
     --line: #C9BBA4;
-
+    --noise-opacity: 0.35;
+    --bg-grad-1: rgba(184, 197, 178, 0.30);
+    --bg-grad-2: rgba(232, 197, 178, 0.22);
+    --bg-grad-3: rgba(201, 169, 97, 0.18);
     --r-sm: 8px;
     --r: 14px;
     --r-lg: 22px;
     --r-xl: 32px;
   }
+  [data-theme="forest"] {
+    --paper: #2A332B;
+    --paper-2: #1E2620;
+    --paper-3: #313B33;
+    --ink: #E8E0CF;
+    --ink-soft: #B8B09F;
+    --ink-faint: #7E7867;
+    --moss: #94B488;
+    --moss-deep: #B8D4AC;
+    --moss-soft: #4A6B4F;
+    --moss-mist: #3A4D3D;
+    --clay: #D4886B;
+    --clay-soft: #4A2E22;
+    --gold: #D4B473;
+    --gold-soft: #4D3D1F;
+    --shadow-warm: rgba(0, 0, 0, 0.25);
+    --shadow-deep: rgba(0, 0, 0, 0.4);
+    --line: #4A5448;
+    --noise-opacity: 0.18;
+    --bg-grad-1: rgba(74, 107, 79, 0.30);
+    --bg-grad-2: rgba(74, 46, 34, 0.22);
+    --bg-grad-3: rgba(77, 61, 31, 0.20);
+  }
+  [data-theme="midnight"] {
+    --paper: #1B1F2E;
+    --paper-2: #14172A;
+    --paper-3: #232940;
+    --ink: #E5E5F0;
+    --ink-soft: #B0B5C9;
+    --ink-faint: #757A92;
+    --moss: #8AA0C8;
+    --moss-deep: #B0BFE0;
+    --moss-soft: #5A6A88;
+    --moss-mist: #2D3556;
+    --clay: #D4A07A;
+    --clay-soft: #3D2820;
+    --gold: #D9BE7F;
+    --gold-soft: #3D331C;
+    --shadow-warm: rgba(0, 0, 0, 0.3);
+    --shadow-deep: rgba(0, 0, 0, 0.5);
+    --line: #3A4060;
+    --noise-opacity: 0.15;
+    --bg-grad-1: rgba(90, 106, 136, 0.25);
+    --bg-grad-2: rgba(61, 40, 32, 0.22);
+    --bg-grad-3: rgba(217, 190, 127, 0.10);
+  }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
 
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn):focus {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch):focus {
     outline: none;
   }
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn):focus-visible {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch):focus-visible {
     outline: 2px solid var(--moss);
     outline-offset: 2px;
   }
@@ -70,9 +120,10 @@
     color: var(--ink);
     background-color: var(--paper);
     background-image:
-      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(184, 197, 178, 0.30), transparent 70%),
-      radial-gradient(ellipse 700px 500px at -10% 30%, rgba(232, 197, 178, 0.22), transparent 70%),
-      radial-gradient(ellipse 900px 400px at 50% 110%, rgba(201, 169, 97, 0.18), transparent 70%);
+      radial-gradient(ellipse 800px 400px at 80% -10%, var(--bg-grad-1), transparent 70%),
+      radial-gradient(ellipse 700px 500px at -10% 30%, var(--bg-grad-2), transparent 70%),
+      radial-gradient(ellipse 900px 400px at 50% 110%, var(--bg-grad-3), transparent 70%);
+    transition: background-color .45s ease, color .45s ease;
     background-attachment: fixed;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -88,10 +139,15 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: var(--noise-opacity, 0.35);
     mix-blend-mode: multiply;
     z-index: 1;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.10 0 0 0 0.40 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  [data-theme="forest"] body::before,
+  [data-theme="midnight"] body::before {
+    mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.15 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
   /* Decorative spine line */
@@ -1155,6 +1211,76 @@
     padding: 28px 24px;
   }
 
+  /* ── Insights (pattern cards) ─────────────────────────── */
+  .insight-card {
+    background: var(--paper-3);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(201, 187, 164, 0.4);
+    box-shadow: 0 4px 14px var(--shadow-warm);
+    position: relative;
+  }
+  .insight-card::before {
+    content: '';
+    position: absolute;
+    top: 24px; left: 24px;
+    width: 4px; height: 30px;
+    border-radius: 2px;
+    background: var(--moss);
+  }
+  .insight-card.warm::before { background: var(--clay); }
+  .insight-card.gold::before { background: var(--gold); }
+  .insight-card .insight-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--moss);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-left: 16px;
+    margin-bottom: 8px;
+  }
+  .insight-card.warm .insight-tag { color: var(--clay); }
+  .insight-card.gold .insight-tag { color: var(--gold); }
+  .insight-card .insight-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    line-height: 1.45;
+    color: var(--ink);
+    margin: 0 0 0 16px;
+  }
+  .insight-card .insight-text strong {
+    font-style: italic;
+    color: var(--moss-deep);
+    font-weight: 500;
+  }
+  .theme-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .theme-swatch {
+    flex: 1;
+    min-width: 100px;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: 14px;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+    font-family: 'Lora', serif;
+  }
+  .theme-swatch:hover { transform: translateY(-2px); border-color: var(--moss); }
+  .theme-swatch.on { border-color: var(--moss); background: var(--moss-mist); }
+  .theme-swatch .sw {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    display: block;
+  }
+  .theme-swatch .sw-name { font-size: 0.85rem; }
+
   /* ── Animations ─────────────────────────────────────────── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -1825,6 +1951,10 @@
 
     <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
+    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
+      <span id="mindfulMinutes">0</span> mindful minutes today
+    </div>
+
     <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
       <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
     </div>
@@ -1882,6 +2012,21 @@
         <option value="0">Forever (no auto-delete)</option>
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
+      <p class="picker-label" style="margin-top:20px">Appearance</p>
+      <div class="theme-row" id="themeRow" role="group" aria-label="Color theme">
+        <button type="button" class="theme-swatch" data-set-theme="parchment" title="Parchment">
+          <span class="sw" style="background:#EDE3D2;border-color:#C9BBA4"></span>
+          <span class="sw-name">Parchment</span>
+        </button>
+        <button type="button" class="theme-swatch" data-set-theme="forest" title="Forest">
+          <span class="sw" style="background:#2A332B;border-color:#4A5448"></span>
+          <span class="sw-name">Forest</span>
+        </button>
+        <button type="button" class="theme-swatch" data-set-theme="midnight" title="Midnight">
+          <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
+          <span class="sw-name">Midnight</span>
+        </button>
+      </div>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
     </section>
     <section class="leaf">
@@ -1927,6 +2072,21 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
+       INSIGHTS VIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-insights">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Patterns</span></div>
+      <h1 class="greeting">What your days suggest.</h1>
+      <div class="date-line">Gentle observations from saved days</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+    <div id="insightsContent">
+      <div class="history-empty">Keep showing up. Patterns reveal themselves with time. ✦</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
        QUOTES VIEW
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-quotes">
@@ -1946,6 +2106,7 @@
   <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
   <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
+  <button type="button" class="nav-btn" data-view="insights" aria-pressed="false" aria-label="Insights — patterns">Insights</button>
   <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library — quotes">Library</button>
   <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
 </nav>
@@ -2106,6 +2267,19 @@
     { id: 'nauseous',label: 'nauseous', bad: true }
   ];
 
+  const RITUAL_LABELS = {
+    'made-bed': 'made your bed',
+    'water-am': 'morning water',
+    'stretched': 'stretching',
+    'outside': 'stepping outside',
+    'screen-free': 'screen-free time',
+    'real-meal': 'eating without distraction',
+    'kind-word': 'a kind word to yourself',
+    'connected': 'connecting with someone',
+    'read': 'reading',
+    'wrote': 'writing something down'
+  };
+
   /* ────────────────────────────────────────────────────────
      Time / date helpers
   ──────────────────────────────────────────────────────── */
@@ -2139,14 +2313,15 @@
   const blankDay = () => ({
     intention: '',
     mood: 0, energy: 0, moodNote: '',
-    symptoms: [],
+    symptoms: [], rituals: [],
     water: 0, pee: 0, coffee: 0,
-    movement: 0, sun: 0,
+    movement: 0, steps: 0, moveMode: 'min', sun: 0,
+    outings: 0, sweets: 0, calories: 0,
     meals: [], pains: [],
-    sleepHours: 7.0, sleepQuality: 0,
+    sleepHours: 7.0, sleepQuality: 0, dreams: '',
     gratitude: '', reflection: '',
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
-    activeMeal: 'breakfast', activeSeverity: 0,
+    activeMeal: 'breakfast', activeSeverity: 0, activePart: '',
     mindfulMinutes: 0
   });
 
@@ -2209,7 +2384,7 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   };
 
-  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000 };
+  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment' };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -2218,12 +2393,31 @@
         if (j && typeof j === 'object') {
           if (j.retentionDays != null) config.retentionDays = Math.max(0, Math.min(2000, Number(j.retentionDays) || 30));
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
+          if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
         }
       } catch {}
     }
   }
   function saveConfig() {
-    Storage.set(CONFIG_KEY, JSON.stringify({ retentionDays: config.retentionDays, activityCap: config.activityCap }));
+    Storage.set(CONFIG_KEY, JSON.stringify({
+      retentionDays: config.retentionDays,
+      activityCap: config.activityCap,
+      theme: config.theme
+    }));
+  }
+
+  const THEME_COLORS = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
+  function applyTheme(name) {
+    const t = (name === 'forest' || name === 'midnight' || name === 'parchment') ? name : 'parchment';
+    config.theme = t;
+    document.documentElement.setAttribute('data-theme', t);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
+    updateThemeSwatches();
+  }
+  function updateThemeSwatches() {
+    const t = config.theme || 'parchment';
+    document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('on', s.dataset.setTheme === t));
   }
 
   function getAllDayRecords() {
@@ -2297,9 +2491,11 @@
 
   function hasAnyData(d) {
     return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
-           d.water || d.pee || d.coffee || d.movement || d.sun ||
+           (d.rituals && d.rituals.length) ||
+           d.water || d.pee || d.coffee || d.movement || d.sun || d.steps ||
+           d.outings || d.sweets || d.calories ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
-           d.sleepHours !== 7 || d.gratitude || d.reflection || d.mindfulMinutes ||
+           d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes ||
            d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow;
   }
 
@@ -2441,7 +2637,15 @@
       const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
       if (lbs.length) lines.push('Body weather: ' + lbs.join(', '));
     }
+    if (day.rituals && day.rituals.length) {
+      const lbls = day.rituals.map(r => RITUAL_LABELS[r] || r);
+      lines.push('Rituals: ' + lbls.join(', '));
+    }
     lines.push('Water: ' + (day.water || 0) + ' cups · Bathroom: ' + (day.pee || 0) + ' · Caffeine: ' + (day.coffee || 0) + ' · Movement: ' + (day.movement || 0) + ' min · Sun: ' + (day.sun || 0) + ' min');
+    if (day.steps) lines.push('Steps: ' + Number(day.steps).toLocaleString());
+    if (day.outings) lines.push('Outings: ' + day.outings);
+    if (day.sweets) lines.push('Sweets / treats: ' + day.sweets);
+    if (day.calories) lines.push('Calories logged: ' + Number(day.calories).toLocaleString() + ' kcal');
     if (day.meals && day.meals.length) {
       lines.push('Meals:');
       day.meals.forEach(m => lines.push('  · ' + m.type + ': ' + m.description + (m.time ? ' (' + m.time + ')' : '')));
@@ -2452,6 +2656,7 @@
       day.pains.forEach(p => lines.push('  · ' + (sev[p.severity] || '') + ' — ' + p.location + (p.note ? ' — ' + p.note : '')));
     }
     lines.push('Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · quality: ' + (SLEEP_Q[day.sleepQuality] || '') : ''));
+    if (day.dreams) lines.push('Dreams / sleep notes: ' + day.dreams);
     if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
     if (day.reflection) lines.push('Reflection: ' + day.reflection);
     if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
@@ -2499,9 +2704,10 @@
   function dayMatchesQuery(d, q) {
     if (!q) return true;
     const parts = [
-      d.date, d.intention, d.moodNote, d.gratitude, d.reflection,
+      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams,
       d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow
     ];
+    if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
     if (d.meals && d.meals.length) d.meals.forEach(m => { if (m.description) parts.push(m.description); });
     if (d.pains && d.pains.length) d.pains.forEach(p => { parts.push(p.location, p.note); });
     const blob = parts.filter(Boolean).join(' ').toLowerCase();
@@ -2903,7 +3109,8 @@
       if (target === 'history') renderHistory();
       if (target === 'quotes') renderQuotes();
       if (target === 'log') renderLogView();
-      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
+      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); updateThemeSwatches(); }
+      if (target === 'insights') renderInsights();
       if (target === 'today') renderTodaySummary();
     });
   });
@@ -3009,6 +3216,171 @@
     svg.innerHTML = `${grid}<path d="${path}" fill="none" stroke="var(--moss-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${dots}`;
   }
 
+  function renderInsights() {
+    const wrap = document.getElementById('insightsContent');
+    if (!wrap) return;
+    const days = [];
+    Storage.listKeys(DAY_KEY_PREFIX).forEach(k => {
+      const raw = Storage.get(k);
+      if (!raw) return;
+      try { days.push({ date: k.replace(DAY_KEY_PREFIX, ''), ...JSON.parse(raw) }); } catch {}
+    });
+    days.sort((a, b) => a.date.localeCompare(b.date));
+    if (days.length < 3) {
+      wrap.innerHTML = `
+        <div class="insight-card">
+          <div class="insight-tag">Beginnings</div>
+          <p class="insight-text">You've shown up for <strong>${days.length} day${days.length === 1 ? '' : 's'}</strong> so far. Deeper patterns usually need a few more check-ins. Keep going gently.</p>
+        </div>`;
+      return;
+    }
+    const symLabel = (id) => { const s = SYMPTOMS.find(x => x.id === id); return s ? s.label : id; };
+    const moodNames = ['', 'heavy', 'off', 'steady', 'bright', 'glowing'];
+    const insights = [];
+
+    const moodCounts = [0, 0, 0, 0, 0, 0];
+    days.forEach(d => { if (d.mood) moodCounts[d.mood]++; });
+    const moodTotal = moodCounts.reduce((a, b) => a + b, 0);
+    if (moodTotal >= 3) {
+      const top = moodCounts.indexOf(Math.max(...moodCounts));
+      if (top > 0) {
+        const pct = Math.round(moodCounts[top] / moodTotal * 100);
+        insights.push({ tag: 'Tendency', cls: '', text: `Your most common mood is <strong>${moodNames[top]}</strong> — about <strong>${pct}%</strong> of the days you logged.` });
+      }
+    }
+
+    const sleepy = days.filter(d => d.sleepHours > 0 && d.mood);
+    if (sleepy.length >= 4) {
+      const wellSlept = sleepy.filter(d => d.sleepHours >= 7);
+      const poorlySlept = sleepy.filter(d => d.sleepHours < 7);
+      if (wellSlept.length >= 2 && poorlySlept.length >= 2) {
+        const wellAvg = wellSlept.reduce((s, d) => s + d.mood, 0) / wellSlept.length;
+        const poorAvg = poorlySlept.reduce((s, d) => s + d.mood, 0) / poorlySlept.length;
+        const diff = wellAvg - poorAvg;
+        if (Math.abs(diff) >= 0.4) {
+          insights.push({
+            tag: 'Sleep & mood', cls: 'gold',
+            text: diff > 0
+              ? `On <strong>7+ hour</strong> nights, your mood averages <strong>${diff.toFixed(1)} points higher</strong> than shorter nights.`
+              : `Mood and sleep don’t show a big split here yet — other forces may matter more.`
+          });
+        }
+      }
+    }
+
+    const sunMood = days.filter(d => d.mood);
+    if (sunMood.length >= 4) {
+      const withSun = sunMood.filter(d => d.sun >= 15);
+      const noSun = sunMood.filter(d => !d.sun || d.sun < 15);
+      if (withSun.length >= 2 && noSun.length >= 2) {
+        const wAvg = withSun.reduce((s, d) => s + d.mood, 0) / withSun.length;
+        const nAvg = noSun.reduce((s, d) => s + d.mood, 0) / noSun.length;
+        if (wAvg - nAvg >= 0.3) {
+          insights.push({
+            tag: 'Light', cls: 'gold',
+            text: `Days with <strong>15+ minutes outside</strong> average <strong>${(wAvg - nAvg).toFixed(1)} mood points</strong> higher.`
+          });
+        }
+      }
+    }
+
+    const cafDays = days.filter(d => d.mood && d.coffee != null);
+    if (cafDays.length >= 4) {
+      const highCaf = cafDays.filter(d => d.coffee >= 3);
+      const lowCaf = cafDays.filter(d => d.coffee <= 1);
+      if (highCaf.length >= 2 && lowCaf.length >= 2) {
+        const hAvg = highCaf.reduce((s, d) => s + d.mood, 0) / highCaf.length;
+        const lAvg = lowCaf.reduce((s, d) => s + d.mood, 0) / lowCaf.length;
+        if (lAvg - hAvg >= 0.4) {
+          insights.push({
+            tag: 'Caffeine', cls: 'warm',
+            text: `Mood is lower on <strong>3+ caffeine</strong> days by about <strong>${(lAvg - hAvg).toFixed(1)} points</strong> — a soft signal, not a verdict.`
+          });
+        }
+      }
+    }
+
+    const movDays = days.filter(d => d.mood && d.movement != null);
+    if (movDays.length >= 4) {
+      const moved = movDays.filter(d => d.movement >= 20);
+      const still = movDays.filter(d => d.movement < 10);
+      if (moved.length >= 2 && still.length >= 2) {
+        const mAvg = moved.reduce((s, d) => s + d.mood, 0) / moved.length;
+        const sAvg = still.reduce((s, d) => s + d.mood, 0) / still.length;
+        if (mAvg - sAvg >= 0.3) {
+          insights.push({
+            tag: 'Movement', cls: '',
+            text: `Days with <strong>20+ minutes of movement</strong> read about <strong>${(mAvg - sAvg).toFixed(1)} points brighter</strong> than very still days.`
+          });
+        }
+      }
+    }
+
+    const ritualCount = {};
+    days.forEach(d => (d.rituals || []).forEach(r => { ritualCount[r] = (ritualCount[r] || 0) + 1; }));
+    const ritTop = Object.entries(ritualCount).sort((a, b) => b[1] - a[1])[0];
+    if (ritTop && ritTop[1] >= 3) {
+      const label = RITUAL_LABELS[ritTop[0]] || ritTop[0];
+      insights.push({
+        tag: 'Ritual', cls: 'gold',
+        text: `You keep returning to <strong>${label}</strong> on <strong>${ritTop[1]} days</strong> — a thread through your weeks.`
+      });
+    }
+
+    const symCount = {};
+    days.forEach(d => (d.symptoms || []).forEach(sid => { symCount[sid] = (symCount[sid] || 0) + 1; }));
+    const symTop = Object.entries(symCount).sort((a, b) => b[1] - a[1])[0];
+    if (symTop && symTop[1] >= 3) {
+      insights.push({
+        tag: 'Recurring', cls: 'warm',
+        text: `Body weather <strong>${escapeHtml(symLabel(symTop[0]))}</strong> has shown up on <strong>${symTop[1]} days</strong> — notice without fixing.`
+      });
+    }
+
+    const painCount = {};
+    days.forEach(d => (d.pains || []).forEach(p => {
+      const loc = p.location || p.part || '';
+      if (loc) painCount[loc] = (painCount[loc] || 0) + 1;
+    }));
+    const painTop = Object.entries(painCount).sort((a, b) => b[1] - a[1])[0];
+    if (painTop && painTop[1] >= 3) {
+      insights.push({
+        tag: 'Body', cls: 'warm',
+        text: `<strong>${escapeHtml(painTop[0])}</strong> has been noted <strong>${painTop[1]} times</strong> — a place that might need slower kindness.`
+      });
+    }
+
+    const firstDate = new Date(days[0].date);
+    const todayD = new Date();
+    const daysSpan = Math.max(1, Math.round((todayD - firstDate) / 864e5) + 1);
+    const consistency = Math.round(days.length / daysSpan * 100);
+    insights.push({
+      tag: 'Showing up', cls: 'gold',
+      text: `<strong>${days.length}</strong> day${days.length === 1 ? '' : 's'} logged so far (about <strong>${consistency}%</strong> of the span from your first entry). Imperfect is still the practice.`
+    });
+
+    const sleeps = days.filter(d => d.sleepHours > 0).map(d => d.sleepHours);
+    if (sleeps.length >= 3) {
+      const avg = sleeps.reduce((a, b) => a + b, 0) / sleeps.length;
+      insights.push({
+        tag: 'Rest', cls: '',
+        text: `Average sleep in your log: <strong>${avg.toFixed(1)}h</strong>. ${avg >= 7 ? 'Your body is being offered rest.' : 'A little more sleep, when it’s possible, softens a lot.'}`
+      });
+    }
+
+    const totalMindful = days.reduce((s, d) => s + (d.mindfulMinutes || 0), 0);
+    if (totalMindful > 0) {
+      insights.push({
+        tag: 'Inner time', cls: 'gold',
+        text: `Altogether, about <strong>${totalMindful} minutes</strong> in breathing, grounding, and practices you’ve logged.`
+      });
+    }
+
+    wrap.innerHTML = insights.length
+      ? insights.map(i => `<div class="insight-card ${i.cls}"><div class="insight-tag">${escapeHtml(i.tag)}</div><p class="insight-text">${i.text}</p></div>`).join('')
+      : `<div class="insight-card"><div class="insight-tag">Still gathering</div><p class="insight-text">Patterns are quiet for now. A few more honest days will help.</p></div>`;
+  }
+
   /* ────────────────────────────────────────────────────────
      Quotes view
   ──────────────────────────────────────────────────────── */
@@ -3065,6 +3437,13 @@
     renderRetentionStatus();
     renderHistory();
     renderLogView();
+  });
+
+  document.querySelectorAll('.theme-swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.dataset.setTheme);
+      saveConfig();
+    });
   });
 
   document.getElementById('exportBtn').addEventListener('click', () => {
@@ -3132,7 +3511,8 @@
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
     if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000 };
+    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment' };
+    applyTheme('parchment');
     saveConfig();
     currentDateKey = dateKey();
     loadDay();
@@ -3148,6 +3528,7 @@
      Boot
   ──────────────────────────────────────────────────────── */
   loadConfig();
+  applyTheme(config.theme || 'parchment');
   setRetentionSelect();
   pruneOldDays();
   loadDay();
