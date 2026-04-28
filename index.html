@@ -78,7 +78,7 @@
     --paper-3: #313B33;
     --ink: #E8E0CF;
     --ink-soft: #B8B09F;
-    --ink-faint: #7E7867;
+    --ink-faint: #9E8E7C;
     --moss: #94B488;
     --moss-deep: #B8D4AC;
     --moss-soft: #4A6B4F;
@@ -104,7 +104,7 @@
     --paper-3: #232940;
     --ink: #E5E5F0;
     --ink-soft: #B0B5C9;
-    --ink-faint: #757A92;
+    --ink-faint: #9098B2;
     --moss: #8AA0C8;
     --moss-deep: #B0BFE0;
     --moss-soft: #5A6A88;
@@ -1711,7 +1711,6 @@
     border-top: 1px solid var(--nav-border, rgba(201, 187, 164, 0.5));
     box-shadow: 0 -2px 18px var(--shadow-warm, rgba(101,80,50,0.08));
     z-index: 50;
-    pointer-events: none;
     border-radius: 0;
     gap: 0;
     transition: background .45s ease, border-color .45s ease;
@@ -1732,7 +1731,6 @@
     text-transform: uppercase;
     color: var(--ink-faint, rgba(62,47,28,0.45));
     cursor: pointer;
-    pointer-events: auto;
     touch-action: manipulation;
     position: relative;
     overflow: hidden;
@@ -2288,6 +2286,21 @@
     .greeting { font-size: clamp(1.55rem, 6.5vw, 2rem); }
     .botanical-deco { display: none; }
     body::after { display: none; }
+  }
+
+  /* ── Android tap targets ≥44px ────────────────────────── */
+  @media (max-width: 768px) {
+    .chip { padding: 11px 16px; }
+    .pill { padding: 12px 0; }
+    .pill.minus { min-height: 44px; }
+    .sev-btn { padding: 11px 0; }
+    .meal-type { padding: 12px 4px; }
+    .moon-btn { min-height: 56px; }
+  }
+
+  /* ── Meal types 2-column on small phones ─────────────── */
+  @media (max-width: 400px) {
+    .meal-types { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ── Prevent Chrome auto-zoom on inputs (Android/iOS) ──── */
@@ -3048,6 +3061,16 @@
       <p class="leaf-sub">Removes all saved days, activity, and local settings in this browser. This cannot be undone. Export a backup first if you might need it.</p>
       <button type="button" class="data-btn data-btn-danger" id="wipeAllBtn">Erase all Stillness data</button>
     </section>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">More <em>spaces</em></h2>
+      </div>
+      <p class="leaf-sub">Extra sections for deeper reflection and quiet reading.</p>
+      <div class="data-row" style="flex-wrap:wrap;gap:8px">
+        <button type="button" class="data-btn" id="goToPath">Path — values &amp; steps</button>
+        <button type="button" class="data-btn" id="goToLibrary">The Library — words &amp; images</button>
+      </div>
+    </section>
   </div>
 
   <!-- LOG VIEW — activity + rolling feed -->
@@ -3072,19 +3095,6 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       INSIGHTS VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-insights">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Patterns</span></div>
-      <h1 class="greeting">What your days suggest.</h1>
-      <div class="date-line">Gentle observations from saved days</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div class="history-empty">Keep showing up. Patterns reveal themselves with time. ✦</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
        PATH VIEW
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-path">
@@ -3094,6 +3104,7 @@
       <div class="date-line">Values, experiments, and next small steps</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="pathBackBtn">← Memory</button></div>
 
     <section class="leaf intention">
       <div class="leaf-head">
@@ -3170,6 +3181,7 @@
       <div class="date-line">25 quiet teachings</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="quotesBackBtn">← Memory</button></div>
     <section class="leaf">
       <div class="leaf-head">
         <h2 class="leaf-title">Peaceful <em>images</em></h2>
@@ -4708,6 +4720,10 @@
   document.getElementById('goToLogFromToday').addEventListener('click', () => switchView('log'));
   document.getElementById('goToTrack').addEventListener('click', () => switchView('track'));
   document.getElementById('goToJournal').addEventListener('click', () => switchView('journal'));
+  document.getElementById('goToPath').addEventListener('click', () => switchView('path'));
+  document.getElementById('goToLibrary').addEventListener('click', () => switchView('quotes'));
+  document.getElementById('pathBackBtn').addEventListener('click', () => switchView('memory'));
+  document.getElementById('quotesBackBtn').addEventListener('click', () => switchView('memory'));
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
