@@ -129,7 +129,7 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     line-height: 1.55;
-    padding-bottom: max(150px, env(safe-area-inset-bottom, 0px) + 130px);
+    padding-bottom: max(110px, env(safe-area-inset-bottom, 0px) + 90px);
     position: relative;
     overflow-x: hidden;
   }
@@ -1363,27 +1363,23 @@
       linear-gradient(135deg, rgba(214, 220, 201, 0.82), rgba(244, 236, 218, 0.92)),
       var(--paper-3);
   }
-  .soundscape-panel.compact { margin-bottom: 14px; }
-  .soundscape-panel.compact .leaf-sub { display: none; }
-  .soundscape-panel.compact[open] .leaf-sub { display: block; margin-top: 6px; }
   .soundscape-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    margin-top: 10px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
   }
   .soundscape-btn {
     border: 1px solid rgba(201, 187, 164, 0.5);
     background: var(--paper);
     color: var(--ink-soft);
     border-radius: var(--r);
-    min-height: 44px;
-    padding: 8px 6px;
+    min-height: 58px;
+    padding: 10px 8px;
     cursor: pointer;
     font-family: 'Lora', serif;
-    font-size: 0.8rem;
+    font-size: 0.86rem;
     transition: all .22s ease;
-    touch-action: manipulation;
   }
   .soundscape-btn:hover {
     transform: translateY(-1px);
@@ -1548,55 +1544,42 @@
   /* ── Bottom navigation ──────────────────────────────────── */
   .nav {
     position: fixed;
-    bottom: max(12px, env(safe-area-inset-bottom, 0px) + 4px);
+    bottom: max(16px, env(safe-area-inset-bottom, 0px) + 8px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    max-width: calc(100% - 16px);
-    z-index: 50;
-    pointer-events: none;
-  }
-  .nav-row {
-    display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    max-width: calc(100% - 24px);
     gap: 4px;
-    background: rgba(237, 227, 210, 0.94);
+    background: rgba(237, 227, 210, 0.92);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 5px 6px;
+    padding: 6px;
     border-radius: 999px;
-    box-shadow: 0 8px 28px var(--shadow-deep);
-    border: 1px solid rgba(201, 187, 164, 0.55);
-    pointer-events: auto;
+    box-shadow: 0 8px 32px var(--shadow-deep);
+    z-index: 50;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    /* Let taps pass through the pill around the tab buttons (fixes dead zones on Android) */
+    pointer-events: none;
   }
-  .nav-row--secondary {
-    padding: 4px 8px;
-    gap: 6px;
-    opacity: 0.95;
-  }
-  .nav-row--secondary .nav-btn {
-    padding: 8px 14px;
-    font-size: 0.92rem;
+  @media (max-width: 720px) {
+    .nav { border-radius: 24px; }
   }
   .nav-btn {
     background: transparent;
     border: none;
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 999px;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 0.98rem;
+    font-size: 1rem;
     color: var(--ink-soft);
     cursor: pointer;
     transition: all .25s;
     letter-spacing: 0.01em;
     pointer-events: auto;
     touch-action: manipulation;
-    min-height: 44px;
   }
   .nav-btn:hover { color: var(--ink); }
   .nav-btn.active {
@@ -2006,47 +1989,6 @@
     font-size: 0.92rem; line-height: 1.6;
   }
   .start-here .start-list li { margin: 0.4em 0; }
-  .collapsible-leaf {
-    padding: 12px 18px 14px;
-  }
-  .collapsible-leaf > summary {
-    list-style: none;
-    cursor: pointer;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--moss-deep);
-    padding: 6px 0;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .collapsible-leaf > summary::-webkit-details-marker { display: none; }
-  .collapsible-leaf > summary::after {
-    content: ' ▾';
-    font-size: 0.75em;
-    color: var(--ink-faint);
-  }
-  .collapsible-leaf[open] > summary::after { content: ' ▴'; }
-  .collapsible-leaf .leaf-sub { margin-top: 8px; }
-  .collapsible-leaf[open] { padding-bottom: 20px; }
-  details.soundscape-panel > summary {
-    list-style: none;
-    cursor: pointer;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 4px 0 8px;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  details.soundscape-panel > summary::-webkit-details-marker { display: none; }
-  details.soundscape-panel > summary .chev {
-    font-size: 0.72rem;
-    color: var(--ink-faint);
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.06em;
-  }
 
   .sleep-top {
     display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;
@@ -2326,16 +2268,19 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <details class="leaf start-here collapsible-leaf" id="startHereDetails">
-      <summary>How today works <span style="font-size:0.75rem;font-weight:400;color:var(--ink-faint);font-family:'JetBrains Mono',monospace">tap</span></summary>
-      <p class="leaf-sub">A gentle order — scroll for anything.</p>
+    <section class="leaf start-here" aria-label="How to use today">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Start <em>here</em></h2>
+        <span class="leaf-num">№ 00</span>
+      </div>
+      <p class="leaf-sub">A gentle order for your day — you can still scroll to anything.</p>
       <ol class="start-list">
-        <li><strong>Anchor &amp; check-in</strong> — intention, mood, energy.</li>
-        <li><strong>Body &amp; basics</strong> — water, movement, light, food.</li>
-        <li><strong>Rest &amp; close</strong> — sleep, gratitude, reflection, evening.</li>
-        <li><strong>Session sheet</strong> — at the bottom: copy or print your day.</li>
+        <li><strong>Anchor &amp; check-in</strong> — intention, then mood and energy.</li>
+        <li><strong>Body &amp; basics</strong> — water, movement, light, food, what hurts.</li>
+        <li><strong>Rest &amp; close</strong> — sleep, dreams, gratitude, reflection, evening.</li>
+        <li><strong>Session sheet &amp; print</strong> — at the bottom: copy or print your whole day.</li>
       </ol>
-    </details>
+    </section>
 
     <section class="peace-visual no-print" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
@@ -2363,12 +2308,12 @@
       <div class="quote-author" id="quoteAuthor">—</div>
     </section>
 
-    <details class="leaf soundscape-panel compact no-print" id="ambienceDetails">
-      <summary>
-        <span class="leaf-title" style="margin:0">Soft <em>ambience</em> <span class="chev">tap ▾</span></span>
-        <span class="leaf-num">optional</span>
-      </summary>
-      <p class="leaf-sub">Quiet loops while you journal — tap a sound, adjust volume.</p>
+    <section class="leaf soundscape-panel no-print" aria-label="Peaceful soundscapes">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Soft <em>ambience</em></h2>
+        <span class="leaf-num">offline</span>
+      </div>
+      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as “Take a breath.”</p>
       <div class="soundscape-grid" id="soundscapeGrid">
         <button type="button" class="soundscape-btn" data-soundscape="rain">Soft rain</button>
         <button type="button" class="soundscape-btn" data-soundscape="forest">Forest air</button>
@@ -2378,10 +2323,10 @@
       </div>
       <div class="soundscape-controls">
         <span class="soundscape-status" id="soundscapeStatus">silent</span>
-        <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Ambience volume" />
+        <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
         <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
       </div>
-    </details>
+    </section>
 
     <!-- Mood + Energy -->
     <section class="leaf">
@@ -2627,7 +2572,7 @@
         <span class="leaf-num">№ 08</span>
       </div>
       <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
-      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
+      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button></div>
       <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
     </section>
 
@@ -2986,19 +2931,14 @@
 </div>
 
 <!-- Bottom navigation -->
-<!-- Bottom navigation — two rows so tabs stay large and tappable -->
 <nav class="nav" aria-label="Main">
-  <div class="nav-row" role="tablist" aria-label="Main sections">
-    <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today">Today</button>
-    <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden">Garden</button>
-    <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log">Log</button>
-    <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory">Memory</button>
-  </div>
-  <div class="nav-row nav-row--secondary" role="tablist" aria-label="More">
-    <button type="button" class="nav-btn" data-view="insights" aria-pressed="false" aria-label="Insights">Insights</button>
-    <button type="button" class="nav-btn" data-view="path" aria-pressed="false" aria-label="Path">Path</button>
-    <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library">Library</button>
-  </div>
+  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
+  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
+  <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
+  <button type="button" class="nav-btn" data-view="insights" aria-pressed="false" aria-label="Insights — patterns">Insights</button>
+  <button type="button" class="nav-btn" data-view="path" aria-pressed="false" aria-label="Path — self-help plan">Path</button>
+  <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library — quotes">Library</button>
+  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -3895,19 +3835,13 @@
       document.getElementById('quoteText').textContent = q.t;
       document.getElementById('quoteAuthor').textContent = q.a;
       document.getElementById('affirmation').textContent = a;
-      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
     } else {
       const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
     }
-    const pill = document.getElementById('promptPill');
-    if (pill) {
-      pill.querySelectorAll('.prompt-shuffle').forEach(b => {
-        b.replaceWith(b.cloneNode(true));
-      });
-      const btn = pill.querySelector('.prompt-shuffle');
-      if (btn) btn.addEventListener('click', () => renderQuoteAndAffirmation(true));
-    }
+    const sh = document.getElementById('promptShuffle');
+    if (sh) sh.addEventListener('click', () => renderQuoteAndAffirmation(true));
   }
   function renderIntention() {
     document.getElementById('intentionInput').value = day.intention || '';
@@ -4377,7 +4311,19 @@
     });
   });
   document.getElementById('goToLogFromToday').addEventListener('click', () => {
-    switchView('log');
+    document.querySelectorAll('.nav-btn').forEach(x => {
+      x.classList.remove('active');
+      x.setAttribute('aria-pressed', 'false');
+    });
+    const logBtn = document.querySelector('.nav-btn[data-view="log"]');
+    if (logBtn) {
+      logBtn.classList.add('active');
+      logBtn.setAttribute('aria-pressed', 'true');
+    }
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-log').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderLogView();
   });
 
   /* ────────────────────────────────────────────────────────
@@ -4946,27 +4892,26 @@
   const pathStepInput = document.getElementById('pathStepInput');
   if (pathStepInput) pathStepInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathStep(); });
 
-  function switchView(viewId) {
-    const el = document.getElementById('view-' + viewId);
-    if (!el) return;
-    document.querySelectorAll('.nav-btn').forEach(x => {
-      x.classList.toggle('active', x.dataset.view === viewId);
-      x.setAttribute('aria-pressed', x.dataset.view === viewId ? 'true' : 'false');
-    });
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    el.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (viewId === 'history') renderHistory();
-    if (viewId === 'quotes') renderQuotes();
-    if (viewId === 'log') renderLogView();
-    if (viewId === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
-    if (viewId === 'insights') renderInsights();
-    if (viewId === 'path') renderPath();
-    if (viewId === 'today') renderTodaySummary();
-  }
-
   document.querySelectorAll('.nav-btn').forEach(b => {
-    b.addEventListener('click', () => switchView(b.dataset.view));
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(x => {
+        x.classList.remove('active');
+        x.setAttribute('aria-pressed', 'false');
+      });
+      b.classList.add('active');
+      b.setAttribute('aria-pressed', 'true');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const target = b.dataset.view;
+      document.getElementById('view-' + target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (target === 'history') renderHistory();
+      if (target === 'quotes') renderQuotes();
+      if (target === 'log') renderLogView();
+      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
+      if (target === 'insights') renderInsights();
+      if (target === 'path') renderPath();
+      if (target === 'today') renderTodaySummary();
+    });
   });
 
   /* ────────────────────────────────────────────────────────
@@ -5022,6 +4967,7 @@
       return;
     }
     list.innerHTML = '';
+    days.forEach(d => {
       const el = document.createElement('div');
       el.className = 'history-day';
       el.innerHTML = buildLogCardHtml(d);
