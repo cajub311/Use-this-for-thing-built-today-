@@ -3384,14 +3384,22 @@
   let ambientNodes = [];
   let ambientMasterGain = null;
 
-  function getAudioCtx() {
+  function getAudioCtxSync() {
     if (!audioCtx) {
       try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; }
     }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
     return audioCtx;
   }
-  function getBreatheAudioCtx() { return getAudioCtx(); }
+  /** Required on iOS / Android: context starts suspended until user gesture; resume() is async. */
+  async function ensureAudioRunning() {
+    const ctx = getAudioCtxSync();
+    if (!ctx) return null;
+    if (ctx.state === 'suspended') {
+      try { await ctx.resume(); } catch (e) { /* may reject if no user activation */ }
+    }
+    return ctx;
+  }
+  function getBreatheAudioCtx() { return getAudioCtxSync(); }
 
   function disconnectAmbientNodes() {
     ambientNodes.forEach(n => {
@@ -3438,12 +3446,12 @@
     disconnectAmbientNodes();
   }
 
-  function startAmbientBed(sound, volMul) {
+  async function startAmbientBed(sound, volMul) {
     stopAmbientBed();
     normalizeBreatheSound();
     if (typeof volMul !== 'number' || volMul <= 0) volMul = 1;
     if (sound === 'silent' || !BREATHE_SOUNDS.filter(s => s !== 'silent').includes(sound)) return;
-    const ctx = getAudioCtx();
+    const ctx = await ensureAudioRunning();
     if (!ctx) return;
     const now = ctx.currentTime;
     const master = ctx.createGain();
@@ -3573,9 +3581,9 @@
   }
 
   const PHASE_TONE = { inhale: 0, hold: 1, exhale: 2, 'hold-out': 3 };
-  function playBreathTone(phase, style, stepDurSec) {
+  async function playBreathTone(phase, style, stepDurSec) {
     if (style === 'silent' || config.breatheCues === false) return;
-    const ctx = getAudioCtx();
+    const ctx = await ensureAudioRunning();
     if (!ctx) return;
     const t = PHASE_TONE[phase] != null ? PHASE_TONE[phase] : 0;
     const now = ctx.currentTime;
@@ -4333,9 +4341,9 @@
   let audioEnabled = (Storage.get(AUDIO_KEY) || 'on') === 'on';
   let activeSoundscape = null;
 
-  function playBell(freq = 528, duration = 1.1) {
+  async function playBell(freq = 528, duration = 1.1) {
     if (!audioEnabled) return;
-    const ctx = getAudioCtx();
+    const ctx = await ensureAudioRunning();
     if (!ctx) return;
     const now = ctx.currentTime;
     [freq, freq * 1.5].forEach((f, i) => {
@@ -4356,10 +4364,10 @@
     activeSoundscape = null;
     renderSoundscapeState();
   }
-  function startSoundscape(kind) {
+  async function startSoundscape(kind) {
     const volume = document.getElementById('soundscapeVolume');
     const amount = volume ? Number(volume.value) / 100 : 0.38;
-    startAmbientBed(kind, amount * 1.15);
+    await startAmbientBed(kind, amount * 1.15);
     activeSoundscape = kind;
     renderSoundscapeState();
     pushActivity('Ambience: ' + kind + '.');
@@ -4387,14 +4395,14 @@
     audioEnabled = !audioEnabled;
     Storage.set(AUDIO_KEY, audioEnabled ? 'on' : 'off');
     updateAudioToggle();
-    if (audioEnabled) playBell(528, 0.9);
+    if (audioEnabled) void playBell(528, 0.9);
   });
   updateAudioToggle();
 
   document.querySelectorAll('.soundscape-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (activeSoundscape === btn.dataset.soundscape) stopSoundscape();
-      else startSoundscape(btn.dataset.soundscape);
+      else void startSoundscape(btn.dataset.soundscape);
     });
   });
   document.getElementById('soundscapeStop').addEventListener('click', stopSoundscape);
@@ -4411,21 +4419,20 @@
     });
   });
 
-  document.getElementById('breatheBtn').addEventListener('click', () => {
+  document.getElementById('breatheBtn').addEventListener('click', async () => {
     const ov = document.getElementById('breatheOverlay');
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
-    getBreatheAudioCtx();
+    await ensureAudioRunning();
     syncBreatheSoundSelects();
     updateBreatheCueToggle();
     const snd = getEffectiveBreatheSound();
-    startAmbientBed(snd, 1);
+    await startAmbientBed(snd, 1);
     document.getElementById('breatheClose').focus();
     breatheRunning = true;
     breatheCycle = 0;
     breatheStartTime = Date.now();
-    getAudioCtx();
-    runBreathe();
+    void runBreathe();
   });
   document.getElementById('breatheClose').addEventListener('click', () => {
     breatheRunning = false;
@@ -4444,6 +4451,7 @@
     const circle = document.getElementById('breatheCircle');
     const text = document.getElementById('breatheText');
     const counter = document.getElementById('breatheCounter');
+    await ensureAudioRunning();
     text.textContent = 'Settle in…';
     counter.textContent = TECHNIQUES[activeTech].name;
     await wait(2200);
@@ -4456,7 +4464,7 @@
         circle.style.transitionDuration = step.dur + 's';
         text.textContent = step.label;
         const s = getEffectiveBreatheSound();
-        if (s !== 'silent') playBreathTone(step.phase, s, step.dur);
+        if (s !== 'silent') await playBreathTone(step.phase, s, step.dur);
         await wait(step.dur * 1000);
       }
     }
@@ -4651,7 +4659,7 @@
       wrap.appendChild(dot);
     }
   }
-  function renderKindness() {
+  async function renderKindness() {
     const stage = KINDNESS_STAGES[kindnessStage];
     if (!stage) return;
     document.getElementById('kindnessStep').textContent = `stage ${kindnessStage + 1} of ${KINDNESS_STAGES.length} · ${stage.who}`;
@@ -4662,15 +4670,14 @@
       phrase.style.opacity = '1';
     }, 180);
     renderProgress('kindnessProgress', stage.phrases.length, kindnessPhrase);
-    playBell(528, 0.8);
+    await playBell(528, 0.8);
   }
   document.getElementById('kindnessBtn').addEventListener('click', () => {
     kindnessStage = 0;
     kindnessPhrase = 0;
     kindnessStart = Date.now();
-    getAudioCtx();
     setOverlayOpen('kindnessOverlay', true);
-    renderKindness();
+    void renderKindness();
     document.getElementById('kindnessClose').focus();
   });
   document.getElementById('kindnessNext').addEventListener('click', () => {
@@ -4684,7 +4691,7 @@
         return;
       }
     }
-    renderKindness();
+    void renderKindness();
   });
   document.getElementById('kindnessClose').addEventListener('click', () => {
     setOverlayOpen('kindnessOverlay', false);
@@ -4695,7 +4702,7 @@
     document.getElementById('kindnessBtn').focus();
   });
 
-  function renderScan() {
+  async function renderScan() {
     document.getElementById('scanStep').textContent = `part ${scanIdx + 1} of ${BODY_SCAN.length}`;
     const phrase = document.getElementById('scanPhrase');
     phrase.style.opacity = '0';
@@ -4704,14 +4711,13 @@
       phrase.style.opacity = '1';
     }, 180);
     renderProgress('scanProgress', BODY_SCAN.length, scanIdx);
-    playBell(396, 0.8);
+    await playBell(396, 0.8);
   }
   document.getElementById('scanBtn').addEventListener('click', () => {
     scanIdx = 0;
     scanStart = Date.now();
-    getAudioCtx();
     setOverlayOpen('scanOverlay', true);
-    renderScan();
+    void renderScan();
     document.getElementById('scanClose').focus();
   });
   document.getElementById('scanNext').addEventListener('click', () => {
@@ -4721,7 +4727,7 @@
       pushActivity('Completed body scan practice.');
       return;
     }
-    renderScan();
+    void renderScan();
   });
   document.getElementById('scanClose').addEventListener('click', () => {
     setOverlayOpen('scanOverlay', false);
@@ -4758,8 +4764,8 @@
     document.getElementById('worryPaper').classList.add('dissolving');
     document.getElementById('worryRelease').style.display = 'none';
     document.getElementById('worryInstruction').textContent = 'Released. Watch it dissolve.';
-    playBell(396, 1.5);
-    setTimeout(() => playBell(528, 1.2), 800);
+    void playBell(396, 1.5);
+    setTimeout(() => { void playBell(528, 1.2); }, 800);
     setTimeout(() => {
       document.getElementById('worryClose').click();
       pushActivity('Released a worry.');
@@ -5250,7 +5256,7 @@
     setBreatheSound(val);
     const ov = document.getElementById('breatheOverlay');
     if (ov && ov.classList.contains('open')) {
-      startAmbientBed(getEffectiveBreatheSound(), 1);
+      void ensureAudioRunning().then(() => startAmbientBed(getEffectiveBreatheSound(), 1));
     }
   }
   const bSoundSel = document.getElementById('breatheSoundSelect');
