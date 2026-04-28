@@ -66,6 +66,7 @@
     --bg-grad-3: rgba(201, 169, 97, 0.18);
     --nav-bg: rgba(237, 227, 210, 0.94);
     --nav-border: rgba(201, 187, 164, 0.55);
+    --nav-hover: rgba(74, 107, 79, 0.1);
     --r-sm: 8px;
     --r: 14px;
     --r-lg: 22px;
@@ -95,6 +96,7 @@
     --bg-grad-3: rgba(77, 61, 31, 0.20);
     --nav-bg: rgba(18, 24, 19, 0.97);
     --nav-border: rgba(74, 84, 72, 0.65);
+    --nav-hover: rgba(255, 255, 255, 0.08);
   }
   [data-theme="midnight"] {
     --paper: #1B1F2E;
@@ -120,15 +122,16 @@
     --bg-grad-3: rgba(217, 190, 127, 0.10);
     --nav-bg: rgba(11, 13, 22, 0.97);
     --nav-border: rgba(58, 64, 96, 0.65);
+    --nav-hover: rgba(255, 255, 255, 0.1);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
 
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn):focus {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .path-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn, .overlay-close, .tech-tab, .audio-toggle, .soundscape-btn, .mini-stop, .prompt-shuffle):focus {
     outline: none;
   }
-  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn):focus-visible {
+  :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .path-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn, .overlay-close, .tech-tab, .audio-toggle, .soundscape-btn, .mini-stop, .prompt-shuffle):focus-visible {
     outline: 2px solid var(--moss);
     outline-offset: 2px;
   }
@@ -883,12 +886,23 @@
   }
   .prompt-pill::before { content: '✦  '; color: var(--gold); }
   .prompt-shuffle {
-    background: none; border: none; color: var(--moss);
-    cursor: pointer; font-family: 'Cormorant Garamond', serif; font-style: italic;
-    font-size: 0.85rem; margin-left: 10px;
-    text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.55);
+    color: var(--moss-deep);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-left: 10px;
+    transition: background .2s, border-color .2s, color .2s;
   }
-  .prompt-shuffle:hover { color: var(--moss-deep); }
+  .prompt-shuffle:hover {
+    background: var(--moss-mist);
+    border-color: var(--moss-soft);
+    color: var(--moss-deep);
+  }
 
   .heatmap-wrap {
     background: var(--paper-3);
@@ -1516,6 +1530,12 @@
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 0.95rem;
+    transition: background .2s, border-color .2s, color .2s;
+  }
+  .mini-stop:hover {
+    background: var(--moss-mist);
+    border-color: var(--moss-soft);
+    color: var(--moss-deep);
   }
   .path-grid {
     display: grid;
@@ -1567,11 +1587,26 @@
     font-size: 0.92rem;
   }
   .path-item .del {
-    border: none;
-    background: transparent;
-    color: var(--ink-faint);
+    flex: 0 0 auto;
+    min-width: 2.1rem;
+    min-height: 2.1rem;
+    display: inline-grid;
+    place-items: center;
+    background: var(--paper);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    color: var(--moss-deep);
+    font-size: 1.05rem;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 1.15rem;
+    border-radius: 999px;
+    line-height: 1;
+    padding: 0;
+    transition: background .2s, border-color .2s, color .2s;
+  }
+  .path-item .del:hover {
+    background: var(--moss-mist);
+    border-color: var(--moss-soft);
+    color: var(--moss-deep);
   }
   .path-input-row {
     display: flex;
@@ -1683,7 +1718,7 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .nav-btn:hover { color: var(--ink); background: rgba(74, 107, 79, 0.09); }
+  .nav-btn:hover { color: var(--ink); background: var(--nav-hover, rgba(74, 107, 79, 0.09)); }
   .nav-btn.active {
     background: var(--moss);
     color: var(--paper-3);
