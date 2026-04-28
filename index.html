@@ -3,14 +3,19 @@
 <head>
 <!--
   STILLNESS — read before editing this file
-  - This repo’s index.html is the full single-page app (Today, Log, Memory, evening flow,
-    backup, etc.). Do not replace it with an older “3-tab” or stripped snippet; that drops
-    whole sections and breaks behavior.
+  - This index.html is the full app (inline styles, markup, and script). Do not replace it
+    with an older “3-tab” or stripped snippet—you’ll lose Log, Memory, evening check-in,
+    session sheet, backup, and more.
   - Merge new CSS or HTML in small, reviewable chunks—never paste a full-file replace from
     an old gist or chat export.
-  - Visual themes are driven by data-theme on the root element: parchment (default), forest,
-    midnight—see setTheme() in the script block. Add tokens under those selectors, not a
-    parallel one-off theme, unless you wire JS too.
+  - Journal data lives in this browser (localStorage). It does not sync when you deploy;
+    users keep a copy via Memory → Download backup (JSON import/export in the same area).
+  - Themes: document.documentElement has data-theme — parchment (default), forest, midnight.
+    Theme tokens live under :root / [data-theme="…"] in the <style> block; see setTheme().
+  - Main view roots (search by id when editing): #view-today, #view-history, #view-memory,
+    #view-log, #view-insights, #view-path, #view-quotes.
+  - Repo siblings (not inlined here): manifest.json, icon.svg, sw.js (offline shell),
+    vercel.json (headers / cache). Deploy the repo root as a static site (e.g. Vercel, main).
 -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
