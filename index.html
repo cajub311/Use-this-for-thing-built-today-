@@ -919,7 +919,7 @@
     max-width: min(220px, 100%);
   }
   @media (max-width: 520px) {
-    .breathe-soundbar { right: 20px; flex-direction: column; align-items: flex-start; }
+    .breathe-soundbar { right: 90px; flex-direction: column; align-items: flex-start; }
   }
 
   /* ── Practice tools (breathe + grounding) ───────────────── */
@@ -1017,12 +1017,14 @@
     border: 1px solid rgba(237, 227, 210, 0.25);
     color: var(--paper-3);
     border-radius: 999px;
-    padding: 9px 18px;
+    padding: 12px 22px;
     cursor: pointer;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 0.95rem;
-    z-index: 1;
+    z-index: 20;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(237,227,210,0.15);
   }
 
   .breathe-circle {
@@ -1153,7 +1155,7 @@
     background: var(--gold);
     color: var(--ink);
     border: none;
-    padding: 12px 28px;
+    padding: 14px 32px;
     border-radius: 999px;
     cursor: pointer;
     margin-top: 18px;
@@ -1161,6 +1163,8 @@
     font-style: italic;
     font-size: 1rem;
     letter-spacing: 0.04em;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .grounding-next:hover { transform: translateY(-1px); }
   .ground-actions {
@@ -1256,13 +1260,15 @@
     background: #C9A961;
     color: #2A241B;
     border: none;
-    padding: 12px 28px;
+    padding: 14px 32px;
     border-radius: 999px;
     cursor: pointer;
     margin-top: 20px;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .worry-instruction {
     font-family: 'Cormorant Garamond', serif;
@@ -2084,10 +2090,12 @@
     border: 1px solid rgba(201, 187, 164, 0.65);
     color: var(--moss-deep);
     border-radius: 999px;
-    padding: 7px 14px;
+    padding: 10px 18px;
     font-family: 'Lora', serif;
     font-size: 0.82rem;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .mood-text-actions .mini-btn:hover, .grounding-btn-row .mini-btn:hover, .ground-actions .mini-btn:hover { background: var(--moss-mist); }
   .grounding-log {
@@ -3631,13 +3639,13 @@
       const br = makeBrownNoiseBuffer(ctx, 3.5);
       const lp = ctx.createBiquadFilter();
       lp.type = 'lowpass';
-      lp.frequency.setValueAtTime(100, now);
+      lp.frequency.setValueAtTime(320, now);
       const g0 = ctx.createGain();
-      g0.gain.value = 0.08;
+      g0.gain.value = 0.22;
       loopNoise(br, [lp, g0]);
       // Tibetan bowl overtone series: f, 2.756f, 5.144f
       const bowlFreqs = [110, 110 * 2.756, 110 * 5.144];
-      const bowlGains = [0.038, 0.018, 0.008];
+      const bowlGains = [0.18, 0.08, 0.032];
       bowlFreqs.forEach((f, i) => {
         const o = ctx.createOscillator();
         o.type = 'sine';
