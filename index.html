@@ -733,6 +733,39 @@
   }
   .log-item .desc { flex: 1; color: var(--ink); font-family: 'Lora', serif; }
   .log-item .time { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--ink-faint); }
+  .log-item .log-item-trail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .log-item .meal-kcal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--moss);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .meal-kcal-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: var(--r);
+    background: linear-gradient(135deg, var(--moss-mist), rgba(244, 236, 218, 0.65));
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.98rem;
+    color: var(--moss-deep);
+  }
+  .meal-kcal-total strong { font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; letter-spacing: 0.06em; }
+  .meal-kcal-hint { display: block; margin-top: 6px; font-size: 0.82rem; color: var(--ink-faint); }
   .log-item .del {
     flex: 0 0 auto;
     min-width: 2.1rem;
@@ -2126,13 +2159,50 @@
     margin-top: 8px;
     font-family: 'Lora', serif;
     font-size: 0.88rem;
-    line-height: 1.65;
+    line-height: 1.55;
     color: var(--ink);
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 320px;
+    max-height: min(70vh, 520px);
     overflow-y: auto;
   }
+  .today-summary .sum-head {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--moss-deep);
+    margin: 1.1rem 0 0.4rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid rgba(201, 187, 164, 0.4);
+  }
+  .today-summary .sum-head:first-child { margin-top: 0; }
+  .today-summary .sum-line {
+    margin: 0.4rem 0;
+    padding-left: 0.65rem;
+    border-left: 2px solid var(--moss-mist);
+  }
+  .today-summary .sum-kcal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--moss);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .today-summary .sum-line--meal {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .today-summary .sum-line--meal .sum-meal-text { flex: 1; min-width: 0; }
+  .today-summary .sum-meta {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    margin: 0.5rem 0 0;
+    line-height: 1.4;
+  }
+  .summary-est-note { font-size: 0.78rem; color: var(--ink-faint); margin: 10px 0 0; line-height: 1.45; }
   .sum-btn {
     display: inline-block;
     background: var(--paper);
@@ -2219,6 +2289,7 @@
     #view-today > *:not(#summaryCard) { display: none !important; }
     #summaryCard { break-inside: avoid; box-shadow: none !important; border: 1px solid #ccc !important; }
     .today-summary { max-height: none !important; border: 1px solid #ddd; }
+    .today-summary .sum-head { border-bottom-color: #ccc; }
   }
 
   .sr-only {
@@ -2689,7 +2760,7 @@
         <h2 class="leaf-title">Food &amp; <em>nourishment</em></h2>
         <span class="leaf-num">№ 01</span>
       </div>
-      <p class="leaf-sub">Without judgment — only noticing.</p>
+      <p class="leaf-sub">Without judgment — only noticing. <span class="meal-kcal-hint no-print" id="mealKcalHint" hidden></span></p>
       <div class="meal-types" id="mealTypes">
         <button class="meal-type on" data-meal="breakfast">Breakfast</button>
         <button class="meal-type" data-meal="lunch">Lunch</button>
@@ -2711,8 +2782,8 @@
       </div>
       <p class="leaf-sub">Honor what your body is carrying today.</p>
       <div class="pain-input">
-        <input type="text" class="text-in" id="painLocation" placeholder="Where? (head, back, neck…)" maxlength="40" />
-        <input type="text" class="text-in" id="painNote" placeholder="A note (optional)" maxlength="60" />
+        <input type="text" class="text-in" id="painLocation" placeholder="Where? (head, back, teeth…)" maxlength="40" spellcheck="true" />
+        <input type="text" class="text-in" id="painNote" placeholder="A note (optional)" maxlength="60" spellcheck="true" />
       </div>
       <div class="pain-add-row">
         <div class="severity" id="painSeverity">
@@ -2831,7 +2902,8 @@
       </div>
       <p class="leaf-sub no-print">All of today's saved fields in one place — copy, print, or share from the browser.</p>
       <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
-      <pre class="today-summary" id="todaySummary" role="status" aria-live="polite">—</pre>
+      <div class="today-summary" id="todaySummary" role="status" aria-live="polite">—</div>
+      <p class="summary-est-note no-print" id="summaryEstNote" hidden>Calorie line items are <strong>rough estimates</strong> from your food words (not medical advice).</p>
       <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
         <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
         <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
@@ -3512,6 +3584,68 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   };
 
+  /** Very rough kcal guess from free text (entertainment / self-awareness, not medical). */
+  const MEAL_KEYWORD_KCAL = [
+    ['watermelon', 80], ['salad', 120], ['chili', 350],
+    ['pizza', 600], ['burger', 650], ['fries', 350], ['sandwich', 400], ['wrap', 450],
+    ['pasta', 500], ['spaghetti', 500], ['lasagna', 550], ['noodles', 400], ['ramen', 500],
+    ['rice', 250], ['sushi', 350], ['roll', 220], ['taco', 200], ['burrito', 550], ['quesadilla', 480], ['nachos', 450],
+    ['chicken', 400], ['fish', 300], ['salmon', 450], ['steak', 600], ['beef', 500], ['pork', 450], ['lamb', 500],
+    ['egg', 75], ['eggs', 150], ['bacon', 150], ['sausage', 280], ['pancake', 200], ['pancakes', 400], ['waffle', 300],
+    ['toast', 90], ['bagel', 280], ['cereal', 200], ['oatmeal', 160], ['yogurt', 150], ['granola', 200],
+    ['banana', 100], ['apple', 80], ['orange', 60], ['berries', 80], ['avocado', 240],
+    ['melon', 60],
+    ['cheese', 110], ['tortilla', 200], ['tortita', 200], ['chip', 160], ['chips', 250],
+    ['oreo', 55], ['cookie', 160], ['cookies', 200], ['brownie', 350], ['ice cream', 280], ['dessert', 350], ['chocolate', 200], ['candy', 200],
+    ['milk', 120], ['latte', 200], ['cappuccino', 140], ['smoothie', 300], ['soda', 150], ['juice', 120], ['wine', 130], ['beer', 150],
+    ['peanut butter', 200], ['hummus', 100], ['bread', 150], ['croissant', 300]
+  ];
+  function estimateTokenKcal(token) {
+    const t = String(token).toLowerCase().trim();
+    if (!t) return 0;
+    const nMult = t.match(/(\d+(?:\.\d+)?)\s*(oreo|oreos|cookie|cookies|chip|chips|egg|eggs|slice|slices|cracker|crackers|tortilla|taco|tacos)\b/i);
+    if (nMult) {
+      const n = Math.max(0.5, parseFloat(nMult[1]) || 0.5);
+      const w = nMult[2].toLowerCase();
+      if (w.startsWith('oreo')) return Math.round(n * 55);
+      if (w.startsWith('cookie')) return Math.round(n * 150);
+      if (w.startsWith('chip')) return Math.round(n * 50);
+      if (w.startsWith('egg')) return Math.round(n * 75);
+      if (w.startsWith('slice')) return Math.round(n * 80);
+      if (w.startsWith('cracker')) return Math.round(n * 20);
+      if (w.startsWith('tortilla')) return Math.round(n * 100);
+      if (w.startsWith('taco')) return Math.round(n * 200);
+    }
+    let best = 0;
+    for (const [word, kcal] of MEAL_KEYWORD_KCAL) {
+      if (t.includes(word) && kcal > best) best = kcal;
+    }
+    if (best) return best;
+    if (t.length < 3) return 0;
+    return 180;
+  }
+  function tokenizeMealDescription(desc) {
+    return String(desc)
+      .toLowerCase()
+      .split(/(?:;|,|\+|•|·|\/|\n|\b(?:and|with|&)\b)/i)
+      .map(s => s.replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+  }
+  function estimateMealKcalFromDescription(desc) {
+    const parts = tokenizeMealDescription(desc);
+    if (!parts.length) return 0;
+    const total = parts.reduce((s, p) => s + estimateTokenKcal(p), 0);
+    return Math.min(4000, Math.max(0, Math.round(total)));
+  }
+  function getMealKcal(m) {
+    if (m && m.kcal != null && !Number.isNaN(Number(m.kcal))) return Math.max(0, Math.round(Number(m.kcal)));
+    return estimateMealKcalFromDescription(m && m.description ? m.description : '');
+  }
+  function totalMealsKcal(meals) {
+    if (!meals || !meals.length) return 0;
+    return meals.reduce((s, m) => s + getMealKcal(m), 0);
+  }
+
   const blankPath = () => ({
     northStar: '',
     values: '',
@@ -4174,14 +4308,22 @@
     document.querySelectorAll('.meal-type').forEach(b =>
       b.classList.toggle('on', b.dataset.meal === day.activeMeal));
     const list = document.getElementById('mealList');
+    const hint = document.getElementById('mealKcalHint');
     list.innerHTML = '';
+    let totalK = 0;
     day.meals.forEach((m, i) => {
+      const k = getMealKcal(m);
+      totalK += k;
       const el = document.createElement('div');
       el.className = 'log-item';
+      const kcalStr = k > 0 ? `~${k} kcal` : '';
       el.innerHTML = `
         <span class="badge">${m.type}</span>
         <span class="desc">${escapeHtml(m.description)}</span>
-        <span class="time">${m.time || ''}</span>
+        <div class="log-item-trail">
+          ${kcalStr ? `<span class="meal-kcal">${kcalStr}</span>` : ''}
+          <span class="time">${m.time || ''}</span>
+        </div>
         <button class="del" aria-label="remove">×</button>
       `;
       el.querySelector('.del').addEventListener('click', () => {
@@ -4190,6 +4332,21 @@
       });
       list.appendChild(el);
     });
+    if (day.meals.length && totalK > 0) {
+      const row = document.createElement('div');
+      row.className = 'meal-kcal-total';
+      row.innerHTML = `<span>Estimated from food words today</span><strong>~${totalK.toLocaleString()} kcal</strong>`;
+      list.appendChild(row);
+    }
+    if (hint) {
+      if (day.meals.length) {
+        hint.hidden = false;
+        hint.textContent = 'Lines show a rough kcal guess from what you wrote (for curiosity, not medical advice).';
+      } else {
+        hint.hidden = true;
+        hint.textContent = '';
+      }
+    }
   }
   function renderPains() {
     document.querySelectorAll('#painSeverity .sev-btn').forEach(b =>
@@ -4259,7 +4416,14 @@
     if (day.calories) lines.push('Calories logged: ' + Number(day.calories).toLocaleString() + ' kcal');
     if (day.meals && day.meals.length) {
       lines.push('Meals:');
-      day.meals.forEach(m => lines.push('  · ' + m.type + ': ' + m.description + (m.time ? ' (' + m.time + ')' : '')));
+      day.meals.forEach(m => {
+        const k = getMealKcal(m);
+        let line = '  · ' + m.type + ': ' + m.description + (m.time ? ' (' + m.time + ')' : '');
+        if (k) line += ' ~' + k + ' kcal est';
+        lines.push(line);
+      });
+      const mt = totalMealsKcal(day.meals);
+      if (mt) lines.push('  (Meals subtotal ~' + mt + ' kcal from words — very rough)');
     }
     if (day.pains && day.pains.length) {
       lines.push('Pain log:');
@@ -4281,10 +4445,87 @@
     return lines.filter((l, i) => i < 2 || l).join('\n');
   }
   function renderTodaySummary() {
-    const pre = document.getElementById('todaySummary');
+    const box = document.getElementById('todaySummary');
+    const est = document.getElementById('summaryEstNote');
     const dlabel = document.getElementById('summaryDatePrint');
     if (dlabel) dlabel.textContent = formatDate(currentDateKey);
-    if (pre) pre.textContent = buildTodaySummaryText();
+    if (!box) return;
+
+    const h = (tag, cls, inner) => '<' + tag + (cls ? ' class="' + cls + '"' : '') + '>' + inner + '</' + tag + '>';
+    const e = escapeHtml;
+    const parts = [];
+
+    const todayHas = day.intention || day.mood || day.energy || (day.moodNote && day.moodNote.trim()) ||
+      (day.symptoms && day.symptoms.length) || (day.rituals && day.rituals.length);
+    if (todayHas) {
+      parts.push(h('div', 'sum-head', 'Today'));
+      if (day.intention) parts.push(h('p', 'sum-line', '✦ ' + e(day.intention)));
+    if (day.mood) parts.push(h('p', 'sum-line', 'Mood: ' + e(MOOD_L[day.mood]) + ' (' + day.mood + '/5)'));
+    if (day.energy) parts.push(h('p', 'sum-line', 'Energy: ' + e(ENERGY_L[day.energy]) + ' (' + day.energy + '/5)'));
+    if (day.moodNote) parts.push(h('p', 'sum-line', 'Mood note: ' + e(day.moodNote)));
+    if (day.symptoms && day.symptoms.length) {
+      const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
+      if (lbs.length) parts.push(h('p', 'sum-line', 'Body weather: ' + e(lbs.join(', '))));
+    }
+    if (day.rituals && day.rituals.length) {
+      const lbls = day.rituals.map(r => RITUAL_LABELS[r] || r);
+      parts.push(h('p', 'sum-line', 'Rituals: ' + e(lbls.join(', '))));
+    }
+    }
+
+    parts.push(h('div', 'sum-head', 'Body & movement'));
+    parts.push(h('p', 'sum-line', 'Water ' + (day.water || 0) + ' cups · bathroom ' + (day.pee || 0) + ' · caffeine ' + (day.coffee || 0) + ' · movement ' + (day.movement || 0) + ' min · sun ' + (day.sun || 0) + ' min'));
+    if (day.steps) parts.push(h('p', 'sum-line', 'Steps: ' + Number(day.steps).toLocaleString()));
+    if (day.exerciseNote && day.exerciseNote.trim()) parts.push(h('p', 'sum-line', 'Exercise: ' + e(day.exerciseNote.trim())));
+    if (day.outings) parts.push(h('p', 'sum-line', 'Outings: ' + day.outings));
+    if (day.sweets) parts.push(h('p', 'sum-line', 'Sweets / treats: ' + day.sweets));
+    if (day.calories) parts.push(h('p', 'sum-line', 'Calories you logged: ' + Number(day.calories).toLocaleString() + ' kcal'));
+
+    if (day.meals && day.meals.length) {
+      parts.push(h('div', 'sum-head', 'Food'));
+      let mealTotal = 0;
+      day.meals.forEach(m => {
+        const k = getMealKcal(m);
+        mealTotal += k;
+        const text = e(m.type) + ': ' + e(m.description) + (m.time ? ' (' + e(m.time) + ')' : '');
+        const khtml = k ? '<span class="sum-kcal">~' + k + ' kcal</span>' : '';
+        parts.push('<p class="sum-line sum-line--meal"><span class="sum-meal-text">' + text + '</span>' + khtml + '</p>');
+      });
+      if (mealTotal > 0) {
+        parts.push(h('p', 'sum-meta', 'Rough total from food words: ~' + mealTotal.toLocaleString() + ' kcal. For curiosity only — not medical or diet advice.'));
+      }
+    }
+
+    if (day.pains && day.pains.length) {
+      parts.push(h('div', 'sum-head', 'Pain & comfort'));
+      const sev = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
+      day.pains.forEach(p => {
+        parts.push(h('p', 'sum-line', e(sev[p.severity] || '') + ' — ' + e(p.location) + (p.note ? ' — ' + e(p.note) : '')));
+      });
+    }
+
+    parts.push(h('div', 'sum-head', 'Rest'));
+    const sleepLine = 'Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · ' + e(SLEEP_Q[day.sleepQuality] || '') : '');
+    parts.push(h('p', 'sum-line', sleepLine));
+    if (day.dreams) parts.push(h('p', 'sum-line', 'Dreams: ' + e(day.dreams)));
+    if (day.gratitude) parts.push(h('p', 'sum-line', 'Gratitude: ' + e(day.gratitude)));
+    if (day.reflection) parts.push(h('p', 'sum-line', 'Reflection: ' + e(day.reflection)));
+
+    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
+      parts.push(h('div', 'sum-head', 'Evening'));
+      if (day.eveningWin) parts.push(h('p', 'sum-line', 'Smallest win: ' + e(day.eveningWin)));
+      if (day.eveningNote) parts.push(h('p', 'sum-line', 'Carrying: ' + e(day.eveningNote)));
+      if (day.eveningObstacle) parts.push(h('p', 'sum-line', 'In the way: ' + e(day.eveningObstacle)));
+      if (day.eveningTomorrow) parts.push(h('p', 'sum-line', 'Tomorrow: ' + e(day.eveningTomorrow)));
+    }
+
+    parts.push(h('p', 'sum-line', 'Mindful minutes: ' + (day.mindfulMinutes || 0)));
+    box.innerHTML = parts.join('');
+
+    if (est) {
+      const showK = day.meals && day.meals.length && totalMealsKcal(day.meals) > 0;
+      est.hidden = !showK;
+    }
   }
   function formatActivityTime(t) {
     return new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -4509,6 +4750,7 @@
     day.meals.push({
       type: day.activeMeal,
       description: val,
+      kcal: estimateMealKcalFromDescription(val),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
     input.value = '';
