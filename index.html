@@ -2563,231 +2563,13 @@
 
     <div class="flourish"><svg><use href="#flourish-svg"/></svg></div>
 
-    <!-- Quick trackers grid -->
-    <div class="grid-trackers">
-      <div class="tracker">
-        <div class="tracker-head"><svg><use href="#i-water"/></svg><span class="name">Water</span></div>
-        <div class="water-vessel"><div class="water-fill" id="waterFill" style="height:0%"></div></div>
-        <div class="tracker-value"><span id="waterValue">0</span></div>
-        <div class="tracker-unit">cups today</div>
-        <div class="tracker-controls">
-          <button class="pill minus" data-action="water-minus">−</button>
-          <button class="pill" data-action="water-plus">+ cup</button>
-        </div>
-      </div>
-
-      <div class="tracker">
-        <div class="tracker-head"><svg><use href="#i-bath"/></svg><span class="name">Bathroom</span></div>
-        <div style="height: 36px; margin-bottom: 12px;"></div>
-        <div class="tracker-value"><span id="peeValue">0</span></div>
-        <div class="tracker-unit">visits today</div>
-        <div class="tracker-controls">
-          <button class="pill minus" data-action="pee-minus">−</button>
-          <button class="pill" data-action="pee-plus">+ visit</button>
-        </div>
-      </div>
-
-      <div class="tracker">
-        <div class="tracker-head"><svg><use href="#i-coffee"/></svg><span class="name">Caffeine</span></div>
-        <div class="water-vessel"><div class="coffee-fill" id="coffeeFill" style="height:0%"></div></div>
-        <div class="tracker-value"><span id="coffeeValue">0</span></div>
-        <div class="tracker-unit">cups today</div>
-        <div class="tracker-controls">
-          <button class="pill minus" data-action="coffee-minus">−</button>
-          <button class="pill" data-action="coffee-plus">+ cup</button>
-        </div>
-      </div>
-
-      <div class="tracker">
-        <div class="tracker-head"><svg><use href="#i-walk"/></svg><span class="name">Movement</span></div>
-        <div style="height: 36px; margin-bottom: 12px;"></div>
-        <div class="tracker-value"><span id="moveValue">0</span></div>
-        <div class="tracker-unit">minutes</div>
-        <div class="tracker-controls">
-          <button class="pill minus" data-action="move-minus">−5</button>
-          <button class="pill" data-action="move-plus">+ 5 min</button>
-        </div>
-        <div class="exercise-block">
-          <label for="exerciseNote" class="sub">Exercise or movement (optional)</label>
-          <textarea class="deep-input exercise-text" id="exerciseNote" rows="2" maxlength="300" placeholder="e.g. 20 min walk · swim · gym · yoga · cleaning that counted…"></textarea>
-        </div>
-      </div>
-
-      <div class="tracker" style="grid-column: 1 / -1;">
-        <svg class="sun-decoration"><use href="#i-sun"/></svg>
-        <div class="tracker-head"><svg><use href="#i-sun"/></svg><span class="name">Outdoor light &amp; steps</span></div>
-        <div class="outdoor-split">
-          <div class="outdoor-sun">
-            <div class="tracker-value"><span id="sunValue">0</span></div>
-            <div class="tracker-unit">minutes in daylight today</div>
-            <div class="tracker-controls">
-              <button class="pill minus" data-action="sun-minus">−10</button>
-              <button class="pill" data-action="sun-plus">+ 10 min</button>
-              <button class="pill" data-action="sun-plus30">+ 30 min</button>
-            </div>
-          </div>
-          <div class="outdoor-steps">
-            <div class="tracker-value"><span id="stepsValue">0</span></div>
-            <div class="tracker-unit">steps (rough count)</div>
-            <div class="tracker-controls">
-              <button class="pill minus" data-action="steps-minus500">−500</button>
-              <button class="pill" data-action="steps-plus1000">+ 1k</button>
-              <button class="pill" data-action="steps-plus2500">+ 2.5k</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="today-quick-links no-print">
+      <button type="button" class="today-tab-link" id="goToTrack">Track body</button>
+      <button type="button" class="today-tab-link" id="goToJournal">Journal</button>
     </div>
 
-    <!-- Food log -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Food &amp; <em>nourishment</em></h2>
-        <span class="leaf-num">№ 04</span>
-      </div>
-      <p class="leaf-sub">Without judgment — only noticing.</p>
-      <div class="meal-types" id="mealTypes">
-        <button class="meal-type on" data-meal="breakfast">Breakfast</button>
-        <button class="meal-type" data-meal="lunch">Lunch</button>
-        <button class="meal-type" data-meal="dinner">Dinner</button>
-        <button class="meal-type" data-meal="snack">Snack</button>
-      </div>
-      <div class="input-row">
-        <input type="text" class="text-in" id="mealInput" placeholder="What did you eat?" maxlength="100" />
-        <button class="add-btn" id="mealAdd">Add</button>
-      </div>
-      <div class="log-list" id="mealList"></div>
-    </section>
-
-    <!-- Pain -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Body &amp; <em>pain</em></h2>
-        <span class="leaf-num">№ 05</span>
-      </div>
-      <p class="leaf-sub">Honor what your body is carrying today.</p>
-      <div class="pain-input">
-        <input type="text" class="text-in" id="painLocation" placeholder="Where? (head, back, neck…)" maxlength="40" />
-        <input type="text" class="text-in" id="painNote" placeholder="A note (optional)" maxlength="60" />
-      </div>
-      <div class="pain-add-row">
-        <div class="severity" id="painSeverity">
-          <button class="sev-btn" data-sev="1">Mild</button>
-          <button class="sev-btn" data-sev="2">Moderate</button>
-          <button class="sev-btn" data-sev="3">Strong</button>
-          <button class="sev-btn" data-sev="4">Severe</button>
-        </div>
-        <button class="add-btn" id="painAdd">Add</button>
-      </div>
-      <div class="log-list" id="painList"></div>
-    </section>
-
-    <!-- Sleep -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Last night's <em>rest</em></h2>
-        <span class="leaf-num">№ 06</span>
-      </div>
-      <p class="leaf-sub">Sleep is sacred. Honor whatever it gave you.</p>
-      <div class="sleep-top">
-        <div class="sleep-hours-block">
-          <div class="sleep-row">
-            <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
-            <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
-          </div>
-        </div>
-        <div class="dream-block">
-          <label for="dreamInput">Dreams (optional)</label>
-          <textarea class="deep-input dream-input" id="dreamInput" rows="4" maxlength="2000" placeholder="Anything you remember — images, feelings, a single line…"></textarea>
-        </div>
-      </div>
-      <div class="picker-label">Quality</div>
-      <div class="moon-row" id="moonRow">
-        <button class="moon-btn" data-quality="1"><svg class="moon-svg"><use href="#moon-new"/></svg><div class="lbl">Restless</div></button>
-        <button class="moon-btn" data-quality="2"><svg class="moon-svg"><use href="#moon-half"/></svg><div class="lbl">Light</div></button>
-        <button class="moon-btn" data-quality="3"><svg class="moon-svg"><use href="#moon-gibbous"/></svg><div class="lbl">Decent</div></button>
-        <button class="moon-btn" data-quality="4"><svg class="moon-svg"><use href="#moon-full"/></svg><div class="lbl">Deep</div></button>
-      </div>
-    </section>
-
-    <!-- Gratitude -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">A small <em>gratitude</em></h2>
-        <span class="leaf-num">№ 07</span>
-      </div>
-      <p class="leaf-sub">Something — anything — you're thankful for today.</p>
-      <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
-    </section>
-
-    <!-- Reflection with rotating prompt -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">A <em>reflection</em></h2>
-        <span class="leaf-num">№ 08</span>
-      </div>
-      <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
-      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
-      <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
-    </section>
-
-    <!-- Evening close-out (visible save + log) -->
-    <section class="leaf" id="eveningSection" aria-label="Evening check-in">
-      <div class="leaf-head">
-        <h2 class="leaf-title"><em>Evening</em> check-in</h2>
-        <span class="leaf-num">№ 09</span>
-      </div>
-      <p class="leaf-sub">A small close to the day. Tap <strong>Save to journal</strong> when a field feels done — or it still saves as you type.</p>
-      <p class="picker-label">I did: smallest version (one two-minute start)</p>
-      <textarea class="deep-input" id="eveningWinInput" rows="2" placeholder="I did: smallest version: one two-minute start…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="win">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="win">Save to journal</button>
-        <span class="field-saved" id="fieldSavedWin" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">Something I’m taking with me</p>
-      <textarea class="deep-input" id="eveningNoteInput" rows="2" placeholder="Something…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="note">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="note">Save to journal</button>
-        <span class="field-saved" id="fieldSavedNote" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">What got in the way?</p>
-      <textarea class="deep-input" id="eveningObstacleInput" rows="2" placeholder="What got in the way?" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="obstacle">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="obstacle">Save to journal</button>
-        <span class="field-saved" id="fieldSavedObstacle" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">Tomorrow’s smallest start</p>
-      <textarea class="deep-input" id="eveningTomorrowInput" rows="2" placeholder="Tomorrow’s smallest start…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="tomorrow">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="tomorrow">Save to journal</button>
-        <span class="field-saved" id="fieldSavedTomorrow" hidden aria-live="polite">Saved</span>
-      </div>
-    </section>
-
-    <section class="leaf" id="summaryCard" aria-label="Today summary">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Your <em>session sheet</em></h2>
-        <span class="leaf-num">print</span>
-      </div>
-      <p class="leaf-sub no-print">All of today’s saved fields in one place — copy, print, or share from the browser.</p>
-      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
-      <pre class="today-summary" id="todaySummary" role="status" aria-live="polite">—</pre>
-      <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
-        <a href="#eveningSection" class="sum-hint" style="align-self:center; margin:0; text-decoration:underline; color:var(--moss-deep)">Scroll to evening check-in ↑</a>
-        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
-        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
-      </div>
-      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
-    </section>
-
-    <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
-
-    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
+    <div style="text-align: center; padding: 14px 0 20px; font-family: ‘Cormorant Garamond’, serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
       <span id="mindfulMinutes">0</span> mindful minutes today
-    </div>
-
-    <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
-      <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
     </div>
 
   </div>
@@ -3088,11 +2870,10 @@
 <!-- Bottom navigation -->
 <nav class="nav" aria-label="Main">
   <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
+  <button type="button" class="nav-btn" data-view="track" aria-pressed="false" aria-label="Track — body habits">Track</button>
+  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">Journal</button>
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
   <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
-  <button type="button" class="nav-btn" data-view="insights" aria-pressed="false" aria-label="Insights — patterns">Insights</button>
-  <button type="button" class="nav-btn" data-view="path" aria-pressed="false" aria-label="Path — self-help plan">Path</button>
-  <button type="button" class="nav-btn" data-view="quotes" aria-pressed="false" aria-label="Library — quotes">Library</button>
   <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
 </nav>
 
