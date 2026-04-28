@@ -1990,6 +1990,15 @@
   }
   .start-here .start-list li { margin: 0.4em 0; }
 
+  /* Optional collapse — tucks away the longest “wall of text” blocks on first load */
+  details.leaf.collapsible-section > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+  }
+  details.leaf.collapsible-section > summary::-webkit-details-marker { display: none; }
+  details.leaf.collapsible-section > summary::marker { content: ''; }
+
   .sleep-top {
     display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;
   }
@@ -2268,19 +2277,19 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <section class="leaf start-here" aria-label="How to use today">
-      <div class="leaf-head">
+    <details class="leaf start-here collapsible-section" id="startHereDetails" aria-label="How to use today">
+      <summary class="leaf-head">
         <h2 class="leaf-title">Start <em>here</em></h2>
         <span class="leaf-num">№ 00</span>
-      </div>
-      <p class="leaf-sub">A gentle order for your day — you can still scroll to anything.</p>
+      </summary>
+      <p class="leaf-sub">A gentle order for your day — you can still scroll to anything. Tap the heading to open or close.</p>
       <ol class="start-list">
         <li><strong>Anchor &amp; check-in</strong> — intention, then mood and energy.</li>
         <li><strong>Body &amp; basics</strong> — water, movement, light, food, what hurts.</li>
         <li><strong>Rest &amp; close</strong> — sleep, dreams, gratitude, reflection, evening.</li>
         <li><strong>Session sheet &amp; print</strong> — at the bottom: copy or print your whole day.</li>
       </ol>
-    </section>
+    </details>
 
     <section class="peace-visual no-print" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
@@ -2308,12 +2317,12 @@
       <div class="quote-author" id="quoteAuthor">—</div>
     </section>
 
-    <section class="leaf soundscape-panel no-print" aria-label="Peaceful soundscapes">
-      <div class="leaf-head">
+    <details class="leaf soundscape-panel no-print collapsible-section" id="ambienceDetails" aria-label="Peaceful soundscapes">
+      <summary class="leaf-head">
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
         <span class="leaf-num">offline</span>
-      </div>
-      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as “Take a breath.”</p>
+      </summary>
+      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as “Take a breath.” Tap the heading to open.</p>
       <div class="soundscape-grid" id="soundscapeGrid">
         <button type="button" class="soundscape-btn" data-soundscape="rain">Soft rain</button>
         <button type="button" class="soundscape-btn" data-soundscape="forest">Forest air</button>
@@ -2326,7 +2335,7 @@
         <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
         <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
       </div>
-    </section>
+    </details>
 
     <!-- Mood + Energy -->
     <section class="leaf">
@@ -2572,7 +2581,7 @@
         <span class="leaf-num">№ 08</span>
       </div>
       <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
-      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button></div>
+      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
       <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
     </section>
 
@@ -3835,13 +3844,11 @@
       document.getElementById('quoteText').textContent = q.t;
       document.getElementById('quoteAuthor').textContent = q.a;
       document.getElementById('affirmation').textContent = a;
-      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
     } else {
       const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle" id="promptShuffle">shuffle</button>';
+      document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
     }
-    const sh = document.getElementById('promptShuffle');
-    if (sh) sh.addEventListener('click', () => renderQuoteAndAffirmation(true));
   }
   function renderIntention() {
     document.getElementById('intentionInput').value = day.intention || '';
@@ -4310,21 +4317,34 @@
       flashFieldSaved(key);
     });
   });
-  document.getElementById('goToLogFromToday').addEventListener('click', () => {
+  function switchView(target) {
+    if (!target) return;
+    const viewEl = document.getElementById('view-' + target);
+    if (!viewEl) return;
     document.querySelectorAll('.nav-btn').forEach(x => {
-      x.classList.remove('active');
-      x.setAttribute('aria-pressed', 'false');
+      const isOn = x.dataset.view === target;
+      x.classList.toggle('active', isOn);
+      x.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     });
-    const logBtn = document.querySelector('.nav-btn[data-view="log"]');
-    if (logBtn) {
-      logBtn.classList.add('active');
-      logBtn.setAttribute('aria-pressed', 'true');
-    }
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-log').classList.add('active');
+    viewEl.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    renderLogView();
+    if (target === 'history') renderHistory();
+    if (target === 'quotes') renderQuotes();
+    if (target === 'log') renderLogView();
+    if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
+    if (target === 'insights') renderInsights();
+    if (target === 'path') renderPath();
+    if (target === 'today') renderTodaySummary();
+  }
+
+  document.getElementById('promptPill').addEventListener('click', (e) => {
+    const t = e.target && e.target.closest && e.target.closest('.prompt-shuffle');
+    if (!t) return;
+    e.preventDefault();
+    renderQuoteAndAffirmation(true);
   });
+  document.getElementById('goToLogFromToday').addEventListener('click', () => switchView('log'));
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -4894,23 +4914,8 @@
 
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.addEventListener('click', () => {
-      document.querySelectorAll('.nav-btn').forEach(x => {
-        x.classList.remove('active');
-        x.setAttribute('aria-pressed', 'false');
-      });
-      b.classList.add('active');
-      b.setAttribute('aria-pressed', 'true');
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       const target = b.dataset.view;
-      document.getElementById('view-' + target).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (target === 'history') renderHistory();
-      if (target === 'quotes') renderQuotes();
-      if (target === 'log') renderLogView();
-      if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
-      if (target === 'insights') renderInsights();
-      if (target === 'path') renderPath();
-      if (target === 'today') renderTodaySummary();
+      switchView(target);
     });
   });
 
