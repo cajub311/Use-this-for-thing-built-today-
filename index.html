@@ -552,6 +552,8 @@
     gap: 6px;
   }
   .pill {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     flex: 1;
     border: 1px solid rgba(201, 187, 164, 0.5);
     background: var(--paper);
@@ -1558,6 +1560,8 @@
     box-shadow: 0 8px 32px var(--shadow-deep);
     z-index: 50;
     border: 1px solid rgba(201, 187, 164, 0.5);
+    /* Let taps pass through the pill around the tab buttons (fixes dead zones on Android) */
+    pointer-events: none;
   }
   @media (max-width: 720px) {
     .nav { border-radius: 24px; }
@@ -1574,6 +1578,8 @@
     cursor: pointer;
     transition: all .25s;
     letter-spacing: 0.01em;
+    pointer-events: auto;
+    touch-action: manipulation;
   }
   .nav-btn:hover { color: var(--ink); }
   .nav-btn.active {
@@ -4180,32 +4186,38 @@
   const dreamEl = document.getElementById('dreamInput');
   if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDay(); });
 
-  document.querySelectorAll('[data-action]').forEach(b => {
-    b.addEventListener('click', () => {
-      const a = b.dataset.action;
-      if (a === 'water-plus')    day.water = Math.min(20, day.water + 1);
-      if (a === 'water-minus')   day.water = Math.max(0, day.water - 1);
-      if (a === 'pee-plus')      day.pee = Math.min(30, day.pee + 1);
-      if (a === 'pee-minus')     day.pee = Math.max(0, day.pee - 1);
-      if (a === 'coffee-plus')   day.coffee = Math.min(10, day.coffee + 1);
-      if (a === 'coffee-minus')  day.coffee = Math.max(0, day.coffee - 1);
-      if (a === 'move-plus')     day.movement = Math.min(600, day.movement + 5);
-      if (a === 'move-minus')    day.movement = Math.max(0, day.movement - 5);
-      if (a === 'sun-plus')      day.sun = Math.min(720, day.sun + 10);
-      if (a === 'sun-plus30')    day.sun = Math.min(720, day.sun + 30);
-      if (a === 'sun-minus')     day.sun = Math.max(0, day.sun - 10);
-      if (a === 'steps-plus1000') day.steps = Math.min(50000, (day.steps || 0) + 1000);
-      if (a === 'steps-plus2500') day.steps = Math.min(50000, (day.steps || 0) + 2500);
-      if (a === 'steps-minus500') day.steps = Math.max(0, (day.steps || 0) - 500);
-      if (a.startsWith('water'))  renderWater();
-      if (a.startsWith('pee'))    renderPee();
-      if (a.startsWith('coffee')) renderCoffee();
-      if (a.startsWith('move'))   renderMove();
-      if (a.startsWith('sun'))    renderSun();
-      if (a.startsWith('steps'))  renderSun();
-      saveDay();
-    });
-  });
+  function handleTrackerActionDataset(a) {
+    if (!a) return;
+    if (a === 'water-plus')    day.water = Math.min(20, day.water + 1);
+    if (a === 'water-minus')   day.water = Math.max(0, day.water - 1);
+    if (a === 'pee-plus')      day.pee = Math.min(30, day.pee + 1);
+    if (a === 'pee-minus')     day.pee = Math.max(0, day.pee - 1);
+    if (a === 'coffee-plus')   day.coffee = Math.min(10, day.coffee + 1);
+    if (a === 'coffee-minus')  day.coffee = Math.max(0, day.coffee - 1);
+    if (a === 'move-plus')     day.movement = Math.min(600, day.movement + 5);
+    if (a === 'move-minus')    day.movement = Math.max(0, day.movement - 5);
+    if (a === 'sun-plus')      day.sun = Math.min(720, day.sun + 10);
+    if (a === 'sun-plus30')    day.sun = Math.min(720, day.sun + 30);
+    if (a === 'sun-minus')     day.sun = Math.max(0, day.sun - 10);
+    if (a === 'steps-plus1000') day.steps = Math.min(50000, (day.steps || 0) + 1000);
+    if (a === 'steps-plus2500') day.steps = Math.min(50000, (day.steps || 0) + 2500);
+    if (a === 'steps-minus500') day.steps = Math.max(0, (day.steps || 0) - 500);
+    if (a.startsWith('water'))  renderWater();
+    if (a.startsWith('pee'))    renderPee();
+    if (a.startsWith('coffee')) renderCoffee();
+    if (a.startsWith('move'))   renderMove();
+    if (a.startsWith('sun'))    renderSun();
+    if (a.startsWith('steps'))  renderSun();
+    saveDay();
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target && e.target.closest && e.target.closest('[data-action]');
+    if (!btn || !btn.dataset) return;
+    const a = btn.dataset.action;
+    if (!a) return;
+    handleTrackerActionDataset(a);
+  }, true);
 
   document.querySelectorAll('.meal-type').forEach(b => {
     b.addEventListener('click', () => { day.activeMeal = b.dataset.meal; renderMeals(); });
@@ -5357,7 +5369,9 @@
   renderAll();
   renderPath();
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => { try { reg.update(); } catch (e) {} })
+      .catch(() => {});
   }
 </script>
 </body>

@@ -1,7 +1,7 @@
-/* Minimal offline shell: cache app shell, network-first for navigation */
-const CACHE = 'stillness-shell-v3';
+/* Minimal offline shell: network-first for HTML; cache static assets only.
+   Do not precache index.html — stale cache was serving old JS and breaking taps. */
+const CACHE = 'stillness-shell-v4';
 const SHELL = [
-  '/index.html',
   '/manifest.json',
   '/icon.svg',
   '/sw.js',
