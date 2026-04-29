@@ -2376,6 +2376,215 @@
     .practice-btn::before { display: none; }
     .history-day:hover { transform: none; }
   }
+
+  /* ── New: DBT, thought record, mood-aware suggest, weekly review ─── */
+  .skill-banner {
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ov-ink);
+    border: 1px solid var(--ov-ink-border);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: #EDE3D2;
+    text-align: center;
+    z-index: 5;
+  }
+  .skill-safety {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(237, 227, 210, 0.55);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    max-width: 480px;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .thought-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .intensity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .intensity-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.15rem;
+    color: var(--paper-3);
+    min-width: 28px;
+    text-align: center;
+  }
+  .overlay .deep-input,
+  .overlay .text-in {
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(244, 236, 218, 0.22);
+    color: #EDE3D2;
+    padding: 12px;
+    border-radius: 12px;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    width: 100%;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .overlay .deep-input::placeholder,
+  .overlay .text-in::placeholder {
+    color: rgba(237, 227, 210, 0.4);
+  }
+  .overlay .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  .overlay .chip {
+    background: rgba(244, 236, 218, 0.08);
+    border: 1px solid rgba(244, 236, 218, 0.22);
+    color: #EDE3D2;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .overlay .chip:hover { background: rgba(244, 236, 218, 0.15); }
+  .overlay .chip.on {
+    background: var(--gold, #C9A961);
+    color: #2A241B;
+    border-color: var(--gold, #C9A961);
+  }
+  .recommend-panel {
+    background: var(--paper-card, #f5ecd6);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--moss-deep);
+    border-radius: 16px;
+    padding: 22px 22px;
+    margin: 16px 0 18px;
+    position: relative;
+  }
+  .recommend-panel h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 6px 0 10px;
+  }
+  .recommend-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .weekly-review {
+    border-left: 4px solid var(--gold);
+    background: linear-gradient(to right, rgba(201, 169, 97, 0.08), transparent 60%);
+  }
+  .weekly-review strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+  }
+  .weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .weekly-stat .num {
+    font-size: 1.4rem;
+    color: var(--moss-deep);
+    font-family: 'Cormorant Garamond', serif;
+    display: block;
+  }
+  .weekly-stat .lbl {
+    font-size: 0.7rem;
+    color: var(--paper-3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    display: block;
+    margin-top: 2px;
+  }
+  .dow-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 110px;
+    margin: 14px 0 8px;
+  }
+  .dow-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .dow-bar-fill {
+    max-height: 80px;
+    background: var(--moss-deep);
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    width: 100%;
+    transition: height 0.4s ease;
+  }
+  .dow-bar-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--paper-3);
+    letter-spacing: 0.1em;
+  }
+  .voice-toggle {
+    background: var(--ov-ink);
+    border: 1px solid var(--ov-ink-border);
+    color: var(--paper-3);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .voice-toggle:hover { background: var(--ov-ink-hover); }
+  .voice-toggle[aria-pressed="true"] {
+    background: var(--ov-ink-on);
+    border-color: rgba(244, 236, 218, 0.5);
+  }
+  .breathe-circle.hold::before {
+    content: '';
+    position: absolute;
+    inset: -8%;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 232, 200, 0.4);
+    animation: breatheHoldPulse 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes breatheHoldPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.06); opacity: 0.15; }
+  }
+  .recommend-panel .sum-btn { font-size: 0.92rem; }
+  @media (max-width: 600px) {
+    .recommend-panel { padding: 18px; }
+    .weekly-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -2678,6 +2887,8 @@
           <button type="button" class="sum-btn" data-support-action="breathe">Breathe for 60 seconds</button>
           <button type="button" class="sum-btn" data-support-action="ground">Ground with 5-4-3-2-1</button>
           <button type="button" class="sum-btn" data-support-action="write">Write one sentence</button>
+          <button type="button" class="sum-btn" data-support-action="thought">Reframe a thought</button>
+          <button type="button" class="sum-btn" data-support-action="tipp">TIPP (cold · move · breathe)</button>
           <a class="sum-btn support-link" href="tel:" data-support-action="contact">Contact someone</a>
         </div>
         <p class="support-note">If you might hurt yourself or someone else, or feel unable to stay safe, call or text <strong>988</strong> in the U.S. or use local emergency support. This app is not emergency care.</p>
@@ -2694,6 +2905,15 @@
       <div class="chips" id="chips">
         <!-- populated by JS -->
       </div>
+    </section>
+
+    <!-- Mood-aware suggestion card (auto-shown by JS when mood/symptoms suggest support) -->
+    <section class="recommend-panel no-print" id="recommendPanel" hidden aria-live="polite">
+      <p class="picker-label">Try this now</p>
+      <h2 id="recommendTitle">A short reset for what you're feeling.</h2>
+      <p class="leaf-sub" id="recommendBody">—</p>
+      <div class="recommend-actions" id="recommendActions"></div>
+      <button type="button" class="mini-btn" id="recommendDismiss" style="margin-top:14px">Not now</button>
     </section>
 
     <!-- Practice tools -->
@@ -2774,6 +2994,22 @@
         <button type="button" class="quick-action" data-practice-launch="scan"><span>Body scan</span><small>head to toe</small></button>
         <button type="button" class="quick-action" data-practice-launch="worry"><span>Release</span><small>worry paper</small></button>
       </div>
+    </section>
+
+    <!-- DBT distress-tolerance toolkit -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">When it's <em>hard</em></h2>
+        <span class="leaf-num">DBT</span>
+      </div>
+      <p class="leaf-sub">Three short, evidence-based skills for moments that feel too big. Each one logs gently, only on this device.</p>
+      <div class="quick-action-grid">
+        <button type="button" class="quick-action" data-practice-launch="tipp"><span>TIPP</span><small>cold · move · breathe · relax</small></button>
+        <button type="button" class="quick-action" data-practice-launch="stop"><span>STOP</span><small>pause an urge</small></button>
+        <button type="button" class="quick-action" data-practice-launch="radacc"><span>Radical accept</span><small>3 small prompts</small></button>
+        <button type="button" class="quick-action" data-practice-launch="thought"><span>Reframe</span><small>5-step thought record</small></button>
+      </div>
+      <p class="support-note" style="margin-top:14px">Not emergency care. If you might hurt yourself, call or text <strong>988</strong> in the US, or your local crisis line.</p>
     </section>
 
     <section class="leaf wind-down-panel" id="windDownPanel">
@@ -2983,6 +3219,17 @@
       <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
       <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
       <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
+    </section>
+
+    <!-- Cognitive reframe (CBT thought record) -->
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Reframe a <em>thought</em></h2>
+        <span class="leaf-num">CBT</span>
+      </div>
+      <p class="leaf-sub">If a sticky thought has been running in the background, a five-step record can help you see it with kinder eyes. Saved on this device only.</p>
+      <button type="button" class="data-btn" data-practice-launch="thought">Open thought record</button>
+      <div id="thoughtRecordList" style="margin-top:14px"></div>
     </section>
 
     <!-- Evening close-out -->
@@ -3368,6 +3615,7 @@
       <option value="silent">Mute</option>
     </select>
     <button type="button" class="audio-toggle" id="breatheAudioToggle" aria-pressed="true" title="Toggle breath cues">cues: on</button>
+    <button type="button" class="voice-toggle" id="breatheVoiceToggle" aria-pressed="false" title="Toggle spoken voice cues">voice: off</button>
   </div>
   <button class="overlay-close" id="breatheClose">close</button>
   <button type="button" class="audio-toggle" id="audioToggle" aria-pressed="true">
@@ -3435,6 +3683,115 @@
       <textarea id="worryText" placeholder="What's been weighing on you?"></textarea>
     </div>
     <button type="button" class="meditation-next" id="worryRelease">release it</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     DBT TIPP — distress-tolerance, four-stage flow
+═══════════════════════════════════════════════════════ -->
+<div class="overlay dusk-bg" id="tippOverlay" role="dialog" aria-modal="true" aria-label="TIPP distress tolerance skill" aria-hidden="true">
+  <div class="skill-banner">DBT · TIPP</div>
+  <button class="overlay-close" id="tippClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="meditation-step" id="tippStep">stage 1 of 4</div>
+    <div class="meditation-phrase" id="tippPhrase">—</div>
+    <div class="meditation-progress" id="tippProgress" aria-hidden="true"></div>
+    <button type="button" class="meditation-next" id="tippNext">continue →</button>
+    <p class="skill-safety">If you might hurt yourself, call or text 988 in the US, or your local crisis line.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     DBT STOP — urge-pause, four-step flow
+═══════════════════════════════════════════════════════ -->
+<div class="overlay warm-bg" id="stopOverlay" role="dialog" aria-modal="true" aria-label="STOP urge pause skill" aria-hidden="true">
+  <div class="skill-banner">DBT · STOP</div>
+  <button class="overlay-close" id="stopClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="meditation-step" id="stopStep">step 1 of 4</div>
+    <div class="meditation-phrase" id="stopPhrase">—</div>
+    <div class="meditation-progress" id="stopProgress" aria-hidden="true"></div>
+    <button type="button" class="meditation-next" id="stopNext">continue →</button>
+    <p class="skill-safety">If you might hurt yourself, call or text 988 in the US, or your local crisis line.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     DBT Radical Acceptance — three short prompts
+═══════════════════════════════════════════════════════ -->
+<div class="overlay gold-bg" id="radAccOverlay" role="dialog" aria-modal="true" aria-label="Radical acceptance micro-script" aria-hidden="true">
+  <div class="skill-banner">DBT · radical acceptance</div>
+  <button class="overlay-close" id="radAccClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-step" id="radAccStep">step 1 of 3</div>
+    <div class="meditation-phrase" id="radAccPhrase"><em>—</em></div>
+    <textarea class="deep-input" id="radAccWhatIs" rows="4" placeholder="just the facts…"></textarea>
+    <textarea class="deep-input" id="radAccCannotChange" rows="4" placeholder="what i can't change…" hidden></textarea>
+    <textarea class="deep-input" id="radAccNextMove" rows="4" placeholder="one small kind move…" hidden></textarea>
+    <div class="meditation-progress" id="radAccProgress" aria-hidden="true"></div>
+    <div class="thought-nav">
+      <button type="button" id="radAccBack" class="meditation-next" style="background:transparent;border:1px solid rgba(237,227,210,0.3);color:#EDE3D2">← back</button>
+      <button type="button" class="meditation-next" id="radAccNext">continue →</button>
+      <button type="button" class="meditation-next" id="radAccLog" hidden>save & finish</button>
+    </div>
+    <p class="skill-safety">Saved on this device only. Re-imported with your backup.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CBT Thought Record — five-step reframe
+═══════════════════════════════════════════════════════ -->
+<div class="overlay dusk-bg" id="thoughtOverlay" role="dialog" aria-modal="true" aria-label="Reframe a thought" aria-hidden="true">
+  <div class="skill-banner">CBT · reframe a thought</div>
+  <button class="overlay-close" id="thoughtClose">close</button>
+  <div class="meditation-content">
+    <div class="meditation-step" id="thoughtStep">step 1 of 5</div>
+    <div class="meditation-phrase" id="thoughtPrompt"><em>What happened? Just the facts, like a camera would see.</em></div>
+
+    <div data-thought-step="1">
+      <textarea class="deep-input" id="thoughtSituation" rows="4" placeholder="Just the facts…"></textarea>
+    </div>
+
+    <div data-thought-step="2" hidden>
+      <input class="text-in" id="thoughtFeeling" type="text" placeholder="anxious, sad" />
+      <div class="intensity-row">
+        <input type="range" id="thoughtIntensity" min="0" max="10" step="1" value="5" style="flex:1" />
+        <span class="intensity-val" id="thoughtIntensityVal">5</span>
+      </div>
+    </div>
+
+    <div data-thought-step="3" hidden>
+      <textarea class="deep-input" id="thoughtAuto" rows="3" placeholder="Quote the thought…"></textarea>
+    </div>
+
+    <div data-thought-step="4" hidden>
+      <div class="chips" id="thoughtDistortions">
+        <button class="chip" type="button" data-distortion="catastrophizing">catastrophizing</button>
+        <button class="chip" type="button" data-distortion="all-or-nothing">all-or-nothing</button>
+        <button class="chip" type="button" data-distortion="mind-reading">mind-reading</button>
+        <button class="chip" type="button" data-distortion="fortune-telling">fortune-telling</button>
+        <button class="chip" type="button" data-distortion="personalization">personalization</button>
+        <button class="chip" type="button" data-distortion="should-statements">should-statements</button>
+        <button class="chip" type="button" data-distortion="emotional-reasoning">emotional reasoning</button>
+        <button class="chip" type="button" data-distortion="labeling">labeling</button>
+        <button class="chip" type="button" data-distortion="mental-filter">mental filter</button>
+        <button class="chip" type="button" data-distortion="discounting-positives">discounting positives</button>
+      </div>
+      <textarea class="deep-input" id="thoughtFor" rows="2" placeholder="Evidence FOR the thought" style="margin-top:12px"></textarea>
+      <textarea class="deep-input" id="thoughtAgainst" rows="2" placeholder="Evidence AGAINST the thought" style="margin-top:8px"></textarea>
+    </div>
+
+    <div data-thought-step="5" hidden>
+      <textarea class="deep-input" id="thoughtReframe" rows="3" placeholder="A kinder, more accurate sentence…"></textarea>
+    </div>
+
+    <div class="thought-nav">
+      <button type="button" id="thoughtBack" class="meditation-next" style="background:transparent;border:1px solid rgba(237,227,210,0.3);color:#EDE3D2">← back</button>
+      <button type="button" id="thoughtNext" class="meditation-next">next →</button>
+      <button type="button" id="thoughtSave" class="meditation-next" hidden>save & finish</button>
+    </div>
   </div>
 </div>
 
@@ -3683,11 +4040,14 @@
     gratitude: '', reflection: '',
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
     activeMeal: 'breakfast', activeSeverity: 0, activePart: '',
-    mindfulMinutes: 0
+    mindfulMinutes: 0,
+    dbtSkills: [],
+    thoughtRecords: []
   });
 
   let day = blankDay();
   let currentDateKey = dateKey();
+  let recommendDismissed = false;
   const getStorageKey = () => DAY_KEY_PREFIX + currentDateKey;
 
   function loadDay() {
@@ -3730,6 +4090,7 @@
       currentDateKey = k;
       pruneOldDays();
       loadDay();
+      recommendDismissed = false;
       renderAll();
     }
   }
@@ -3836,7 +4197,7 @@
     setSaveBarText('Saved in this browser', 'saved');
   }
 
-  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true };
+  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -3848,6 +4209,7 @@
           if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
+          if (typeof j.voiceCues === 'boolean') config.voiceCues = j.voiceCues;
         }
       } catch {}
     }
@@ -3859,7 +4221,8 @@
       activityCap: config.activityCap,
       theme: config.theme,
       breatheSound: config.breatheSound,
-      breatheCues: config.breatheCues
+      breatheCues: config.breatheCues,
+      voiceCues: config.voiceCues
     }));
   }
 
@@ -4451,6 +4814,7 @@
     const lowSymptoms = ['sad', 'lonely', 'numb', 'overwhelmed', 'anxious', 'panic'];
     const show = day.mood === 1 || (day.symptoms || []).some(id => lowSymptoms.includes(id));
     panel.hidden = !show;
+    renderRecommendPanel();
   }
   function renderWater() {
     document.getElementById('waterValue').textContent = day.water;
@@ -4734,6 +5098,11 @@
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
     if (d.meals && d.meals.length) d.meals.forEach(m => { if (m.description) parts.push(m.description); });
     if (d.pains && d.pains.length) d.pains.forEach(p => { parts.push(p.location, p.note); });
+    if (d.dbtSkills && d.dbtSkills.length) d.dbtSkills.forEach(s => { parts.push(s.skill, s.note); });
+    if (d.thoughtRecords && d.thoughtRecords.length) d.thoughtRecords.forEach(r => {
+      parts.push(r.situation, r.feeling, r.automatic, r.evidenceFor, r.evidenceAgainst, r.reframe);
+      if (r.distortions) parts.push(r.distortions.join(' '));
+    });
     const blob = parts.filter(Boolean).join(' ').toLowerCase();
     return blob.includes(q);
   }
@@ -4842,6 +5211,8 @@
     renderMindful();
     renderTodaySummary();
     renderLowMoodSupport();
+    renderThoughtRecordList();
+    updateVoiceToggle();
     setRetentionSelect();
     renderRetentionStatus();
   }
@@ -5050,13 +5421,20 @@
       if (action === 'breathe') { e.preventDefault(); document.getElementById('breatheBtn')?.click(); }
       if (action === 'ground') { e.preventDefault(); document.getElementById('groundBtn')?.click(); }
       if (action === 'write') { e.preventDefault(); switchView('journal'); setTimeout(() => document.getElementById('reflectionInput')?.focus(), 200); }
+      if (action === 'thought') { e.preventDefault(); openSkillByName('thought'); }
+      if (action === 'tipp') { e.preventDefault(); openSkillByName('tipp'); }
     });
   });
   document.querySelectorAll('[data-practice-launch]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const map = { breathe: 'breatheBtn', ground: 'groundBtn', kindness: 'kindnessBtn', scan: 'scanBtn', worry: 'worryBtn' };
+      const map = {
+        breathe: 'breatheBtn', ground: 'groundBtn', kindness: 'kindnessBtn',
+        scan: 'scanBtn', worry: 'worryBtn',
+        tipp: 'tippLaunch', stop: 'stopLaunch', radacc: 'radAccLaunch', thought: 'thoughtLaunch'
+      };
       const target = document.getElementById(map[btn.dataset.practiceLaunch]);
       if (target) target.click();
+      else openSkillByName(btn.dataset.practiceLaunch);
     });
   });
   document.querySelectorAll('[data-wind-sound]').forEach(btn => {
@@ -5200,6 +5578,7 @@
     await ensureAudioRunning();
     text.textContent = 'Settle in…';
     counter.textContent = TECHNIQUES[activeTech].name;
+    if (config.voiceCues) speakCue('Settle in.');
     await wait(2200);
     while (breatheRunning) {
       breatheCycle++;
@@ -5211,6 +5590,13 @@
         text.textContent = step.label;
         const s = getEffectiveBreatheSound();
         if (s !== 'silent') await playBreathTone(step.phase, s, step.dur);
+        if (config.voiceCues) {
+          const v = step.phase === 'inhale' ? 'Breathe in'
+                  : step.phase === 'exhale' ? 'Release'
+                  : step.phase === 'hold' ? 'Hold'
+                  : 'Pause';
+          speakCue(v);
+        }
         await wait(step.dur * 1000);
       }
     }
@@ -5272,6 +5658,7 @@
     const step = GROUND_STEPS[groundIdx];
     document.getElementById('groundStep').textContent = String(step.n);
     document.getElementById('groundPrompt').innerHTML = step.prompt;
+    if (config.voiceCues) speakCue(`${step.n} things you can ${step.sense}`);
     if (enterBtn) enterBtn.style.display = 'inline-block';
     if (eraseBtn) eraseBtn.style.display = 'inline-block';
     if (backBtn) backBtn.style.display = 'inline-block';
@@ -5414,6 +5801,7 @@
     setTimeout(() => {
       phrase.textContent = stage.phrases[kindnessPhrase];
       phrase.style.opacity = '1';
+      if (config.voiceCues) speakCue(stage.phrases[kindnessPhrase]);
     }, 180);
     renderProgress('kindnessProgress', stage.phrases.length, kindnessPhrase);
     await playBell(528, 0.8);
@@ -5455,6 +5843,7 @@
     setTimeout(() => {
       phrase.textContent = BODY_SCAN[scanIdx];
       phrase.style.opacity = '1';
+      if (config.voiceCues) speakCue(BODY_SCAN[scanIdx]);
     }, 180);
     renderProgress('scanProgress', BODY_SCAN.length, scanIdx);
     await playBell(396, 0.8);
@@ -5902,6 +6291,9 @@
     wrap.innerHTML = insights.length
       ? insights.map(i => `<div class="insight-card ${i.cls}"><div class="insight-tag">${escapeHtml(i.tag)}</div><p class="insight-text">${i.text}</p></div>`).join('')
       : `<div class="insight-card"><div class="insight-tag">Still gathering</div><p class="insight-text">Patterns are quiet for now. A few more honest days will help.</p></div>`;
+
+    renderWeeklyReview(days, wrap);
+    if (days.filter(d => d.mood > 0).length >= 7) renderDayOfWeekChart(days, wrap);
   }
 
   /* ────────────────────────────────────────────────────────
@@ -6082,7 +6474,7 @@
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
     if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true };
+    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false };
     applyTheme('parchment');
     saveConfig();
     currentDateKey = dateKey();
@@ -6096,6 +6488,426 @@
     document.getElementById('importMessage').textContent = 'All local data cleared.';
     pushActivity('All data erased in this browser.');
   });
+
+  /* ────────────────────────────────────────────────────────
+     Voice cue helper (Web Speech API)
+  ──────────────────────────────────────────────────────── */
+  function speakCue(text) {
+    if (!config.voiceCues) return;
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.88;
+      u.pitch = 0.95;
+      u.volume = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  function updateVoiceToggle() {
+    const btn = document.getElementById('breatheVoiceToggle');
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', config.voiceCues ? 'true' : 'false');
+    btn.textContent = config.voiceCues ? 'voice: on' : 'voice: off';
+  }
+
+  document.getElementById('breatheVoiceToggle')?.addEventListener('click', () => {
+    config.voiceCues = !config.voiceCues;
+    saveConfig();
+    updateVoiceToggle();
+    if (config.voiceCues) speakCue('Voice on.');
+    else if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  /* ────────────────────────────────────────────────────────
+     openSkillByName — unified launcher for new overlays
+  ──────────────────────────────────────────────────────── */
+  function openSkillByName(name) {
+    if (name === 'tipp') { tippIdx = 0; setOverlayOpen('tippOverlay', true); renderTipp(); document.getElementById('tippClose')?.focus(); tippStart = Date.now(); }
+    if (name === 'stop') { stopIdx = 0; setOverlayOpen('stopOverlay', true); renderStop(); document.getElementById('stopClose')?.focus(); stopStart = Date.now(); }
+    if (name === 'radacc') { radAccIdx = 0; setOverlayOpen('radAccOverlay', true); renderRadAcc(); document.getElementById('radAccClose')?.focus(); radAccStart = Date.now(); }
+    if (name === 'thought') { thoughtStep = 1; setOverlayOpen('thoughtOverlay', true); renderThought(); document.getElementById('thoughtClose')?.focus(); thoughtStart = Date.now(); }
+  }
+
+  /* ────────────────────────────────────────────────────────
+     DBT · TIPP
+  ──────────────────────────────────────────────────────── */
+  const TIPP_STAGES = [
+    { letter: 'T', label: 'Temperature', phrase: 'Splash cold water on your face, or hold something cold for 30 seconds. Let the chill interrupt the spiral.' },
+    { letter: 'I', label: 'Intense exercise', phrase: 'Move your body hard for 60 seconds — jumping jacks, run in place, push-ups. Burn off the intensity.' },
+    { letter: 'P', label: 'Paced breathing', phrase: 'Breathe in for 4 counts, out for 8. The long exhale signals your nervous system to soften. Do six rounds.' },
+    { letter: 'P', label: 'Paired muscle relaxation', phrase: 'Tense each muscle group for 5 seconds, then release for 10. Feet — calves — thighs — belly — fists — shoulders — face.' }
+  ];
+  let tippIdx = 0, tippStart = null;
+
+  function renderTipp() {
+    const stage = TIPP_STAGES[tippIdx];
+    if (!stage) return;
+    document.getElementById('tippStep').textContent = `${stage.letter} · ${stage.label} · stage ${tippIdx + 1} of 4`;
+    document.getElementById('tippPhrase').textContent = stage.phrase;
+    renderProgress('tippProgress', TIPP_STAGES.length, tippIdx);
+    const nextBtn = document.getElementById('tippNext');
+    if (nextBtn) nextBtn.textContent = tippIdx < TIPP_STAGES.length - 1 ? 'continue →' : 'log this skill';
+    if (config.voiceCues) speakCue(stage.phrase);
+  }
+
+  document.getElementById('tippNext')?.addEventListener('click', () => {
+    tippIdx++;
+    if (tippIdx >= TIPP_STAGES.length) {
+      saveDbtSkill('TIPP', '');
+      setOverlayOpen('tippOverlay', false);
+      if (tippStart) { addMindfulSeconds(Date.now() - tippStart); tippStart = null; }
+      pushActivity('Completed TIPP distress-tolerance skill.');
+      return;
+    }
+    renderTipp();
+  });
+  document.getElementById('tippClose')?.addEventListener('click', () => {
+    setOverlayOpen('tippOverlay', false);
+    if (tippStart) { addMindfulSeconds(Date.now() - tippStart); tippStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  /* ────────────────────────────────────────────────────────
+     DBT · STOP
+  ──────────────────────────────────────────────────────── */
+  const STOP_STEPS = [
+    { letter: 'S', phrase: 'Stop. Freeze. Don\'t move. Don\'t act. The urge will not last forever.' },
+    { letter: 'T', phrase: 'Take a breath. One slow inhale through your nose. One slow exhale through your mouth.' },
+    { letter: 'O', phrase: 'Observe. What is happening inside your body? What is happening around you? Just notice, without judging.' },
+    { letter: 'P', phrase: 'Proceed mindfully. What would the calm, wise part of you do next?' }
+  ];
+  let stopIdx = 0, stopStart = null;
+
+  function renderStop() {
+    const step = STOP_STEPS[stopIdx];
+    if (!step) return;
+    document.getElementById('stopStep').textContent = `${step.letter} · step ${stopIdx + 1} of 4`;
+    document.getElementById('stopPhrase').textContent = step.phrase;
+    renderProgress('stopProgress', STOP_STEPS.length, stopIdx);
+    const nextBtn = document.getElementById('stopNext');
+    if (nextBtn) nextBtn.textContent = stopIdx < STOP_STEPS.length - 1 ? 'continue →' : 'log this skill';
+    if (config.voiceCues) speakCue(step.phrase);
+  }
+
+  document.getElementById('stopNext')?.addEventListener('click', () => {
+    stopIdx++;
+    if (stopIdx >= STOP_STEPS.length) {
+      saveDbtSkill('STOP', '');
+      setOverlayOpen('stopOverlay', false);
+      if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
+      pushActivity('Completed STOP skill.');
+      return;
+    }
+    renderStop();
+  });
+  document.getElementById('stopClose')?.addEventListener('click', () => {
+    setOverlayOpen('stopOverlay', false);
+    if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  /* ────────────────────────────────────────────────────────
+     DBT · Radical Acceptance
+  ──────────────────────────────────────────────────────── */
+  const RAD_ACC_PROMPTS = [
+    { step: 'What is?', phrase: 'What is happening, right now? Just the facts — like a camera would capture it.' },
+    { step: 'What can\'t I change?', phrase: 'What part of this is outside your control? What reality are you being asked to accept?' },
+    { step: 'One small move', phrase: 'Even inside this reality, what is one small, kind move you can make for yourself?' }
+  ];
+  const RAD_ACC_INPUTS = ['radAccWhatIs', 'radAccCannotChange', 'radAccNextMove'];
+  let radAccIdx = 0, radAccStart = null;
+
+  function renderRadAcc() {
+    const p = RAD_ACC_PROMPTS[radAccIdx];
+    if (!p) return;
+    document.getElementById('radAccStep').textContent = `${p.step} · step ${radAccIdx + 1} of 3`;
+    document.getElementById('radAccPhrase').innerHTML = `<em>${escapeHtml(p.phrase)}</em>`;
+    RAD_ACC_INPUTS.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.hidden = i !== radAccIdx;
+    });
+    renderProgress('radAccProgress', RAD_ACC_PROMPTS.length, radAccIdx);
+    const nextBtn = document.getElementById('radAccNext');
+    const logBtn = document.getElementById('radAccLog');
+    const backBtn = document.getElementById('radAccBack');
+    if (nextBtn) nextBtn.hidden = radAccIdx >= RAD_ACC_PROMPTS.length - 1;
+    if (logBtn) logBtn.hidden = radAccIdx < RAD_ACC_PROMPTS.length - 1;
+    if (backBtn) backBtn.hidden = radAccIdx === 0;
+    const active = document.getElementById(RAD_ACC_INPUTS[radAccIdx]);
+    if (active) setTimeout(() => { try { active.focus(); } catch (e) {} }, 150);
+    if (config.voiceCues) speakCue(p.phrase);
+  }
+
+  document.getElementById('radAccNext')?.addEventListener('click', () => {
+    radAccIdx++;
+    if (radAccIdx >= RAD_ACC_PROMPTS.length) radAccIdx = RAD_ACC_PROMPTS.length - 1;
+    renderRadAcc();
+  });
+  document.getElementById('radAccBack')?.addEventListener('click', () => {
+    if (radAccIdx > 0) { radAccIdx--; renderRadAcc(); }
+  });
+  document.getElementById('radAccLog')?.addEventListener('click', () => {
+    const note = [
+      document.getElementById('radAccWhatIs')?.value || '',
+      document.getElementById('radAccCannotChange')?.value || '',
+      document.getElementById('radAccNextMove')?.value || ''
+    ].filter(Boolean).join(' | ');
+    saveDbtSkill('Radical Acceptance', note);
+    setOverlayOpen('radAccOverlay', false);
+    if (radAccStart) { addMindfulSeconds(Date.now() - radAccStart); radAccStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    pushActivity('Completed Radical Acceptance practice.');
+  });
+  document.getElementById('radAccClose')?.addEventListener('click', () => {
+    setOverlayOpen('radAccOverlay', false);
+    if (radAccStart) { addMindfulSeconds(Date.now() - radAccStart); radAccStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  function saveDbtSkill(skill, note) {
+    if (!day.dbtSkills) day.dbtSkills = [];
+    day.dbtSkills.push({ skill, note, ts: Date.now() });
+    saveDay();
+    renderThoughtRecordList();
+  }
+
+  /* ────────────────────────────────────────────────────────
+     CBT · Thought Record (5 steps)
+  ──────────────────────────────────────────────────────── */
+  const THOUGHT_PROMPTS = [
+    'What happened? Just the facts, like a camera would see.',
+    'What did you feel, and how strong (0–10)?',
+    'What was the loudest thought in that moment? Quote it.',
+    'Which thinking patterns might be at play? Pick any that fit. Then weigh the evidence.',
+    'Given both sides, what is a kinder, more balanced sentence to carry?'
+  ];
+  let thoughtStep = 1, thoughtStart = null;
+
+  function renderThought() {
+    document.getElementById('thoughtStep').textContent = `step ${thoughtStep} of 5`;
+    document.getElementById('thoughtPrompt').innerHTML = `<em>${escapeHtml(THOUGHT_PROMPTS[thoughtStep - 1])}</em>`;
+    document.querySelectorAll('[data-thought-step]').forEach(el => {
+      el.hidden = Number(el.dataset.thoughtStep) !== thoughtStep;
+    });
+    const nextBtn = document.getElementById('thoughtNext');
+    const saveBtn = document.getElementById('thoughtSave');
+    const backBtn = document.getElementById('thoughtBack');
+    if (nextBtn) nextBtn.hidden = thoughtStep >= 5;
+    if (saveBtn) saveBtn.hidden = thoughtStep < 5;
+    if (backBtn) backBtn.hidden = thoughtStep <= 1;
+    if (config.voiceCues) speakCue(THOUGHT_PROMPTS[thoughtStep - 1]);
+    const focusMap = { 1: 'thoughtSituation', 2: 'thoughtFeeling', 3: 'thoughtAuto', 5: 'thoughtReframe' };
+    const fid = focusMap[thoughtStep];
+    if (fid) setTimeout(() => { try { document.getElementById(fid)?.focus(); } catch (e) {} }, 150);
+  }
+
+  document.getElementById('thoughtNext')?.addEventListener('click', () => {
+    if (thoughtStep < 5) { thoughtStep++; renderThought(); }
+  });
+  document.getElementById('thoughtBack')?.addEventListener('click', () => {
+    if (thoughtStep > 1) { thoughtStep--; renderThought(); }
+  });
+  document.getElementById('thoughtIntensity')?.addEventListener('input', e => {
+    const v = document.getElementById('thoughtIntensityVal');
+    if (v) v.textContent = e.target.value;
+  });
+  document.querySelectorAll('#thoughtDistortions .chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('on'));
+  });
+  document.getElementById('thoughtSave')?.addEventListener('click', () => {
+    const selectedDistortions = [...document.querySelectorAll('#thoughtDistortions .chip.on')].map(c => c.dataset.distortion);
+    const record = {
+      ts: Date.now(),
+      situation: document.getElementById('thoughtSituation')?.value || '',
+      feeling: document.getElementById('thoughtFeeling')?.value || '',
+      intensity: document.getElementById('thoughtIntensity')?.value || '5',
+      automatic: document.getElementById('thoughtAuto')?.value || '',
+      distortions: selectedDistortions,
+      evidenceFor: document.getElementById('thoughtFor')?.value || '',
+      evidenceAgainst: document.getElementById('thoughtAgainst')?.value || '',
+      reframe: document.getElementById('thoughtReframe')?.value || ''
+    };
+    if (!day.thoughtRecords) day.thoughtRecords = [];
+    day.thoughtRecords.push(record);
+    saveDay();
+    setOverlayOpen('thoughtOverlay', false);
+    if (thoughtStart) { addMindfulSeconds(Date.now() - thoughtStart); thoughtStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    renderThoughtRecordList();
+    pushActivity('Saved a thought record.');
+  });
+  document.getElementById('thoughtClose')?.addEventListener('click', () => {
+    setOverlayOpen('thoughtOverlay', false);
+    if (thoughtStart) { addMindfulSeconds(Date.now() - thoughtStart); thoughtStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  function renderThoughtRecordList() {
+    const wrap = document.getElementById('thoughtRecordList');
+    if (!wrap) return;
+    const records = day.thoughtRecords || [];
+    if (!records.length) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = records.map((r, i) => `
+      <div class="log-item" style="margin-bottom:10px;font-size:0.9rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--paper-3);letter-spacing:0.12em;margin-bottom:4px">REFRAME · ${new Date(r.ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+        ${r.situation ? `<div><em>Situation:</em> ${escapeHtml(r.situation)}</div>` : ''}
+        ${r.automatic ? `<div><em>Thought:</em> ${escapeHtml(r.automatic)}</div>` : ''}
+        ${r.reframe ? `<div style="color:var(--moss-deep)"><em>Reframe:</em> ${escapeHtml(r.reframe)}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  /* ────────────────────────────────────────────────────────
+     Mood-aware practice suggestions
+  ──────────────────────────────────────────────────────── */
+  const SUGGEST_MAP = [
+    {
+      symptoms: ['anxious', 'tense'],
+      mood: null,
+      title: 'Feeling anxious or on edge.',
+      body: 'The 4-7-8 breath slows your nervous system. Follow it with 5-4-3-2-1 grounding to anchor you here.',
+      actions: [{ label: 'Breathe (4-7-8)', key: 'breathe' }, { label: '5-4-3-2-1 ground', key: 'ground' }]
+    },
+    {
+      symptoms: ['overwhelmed', 'panic'],
+      mood: null,
+      title: 'Too much at once.',
+      body: 'TIPP uses cold, movement, and breath to break the wave fast. STOP helps pause an urge before it acts.',
+      actions: [{ label: 'TIPP skill', key: 'tipp' }, { label: 'STOP skill', key: 'stop' }]
+    },
+    {
+      symptoms: ['irritable', 'restless'],
+      mood: null,
+      title: 'Feeling keyed up or snappy.',
+      body: 'TIPP intense exercise burns off the charge. Then STOP helps you pause before reacting.',
+      actions: [{ label: 'TIPP skill', key: 'tipp' }, { label: 'STOP skill', key: 'stop' }]
+    },
+    {
+      symptoms: ['sad', 'lonely'],
+      mood: null,
+      title: 'Heavy heart.',
+      body: 'Loving-kindness is a gentle antidote to loneliness. A gratitude line can help too — even one small thing.',
+      actions: [{ label: 'Loving-kindness', key: 'kindness' }, { label: 'Open Journal', key: 'journal' }]
+    },
+    {
+      symptoms: ['numb', 'foggy'],
+      mood: null,
+      title: 'Feeling blank or shut down.',
+      body: 'Grounding can help you re-enter your body. Even naming 5 things you see starts to bring you back.',
+      actions: [{ label: '5-4-3-2-1 ground', key: 'ground' }, { label: 'Body scan', key: 'scan' }]
+    },
+    {
+      symptoms: [],
+      mood: 1,
+      title: 'A low day.',
+      body: 'You don\'t have to fix it. A small practice can offer steadiness. Pick whatever feels lightest.',
+      actions: [{ label: 'Breathe', key: 'breathe' }, { label: 'Kindness', key: 'kindness' }, { label: 'Reframe a thought', key: 'thought' }]
+    }
+  ];
+  function renderRecommendPanel() {
+    const panel = document.getElementById('recommendPanel');
+    if (!panel || recommendDismissed) return;
+    const syms = day.symptoms || [];
+    const mood = day.mood;
+    let match = null;
+    for (const rule of SUGGEST_MAP) {
+      if (rule.mood !== null && mood === rule.mood) { match = rule; break; }
+      if (rule.symptoms.length && rule.symptoms.some(s => syms.includes(s))) { match = rule; break; }
+    }
+    if (!match) { panel.hidden = true; return; }
+    panel.hidden = false;
+    document.getElementById('recommendTitle').textContent = match.title;
+    document.getElementById('recommendBody').textContent = match.body;
+    const actionsEl = document.getElementById('recommendActions');
+    actionsEl.innerHTML = match.actions.map(a =>
+      `<button class="sum-btn" data-recommend-launch="${escapeHtml(a.key)}">${escapeHtml(a.label)}</button>`
+    ).join('');
+    actionsEl.querySelectorAll('[data-recommend-launch]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const k = btn.dataset.recommendLaunch;
+        if (k === 'journal') { switchView('journal'); return; }
+        if (['breathe','ground','kindness','scan','worry'].includes(k)) {
+          document.getElementById(k + 'Btn')?.click();
+        } else {
+          openSkillByName(k);
+        }
+      });
+    });
+  }
+
+  document.getElementById('recommendDismiss')?.addEventListener('click', () => {
+    recommendDismissed = true;
+    const panel = document.getElementById('recommendPanel');
+    if (panel) panel.hidden = true;
+  });
+
+  /* ────────────────────────────────────────────────────────
+     Weekly review + day-of-week chart (added to renderInsights)
+  ──────────────────────────────────────────────────────── */
+  function renderWeeklyReview(days, wrap) {
+    const today = new Date();
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 6);
+    const weekKeys = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      weekKeys.push(dateKey(d));
+    }
+    const weekDays = days.filter(d => weekKeys.includes(d.date));
+    if (!weekDays.length) return;
+    const moodDays = weekDays.filter(d => d.mood > 0);
+    const avgMood = moodDays.length ? (moodDays.reduce((s, d) => s + d.mood, 0) / moodDays.length).toFixed(1) : '—';
+    const sleepDays = weekDays.filter(d => d.sleepHours > 0);
+    const avgSleep = sleepDays.length ? (sleepDays.reduce((s, d) => s + d.sleepHours, 0) / sleepDays.length).toFixed(1) + 'h' : '—';
+    const mindfulTotal = weekDays.reduce((s, d) => s + (d.mindfulMinutes || 0), 0);
+    const ritCount = {};
+    weekDays.forEach(d => (d.rituals || []).forEach(r => { ritCount[r] = (ritCount[r] || 0) + 1; }));
+    const topRit = Object.entries(ritCount).sort((a, b) => b[1] - a[1]).slice(0, 2);
+    const wins = weekDays.filter(d => d.eveningWin).map(d => d.eveningWin);
+    const el = document.createElement('div');
+    el.className = 'insight-card weekly-review';
+    el.innerHTML = `
+      <div class="insight-tag">This week</div>
+      <p class="insight-text"><strong>${weekDays.length} of 7 days</strong> checked in.</p>
+      <div class="weekly-grid">
+        <div class="weekly-stat"><span class="num">${avgMood}</span><span class="lbl">Avg mood</span></div>
+        <div class="weekly-stat"><span class="num">${avgSleep}</span><span class="lbl">Avg sleep</span></div>
+        <div class="weekly-stat"><span class="num">${mindfulTotal}m</span><span class="lbl">Mindful</span></div>
+        <div class="weekly-stat"><span class="num">${weekDays.length}</span><span class="lbl">Days in</span></div>
+      </div>
+      ${topRit.length ? `<p class="insight-text" style="margin-top:10px">Rituals: <strong>${topRit.map(([k]) => RITUAL_LABELS[k] || k).join(', ')}</strong></p>` : ''}
+      ${wins.length ? `<p class="insight-text"><em>A win this week:</em> ${escapeHtml(wins[wins.length - 1])}</p>` : ''}
+    `;
+    wrap.prepend(el);
+  }
+
+  function renderDayOfWeekChart(days, wrap) {
+    const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const buckets = DOW.map(() => ({ sum: 0, count: 0 }));
+    days.filter(d => d.mood > 0).forEach(d => {
+      const dow = new Date(d.date + 'T12:00:00').getDay();
+      buckets[dow].sum += d.mood;
+      buckets[dow].count++;
+    });
+    const avgs = buckets.map(b => b.count ? b.sum / b.count : 0);
+    const maxAvg = Math.max(...avgs, 1);
+    const chartEl = document.createElement('div');
+    chartEl.className = 'insight-card';
+    chartEl.innerHTML = `
+      <div class="insight-tag">Mood by day of week</div>
+      <div class="dow-chart" aria-label="Average mood by day of week">
+        ${avgs.map((avg, i) => {
+          const pct = avg ? Math.round((avg / maxAvg) * 80) : 4;
+          return `<div class="dow-bar"><div class="dow-bar-fill" style="height:${pct}px" title="${DOW[i]}: ${avg ? avg.toFixed(1) : 'no data'}"></div><div class="dow-bar-lbl">${DOW[i].toLowerCase()}</div></div>`;
+        }).join('')}
+      </div>
+      <p class="insight-text" style="font-size:0.82rem;opacity:0.7">Heights show your average mood (1–5) for each day of the week across all logged days.</p>
+    `;
+    wrap.append(chartEl);
+  }
 
   /* ────────────────────────────────────────────────────────
      Boot
