@@ -150,6 +150,80 @@
   body[data-rest-mode="on"] .rest-hide-focus {
     display: none !important;
   }
+  /* Rest mode — softer, less chrome */
+  body[data-rest-mode="on"] .rest-mode-soft {
+    display: none !important;
+  }
+  /* Mobile / Android: force normal horizontal text (prevents any stray vertical-rl bugs) */
+  :where(h1, h2, h3, .greeting, .leaf-title, .date-line) {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  .app, .view {
+    min-width: 0;
+  }
+  /* Full-bleed content on phones — no “empty lane” on the left */
+  @media (max-width: 600px) {
+    .app {
+      max-width: 100%;
+      width: 100%;
+      margin: 0;
+      padding: max(20px, env(safe-area-inset-top, 0px) + 8px) max(16px, env(safe-area-inset-right, 0px) + 4px) 0 max(16px, env(safe-area-inset-left, 0px) + 4px);
+    }
+    .leaf, .recommend-panel, .streak-card, .heatmap-wrap {
+      width: 100%;
+      max-width: 100%;
+    }
+    .leaf-head {
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .leaf-title {
+      flex: 1 1 12rem;
+      min-width: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .greeting {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    /* Stack banner image above copy — no squeezed vertical strip */
+    .visual-banner {
+      display: block;
+      min-height: 0;
+    }
+    .visual-banner img {
+      display: block;
+      width: 100%;
+      min-height: 160px;
+      max-height: 200px;
+      object-fit: cover;
+    }
+    .visual-banner > div { padding: 16px 4px 4px; }
+    .support-panel {
+      display: block;
+    }
+    .support-image { min-height: 140px; }
+    .support-body { padding: 16px; }
+    .wind-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .quick-start h2, .support-panel h2 { line-height: 1.2; }
+    /* Bottom nav: full width, no side inset (was causing lopsided gaps) */
+    .nav {
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: none !important;
+      padding-left: max(4px, env(safe-area-inset-left, 0px)) !important;
+      padding-right: max(4px, env(safe-area-inset-right, 0px)) !important;
+    }
+  }
+  /* Touch targets: comfortable minimum */
+  :where(.nav-btn, .mini-btn) {
+    min-height: 48px;
+  }
+  .data-btn, .sum-btn { min-height: 48px; }
 
   :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .path-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn, .overlay-close, .tech-tab, .audio-toggle, .soundscape-btn, .mini-stop, .prompt-shuffle):focus {
     outline: none;
@@ -2687,6 +2761,15 @@
     cursor: pointer;
   }
   .sum-btn:hover { background: var(--moss-mist); }
+  .sum-btn--primary {
+    background: linear-gradient(135deg, var(--moss) 0%, #3d5a42 100%);
+    color: var(--paper-3);
+    border-color: var(--moss-deep);
+    font-weight: 500;
+    min-height: 48px;
+    padding: 12px 20px;
+  }
+  .sum-btn--primary:hover { background: var(--moss-deep); color: var(--paper-3); }
   .sum-hint { font-size: 0.8rem; color: var(--ink-faint); margin-top: 8px; }
   .print-only { display: none; }
 
@@ -3045,8 +3128,29 @@
     font-size: 0.88rem;
     color: var(--ink-soft);
   }
-  @media (max-width: 540px) {
-    .practice-flow { --flow-gap: 32px; }
+  .log-view-empty {
+    text-align: center;
+    padding: 28px 18px 32px;
+    background: var(--moss-mist);
+    border: 1px dashed rgba(201, 187, 164, 0.55);
+    border-radius: var(--r-lg);
+    margin: 8px 0 0;
+  }
+  .log-view-empty-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--moss-deep);
+    margin: 0 0 10px;
+  }
+  .log-view-empty-text { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.55; margin: 0 0 16px; }
+  .path-empty-hint {
+    padding: 20px 16px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    font-style: italic;
   }
   .recommend-panel h2 {
     font-family: 'Cormorant Garamond', serif;
@@ -3377,7 +3481,7 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <div class="today-progress-wrap no-print" aria-label="This day, gently filled in">
+    <div class="today-progress-wrap no-print rest-mode-soft" aria-label="This day, gently filled in">
       <div class="today-progress-ring" id="todayProgressRing" role="img" aria-label="Check-in progress">
         <svg viewBox="0 0 100 100" class="tpr-svg" aria-hidden="true">
           <circle class="tpr-bg" cx="50" cy="50" r="40" pathLength="100" />
@@ -3385,8 +3489,10 @@
         </svg>
         <span class="tpr-pct" id="todayProgressText">0%</span>
       </div>
+      <p class="today-progress-caption" id="todayProgressCaption">A little at a time — there is no pass or fail.</p>
+    </div>
     <div class="rest-mode-pill no-print" role="group" aria-label="Rest mode">
-      <p class="rest-copy">Rest mode tucks away quick links and the peace image for a calmer, quieter page — optional, anytime.</p>
+      <p class="rest-copy rest-mode-soft">Rest mode tucks away quick links, images, and extra accents for a calmer, quieter page — optional, anytime.</p>
       <button type="button" class="data-btn data-btn-ghost rest-mode-toggle" id="restModeBtn" aria-pressed="false">Rest mode: off</button>
     </div>
 
@@ -3405,7 +3511,7 @@
       <p class="storage-truth storage-truth-default" id="storageTruth">Entries stay on this device.</p>
     </section>
 
-    <details class="leaf start-here collapsible-section no-print" id="startHereDetails" aria-label="How to use today">
+    <details class="leaf start-here collapsible-section no-print rest-mode-soft" id="startHereDetails" aria-label="How to use today">
       <summary class="leaf-head">
         <h2 class="leaf-title">Start <em>here</em></h2>
         <span class="leaf-num">№ 00</span>
@@ -3445,7 +3551,7 @@
       <div class="quote-author" id="quoteAuthor">—</div>
     </section>
 
-    <details class="leaf soundscape-panel no-print collapsible-section" id="ambienceDetails" aria-label="Peaceful soundscapes">
+    <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft" id="ambienceDetails" aria-label="Peaceful soundscapes">
       <summary class="leaf-head">
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
         <span class="leaf-num">offline</span>
@@ -4120,17 +4226,20 @@
       <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
       <div class="today-summary" id="todaySummary" role="status" aria-live="polite">—</div>
       <p class="summary-est-note no-print" id="summaryEstNote" hidden>Calorie line items are <strong>rough estimates</strong> from your food words (not medical advice).</p>
-      <div class="data-row no-print" style="margin-top:10px; justify-content:center; flex-wrap:wrap; gap:8px">
+      <div class="data-row no-print" style="margin-top:12px; justify-content:center; flex-wrap:wrap; gap:10px">
+        <button type="button" class="sum-btn sum-btn--primary" id="copyForAiPrimary" title="Markdown + JSON for AI assistants">Copy for AI (Markdown + JSON)</button>
+      </div>
+      <div class="data-row no-print" style="margin-top:8px; justify-content:center; flex-wrap:wrap; gap:8px">
         <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
         <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
       </div>
       <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
       <div class="data-row no-print" style="margin-top:14px; justify-content:center; flex-wrap:wrap; gap:8px">
-        <button type="button" class="sum-btn" id="openExportModal" title="Exports for print, your clinician, or AI">Exports…</button>
+        <button type="button" class="sum-btn" id="openExportModal" title="More exports: clinician PDF, print">More exports…</button>
       </div>
     </section>
 
-    <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
+    <div class="flourish rest-mode-soft no-print" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
     <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
       <span class="mindful-minutes">0</span> mindful minutes today
@@ -4518,10 +4627,11 @@
   <div class="export-modal-panel leaf" style="max-width:min(480px,92vw); margin:0 auto">
     <button type="button" class="overlay-close" id="exportModalClose" aria-label="Close">×</button>
     <h2 class="leaf-title" id="exportModalTitle" style="margin-top:0">Gentle <em>exports</em></h2>
-    <p class="leaf-sub">Everything stays on this device until you print, copy, or share from your browser. Choose the shape of the story.</p>
+    <p class="leaf-sub">Everything stays on this device until you print, copy, or share from your browser. “Copy for AI” is also on your session sheet above as one tap.</p>
     <div class="export-btn-stack" style="display:flex; flex-direction:column; gap:10px; margin-top:14px">
       <button type="button" class="data-btn" id="exportBeautifulPdf">Beautiful journal (print / PDF)</button>
-      <button type="button" class="data-btn" id="exportClinicalPdf">For my doctor (print / PDF)</button>
+      <button type="button" class="data-btn" id="exportClinicalSummaryPdf">For my doctor / therapist — summary (print / PDF)</button>
+      <button type="button" class="data-btn" id="exportClinicalPdf">Clinical table (print / PDF)</button>
       <button type="button" class="data-btn" id="exportAiMarkdown">Copy for AI — Markdown + summary</button>
       <button type="button" class="data-btn data-btn-ghost" id="exportAiJson">Copy structured JSON for AI</button>
     </div>
@@ -6749,7 +6859,7 @@
       const allDays = getAllDayRecords().filter(d => hasAnyData(d));
       const days = allDays.filter(d => dayMatchesQuery(d, logQ));
       if (allDays.length === 0) {
-        listWrap.innerHTML = '';
+        listWrap.innerHTML = '<div class="log-view-empty"><p class="log-view-empty-title">Your trail is still growing</p><p class="log-view-empty-text">When you add to <strong>Today</strong>, lines and days will gather here — nothing to do yet but be gentle with yourself.</p><button type="button" class="data-btn" data-log-jump="today">Go to Today</button></div>';
         return;
       }
       if (days.length === 0) {
@@ -7651,7 +7761,7 @@
     if (!wrap) return;
     wrap.innerHTML = '';
     if (!items.length) {
-      wrap.innerHTML = '<div class="history-empty" style="padding:18px 8px;font-size:1rem;">Nothing here yet. Add one small thing.</div>';
+      wrap.innerHTML = '<div class="path-empty-hint">Nothing here yet — one small line is enough to begin. This space is for you, not a checklist.</div>';
       return;
     }
     if (type === 'experiment') {
@@ -8080,6 +8190,23 @@
         });
       }
     }
+
+    const grad = days.filter(d => d.mood > 0 && d.gratitude && String(d.gratitude).trim().length > 8);
+    if (grad.length >= 4) {
+      const gAvg = grad.reduce((s, d) => s + d.mood, 0) / grad.length;
+      const noG = days.filter(d => d.mood > 0 && (!d.gratitude || !String(d.gratitude).trim()));
+      if (noG.length >= 3) {
+        const nAvg = noG.reduce((s, d) => s + d.mood, 0) / noG.length;
+        if (gAvg - nAvg >= 0.35) {
+          insights.push({
+            tag: 'Gratitude & mood', cls: 'gold',
+            text: `Days when you wrote a little <strong>gratitude</strong> tend to show <strong>slightly brighter mood scores</strong> on average — a tender pattern, not a rule.`
+          });
+        }
+      }
+    }
+
+    const sleepy = days.filter(d => d.sleepHours > 0 && d.mood);
     if (sleepy.length >= 4) {
       const wellSlept = sleepy.filter(d => d.sleepHours >= 7);
       const poorlySlept = sleepy.filter(d => d.sleepHours < 7);
@@ -8289,6 +8416,38 @@
     parts.push('Do not infer a medical diagnosis; treat as user-reported context for support.');
     return parts.join('');
   }
+  function buildExportAiBundle() {
+    const md = buildAiNarrativeSummary() + '\n\n---\n\n## Full day (plain text)\n\n```\n' + buildTodaySummaryText() + '\n```';
+    const payload = {
+      meta: { app: 'Stillness', exportVersion: 2, date: currentDateKey, generatedAt: new Date().toISOString() },
+      day: day,
+      path: pathData,
+      narrativeForModels: buildAiNarrativeSummary()
+    };
+    return { md, json: JSON.stringify(payload, null, 2) };
+  }
+  function buildClinicalSummaryHtml() {
+    const phq = scorePhq2();
+    const gad = scoreGad2();
+    const dbtStr = (day.dbtSkills || []).filter(s => s && s.skill && s.skill.indexOf('Thought') === -1)
+      .map(s => (s.skill || '') + (s.note && s.note.trim() ? ' — ' + s.note : '')).join('; ') || '—';
+    const gr = (day.gratitude && day.gratitude.trim()) ? day.gratitude.trim() : '—';
+    return `
+      <h1 style="font:20pt Georgia;margin:0 0 6px">Stillness — for your care team</h1>
+      <p style="font:10pt Georgia;color:#555;margin:0 0 16px">User-reported snapshot from a private journal. Not a diagnosis. Date: <strong>${escapeHtml(formatDate(currentDateKey))}</strong></p>
+      <div style="background:#f4f0e8;border:1px solid #c9bba4;border-radius:8px;padding:14px;margin-bottom:16px">
+        <h2 style="font:12pt Georgia;margin:0 0 8px">Key numbers</h2>
+        <p style="margin:4px 0;font:11pt Georgia"><strong>Mood / energy (1–5):</strong> ${day.mood || '—'} / ${day.energy || '—'}</p>
+        <p style="margin:4px 0;font:11pt Georgia"><strong>PHQ-2–style (0–6):</strong> ${phq != null ? phq : '—'} &nbsp;·&nbsp; <strong>GAD-2–style (0–6):</strong> ${gad != null ? gad : '—'}</p>
+        <p style="margin:4px 0;font:11pt Georgia"><strong>Sleep (h):</strong> ${day.sleepHours != null ? day.sleepHours.toFixed(1) : '7.0'}</p>
+        <p style="margin:4px 0;font:11pt Georgia"><strong>Steps:</strong> ${day.steps ? Number(day.steps).toLocaleString() : '—'}</p>
+        <p style="margin:4px 0;font:11pt Georgia"><strong>DBT skills (today):</strong> ${escapeHtml(dbtStr)}</p>
+      </div>
+      <h2 style="font:14pt Georgia;margin:18px 0 8px">Narrative &amp; context</h2>
+      <pre style="white-space:pre-wrap;font:11pt/1.5 Georgia;border:1px solid #ccc;padding:12px;background:#faf9f6;border-radius:4px">${escapeHtml(buildTodaySummaryText())}</pre>
+      <p style="font-size:9pt;color:#666;margin-top:14px">Generated by Stillness. The person holding this printout is responsible for accurate sharing with their clinician.</p>
+    `;
+  }
   function buildClinicalHtml() {
     const phq = scorePhq2();
     const gad = scoreGad2();
@@ -8296,8 +8455,8 @@
       ['Date', formatDate(currentDateKey)],
       ['Mood (1-5)', day.mood || '—'],
       ['Energy (1-5)', day.energy || '—'],
-      ['PHQ-2 style (0-6)', phq != null ? phq : '—'],
-      ['GAD-2 style (0-6)', gad != null ? gad : '—'],
+      ['PHQ-2 style (0-6) — 2-item screen, not full PHQ-9', phq != null ? phq : '—'],
+      ['GAD-2 style (0-6) — 2-item screen, not full GAD-7', gad != null ? gad : '—'],
       ['Symptom impact (0-4)', day.functionalImpact | 0],
       ['Sleep (hours)', day.sleepHours != null ? day.sleepHours.toFixed(1) : '7.0'],
       ['Sleep quality', day.sleepQuality ? (SLEEP_Q[day.sleepQuality] || '—') : '—'],
@@ -8310,7 +8469,8 @@
       ['Inner landscape / emotional weather', (day.emotionalWeather && day.emotionalWeather.trim()) ? day.emotionalWeather.trim() : '—'],
       ['Evening: strongest feeling', (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) ? day.eveningStrongestEmotion.trim() : '—'],
       ['Evening: quiet pride', (day.eveningQuietPride && day.eveningQuietPride.trim()) ? day.eveningQuietPride.trim() : '—'],
-      ['Evening: more needed tomorrow', (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) ? day.eveningNeedTomorrow.trim() : '—']
+      ['Evening: more needed tomorrow', (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) ? day.eveningNeedTomorrow.trim() : '—'],
+      ['DBT skills (distress tolerance, today)', (() => { const a = (day.dbtSkills || []).filter(s => s && s.skill && s.skill.indexOf('Thought') === -1); return a.length ? a.map(s => s.skill + (s.note && s.note.trim() ? ': ' + s.note : '')).join(' · ') : '—'; })()]
     ];
     let t = '<table class="clin-table" style="width:100%;border-collapse:collapse;font-size:11pt"><thead><tr><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Field</th><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Value</th></tr></thead><tbody>';
     rows.forEach(r => { t += '<tr><td style="padding:6px;border-bottom:1px solid #ddd">' + r[0] + '</td><td style="padding:6px;border-bottom:1px solid #ddd">' + escapeHtml(String(r[1])) + '</td></tr>'; });
@@ -8340,24 +8500,25 @@
     if (box) { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     setTimeout(() => window.print(), 200);
   });
-  document.getElementById('exportClinicalPdf')?.addEventListener('click', () => { closeExportModal(); runPrintForHtmlDoc('<h1>Stillness — clinical handoff</h1>' + buildClinicalHtml(), 'Stillness clinical handoff'); });
-  document.getElementById('exportAiMarkdown')?.addEventListener('click', () => {
-    const md = buildAiNarrativeSummary() + '\n\n---\n\n```\n' + buildTodaySummaryText() + '\n```';
+  document.getElementById('exportClinicalSummaryPdf')?.addEventListener('click', () => {
     closeExportModal();
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(md).then(() => pushActivity('Copied Markdown for AI.'), () => pushActivity('Copy failed — try a desktop browser.'));
-    } else {
-      pushActivity('Clipboard not available in this context.');
-    }
+    runPrintForHtmlDoc(buildClinicalSummaryHtml(), 'Stillness — for your care team');
   });
+  document.getElementById('exportClinicalPdf')?.addEventListener('click', () => { closeExportModal(); runPrintForHtmlDoc('<h1>Stillness — clinical data table</h1>' + buildClinicalHtml(), 'Stillness clinical table'); });
+  function copyBundleForAi() {
+    const { md, json } = buildExportAiBundle();
+    const out = md + '\n\n---\n\n## JSON\n\n```json\n' + json + '\n```\n';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(out)
+        .then(() => { pushActivity('Copied Markdown + JSON for AI.'); })
+        .catch(() => { pushActivity('Copy failed — try a desktop browser.'); });
+    }
+    pushActivity('Clipboard not available in this context.');
+    return Promise.resolve();
+  }
+  document.getElementById('exportAiMarkdown')?.addEventListener('click', () => { closeExportModal(); void copyBundleForAi(); });
   document.getElementById('exportAiJson')?.addEventListener('click', () => {
-    const payload = {
-      meta: { app: 'Stillness', exportVersion: 1, date: currentDateKey, generatedAt: new Date().toISOString() },
-      day: day,
-      path: pathData,
-      narrativeForModels: buildAiNarrativeSummary()
-    };
-    const json = JSON.stringify(payload, null, 2);
+    const { json } = buildExportAiBundle();
     closeExportModal();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(json).then(() => pushActivity('Copied JSON for AI.'), () => pushActivity('Copy failed.'));
@@ -8365,6 +8526,7 @@
       pushActivity('Clipboard not available.');
     }
   });
+  document.getElementById('copyForAiPrimary')?.addEventListener('click', () => { void copyBundleForAi(); });
 
   document.getElementById('copySummary').addEventListener('click', () => {
     const t = buildTodaySummaryText();
