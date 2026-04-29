@@ -3336,6 +3336,380 @@
     .recommend-panel { padding: 18px; }
     .weekly-grid { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* ═══════════════════════════════════════════════════════════
+     REDESIGN LAYER — stronger identity, cleaner separation
+     Additive overrides only — no existing CSS removed.
+     ═══════════════════════════════════════════════════════════ */
+
+  /* ── Greeting — more dramatic ────────────────────────────── */
+  .greeting {
+    font-size: clamp(2.3rem, 8vw, 3.4rem);
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 30px rgba(201, 169, 97, 0.14);
+    margin: 10px 0 10px;
+  }
+  .plate { margin-bottom: 36px; }
+  .plate-rule::before, .plate-rule::after { max-width: 130px; }
+
+  /* ── Day-moment group containers — distinct per time block ── */
+  .day-moment {
+    padding: clamp(20px, 4vw, 30px);
+    margin-bottom: 36px;
+    border-radius: 26px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 4px 8px rgba(74, 64, 49, 0.05),
+      0 14px 36px var(--shadow-warm);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Morning: warm golden sunrise tint */
+  .day-moment[data-moment="morning"] {
+    background: linear-gradient(
+      158deg,
+      rgba(229, 213, 170, 0.38) 0%,
+      rgba(244, 236, 218, 0.55) 40%,
+      rgba(237, 227, 210, 0.30) 100%
+    );
+    border-color: rgba(201, 169, 97, 0.3);
+  }
+  .day-moment[data-moment="morning"]::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 150px; height: 150px;
+    background: radial-gradient(ellipse, rgba(201, 169, 97, 0.14), transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+
+  /* Midday: crisp, slightly cooler */
+  .day-moment[data-moment="midday"] {
+    background: linear-gradient(
+      158deg,
+      rgba(214, 220, 201, 0.42) 0%,
+      rgba(244, 236, 218, 0.52) 45%,
+      rgba(237, 227, 210, 0.28) 100%
+    );
+    border-color: rgba(184, 197, 178, 0.45);
+  }
+  .day-moment[data-moment="midday"]::before {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 130px; height: 130px;
+    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.10), transparent 70%);
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  /* Evening: deep, warm, restful */
+  .day-moment[data-moment="evening"],
+  .day-moment.day-moment--evening {
+    background: linear-gradient(
+      158deg,
+      rgba(47, 74, 53, 0.14) 0%,
+      rgba(244, 236, 218, 0.45) 40%,
+      rgba(181, 101, 74, 0.08) 100%
+    );
+    border-color: rgba(74, 107, 79, 0.28);
+  }
+  .day-moment[data-moment="evening"]::before,
+  .day-moment.day-moment--evening::before {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 160px; height: 160px;
+    background: radial-gradient(ellipse, rgba(181, 101, 74, 0.10), transparent 68%);
+    filter: blur(24px);
+    pointer-events: none;
+  }
+
+  /* Dark themes */
+  [data-theme="forest"] .day-moment[data-moment="morning"],
+  [data-theme="midnight"] .day-moment[data-moment="morning"] {
+    background: linear-gradient(158deg, rgba(77, 61, 31, 0.28) 0%, rgba(50, 58, 51, 0.5) 100%);
+    border-color: rgba(140, 140, 100, 0.25);
+  }
+  [data-theme="forest"] .day-moment[data-moment="midday"],
+  [data-theme="midnight"] .day-moment[data-moment="midday"] {
+    background: linear-gradient(158deg, rgba(74, 107, 79, 0.22) 0%, rgba(50, 58, 51, 0.5) 100%);
+    border-color: rgba(140, 150, 135, 0.3);
+  }
+  [data-theme="forest"] .day-moment[data-moment="evening"],
+  [data-theme="midnight"] .day-moment[data-moment="evening"] {
+    background: linear-gradient(158deg, rgba(90, 106, 136, 0.22) 0%, rgba(42, 50, 43, 0.55) 100%);
+    border-color: rgba(90, 106, 136, 0.3);
+  }
+
+  /* ── Day-moment label — clear, prominent group header ─────── */
+  .day-moment-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    margin: 0 0 18px;
+    padding: 6px 12px;
+    background: rgba(201, 187, 164, 0.25);
+    border-radius: 999px;
+    display: inline-block;
+    border: 1px solid rgba(201, 187, 164, 0.35);
+  }
+  .day-moment[data-moment="morning"] .day-moment-label {
+    background: rgba(201, 169, 97, 0.15);
+    border-color: rgba(201, 169, 97, 0.28);
+    color: #7A5C1E;
+  }
+  .day-moment[data-moment="midday"] .day-moment-label {
+    background: rgba(74, 107, 79, 0.12);
+    border-color: rgba(74, 107, 79, 0.25);
+    color: var(--moss-deep);
+  }
+  .day-moment[data-moment="evening"] .day-moment-label,
+  .day-moment.day-moment--evening .day-moment-label {
+    background: rgba(47, 74, 53, 0.12);
+    border-color: rgba(47, 74, 53, 0.25);
+    color: var(--moss-deep);
+  }
+  [data-theme="forest"] .day-moment-label,
+  [data-theme="midnight"] .day-moment-label {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--ink-soft);
+  }
+
+  /* ── Leaf cards within day-moments — lighter, nested feel ─── */
+  .day-moment .leaf {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(201, 187, 164, 0.35);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 3px 10px rgba(74, 64, 49, 0.06),
+      0 8px 22px rgba(74, 64, 49, 0.08);
+    margin-bottom: 16px;
+    transition: transform .25s ease, box-shadow .28s ease;
+  }
+  .day-moment .leaf:last-child { margin-bottom: 0; }
+  .day-moment .leaf:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 6px 18px rgba(74, 64, 49, 0.1),
+      0 14px 32px rgba(74, 64, 49, 0.12);
+  }
+  [data-theme="forest"] .day-moment .leaf,
+  [data-theme="midnight"] .day-moment .leaf {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.10);
+  }
+
+  /* Evening leaf — slightly darker/warmer */
+  .day-moment--evening .leaf,
+  .day-moment[data-moment="evening"] .leaf {
+    background: rgba(255, 255, 255, 0.40);
+  }
+
+  /* ── Standalone leaves outside day-moments ──────────────── */
+  .leaf {
+    transition: transform .25s ease, box-shadow .28s ease;
+    border-left: 3px solid rgba(74, 107, 79, 0.18);
+  }
+  .leaf:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.56) inset,
+      0 2px 0 rgba(255, 255, 255, 0.22) inset,
+      0 14px 40px var(--shadow-deep);
+  }
+  .leaf.intention { border-left-color: rgba(74, 107, 79, 0.5); }
+  .leaf.soundscape-panel { border-left-color: rgba(201, 169, 97, 0.45); }
+  .leaf.wind-down-panel { border-left-color: rgba(90, 106, 136, 0.45); }
+
+  /* ── Section number — actual badge pill ─────────────────── */
+  .leaf-num {
+    background: var(--paper-2);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    opacity: 1;
+    flex-shrink: 0;
+  }
+  .day-moment .leaf-num {
+    background: transparent;
+    border-color: rgba(201, 187, 164, 0.35);
+  }
+
+  /* ── Section title + subtitle ────────────────────────────── */
+  .leaf-title { font-size: 1.42rem; }
+  .leaf-sub { font-size: 1rem; line-height: 1.62; margin-bottom: 22px; }
+
+  /* ── Quick-action cards ──────────────────────────────────── */
+  .quick-action {
+    border-radius: 16px;
+    transition: all .22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .quick-action::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(74, 107, 79, 0.07), transparent 60%);
+    opacity: 0;
+    transition: opacity .2s ease;
+    pointer-events: none;
+  }
+  .quick-action:hover::after { opacity: 1; }
+  .quick-action:hover {
+    transform: translateY(-2px) scale(1.03);
+    border-color: var(--moss-soft);
+    box-shadow: 0 6px 18px var(--shadow-warm);
+  }
+  .quick-action:active { transform: scale(0.96); }
+  .quick-action span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.06rem;
+    font-weight: 500;
+  }
+  .quick-action small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--moss-deep);
+    margin-top: 4px;
+  }
+
+  /* ── Picker buttons ─────────────────────────────────────── */
+  .picker-btn {
+    will-change: transform;
+    transition: all .26s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .picker-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 5px 16px var(--shadow-warm);
+  }
+  .picker-btn.on {
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 6px 18px rgba(74, 107, 79, 0.22);
+  }
+  .energy-row .picker-btn.on { box-shadow: 0 6px 18px rgba(181, 101, 74, 0.22); }
+
+  /* ── Chips ───────────────────────────────────────────────── */
+  .chip {
+    transition: all .24s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-size: 0.9rem;
+  }
+  .chip:hover { transform: translateY(-2px) scale(1.02); background: var(--paper-3); }
+  .chip.on { transform: scale(1.05); box-shadow: 0 3px 12px rgba(74, 107, 79, 0.22); }
+  .chip.bad.on { box-shadow: 0 3px 12px rgba(181, 101, 74, 0.22); }
+
+  /* ── Practice buttons ────────────────────────────────────── */
+  .practice-btn { min-height: 116px; padding: 22px 20px; }
+  .practice-btn .ptitle {
+    font-size: 1.3rem;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+    margin-bottom: 6px;
+  }
+  .practice-btn::before {
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.26), transparent);
+  }
+  .practices-row { gap: 14px; margin-bottom: 14px; }
+
+  /* ── Tracker cards ───────────────────────────────────────── */
+  .tracker {
+    transition: transform .22s ease, box-shadow .22s ease;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 6px 20px var(--shadow-warm);
+  }
+  .tracker:hover { transform: translateY(-2px); box-shadow: 0 10px 28px var(--shadow-deep); }
+  .tracker-value { font-size: 2.8rem; }
+  .grid-trackers { gap: 14px; margin-bottom: 24px; }
+
+  /* ── Streak card ─────────────────────────────────────────── */
+  .streak-card { padding: 36px 26px 32px; overflow: hidden; }
+  .streak-card::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -65%);
+    width: 220px; height: 220px;
+    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.14), transparent 68%);
+    filter: blur(22px);
+    pointer-events: none;
+  }
+  .streak-num { font-size: 4.2rem; position: relative; z-index: 1; }
+  .streak-label { font-size: 1.1rem; position: relative; z-index: 1; }
+
+  /* ── Insight stat color-coded tops ──────────────────────── */
+  .insight-row .insight-stat:nth-child(1) { border-top: 2.5px solid var(--moss); }
+  .insight-row .insight-stat:nth-child(2) { border-top: 2.5px solid var(--clay); }
+  .insight-row .insight-stat:nth-child(3) { border-top: 2.5px solid var(--gold); }
+  .insight-stat { transition: transform .2s ease; }
+  .insight-stat:hover { transform: translateY(-2px); }
+  .insight-stat .num { font-size: 1.9rem; }
+
+  /* ── History day cards ───────────────────────────────────── */
+  .history-day {
+    border-left: 3px solid rgba(74, 107, 79, 0.16);
+    transition: transform .2s ease, box-shadow .2s ease;
+    margin-bottom: 14px;
+  }
+  .history-day:hover { transform: translateY(-1px); box-shadow: 0 8px 26px var(--shadow-deep); }
+
+  /* ── Navigation — pill active state ─────────────────────── */
+  .nav-btn {
+    border-radius: 10px;
+    transition: color .22s ease, background .22s ease;
+    padding: 8px 6px;
+  }
+  .nav-btn.active {
+    color: var(--moss);
+    background: rgba(74, 107, 79, 0.11);
+  }
+  .nav-icon { transition: transform .32s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .nav-btn.active .nav-icon { transform: scale(1.16) translateY(-2px); }
+  .nav-btn::after {
+    height: 3px;
+    left: 20%; right: 20%;
+    border-radius: 0 0 4px 4px;
+    transition: transform .38s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── View transition — gentle lift ──────────────────────── */
+  .view.active { animation: viewEnterR .42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  @keyframes viewEnterR {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Quote frame ─────────────────────────────────────────── */
+  .quote-frame { padding: 44px 34px 38px; margin-bottom: 28px; }
+  .quote-text { font-size: clamp(1.2rem, 3.6vw, 1.5rem); }
+  .quote-mark { font-size: 4.6rem; height: 26px; }
+
+  /* ── Peace visual ────────────────────────────────────────── */
+  .peace-visual { margin-bottom: 28px; box-shadow: 0 10px 32px var(--shadow-warm); }
+
+  /* ── Quick-start panel ───────────────────────────────────── */
+  .quick-start { padding: 24px 22px 20px; margin-bottom: 28px; box-shadow: 0 6px 24px var(--shadow-warm); }
+  .quick-start h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); }
+  .quick-action-grid { margin-top: 16px; gap: 10px; }
+
+  /* ── Mobile ──────────────────────────────────────────────── */
+  @media (max-width: 520px) {
+    .day-moment { padding: 18px 16px; margin-bottom: 28px; border-radius: 22px; }
+    .practice-btn { min-height: 106px; padding: 18px 16px; }
+    .tracker-value { font-size: 2.4rem; }
+    .quote-frame { padding: 36px 22px 30px; }
+    .practices-row { gap: 10px; }
+    .quick-start { padding: 18px 16px 14px; }
+  }
+  /* ═══ END REDESIGN LAYER ════════════════════════════════════ */
 </style>
 <link rel="stylesheet" href="visual-polish.css" />
 </head>
