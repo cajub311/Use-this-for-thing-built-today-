@@ -1801,7 +1801,7 @@
     transform: scaleX(0);
     transition: transform .28s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .nav-btn:hover { color: var(--ink); }
+  .nav-btn:hover { color: var(--ink); background: var(--nav-hover, rgba(74, 107, 79, 0.09)); }
   .nav-btn.active { color: var(--moss); }
   .nav-btn.active .nav-icon { transform: scale(1.12) translateY(-1px); }
   .nav-btn.active::after { transform: scaleX(1); }
@@ -4515,6 +4515,8 @@
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
     const schemeMeta = document.querySelector('meta[name="color-scheme"]');
     if (schemeMeta) schemeMeta.setAttribute('content', t === 'parchment' ? 'light' : 'dark');
+    const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleStatus) appleStatus.setAttribute('content', t === 'parchment' ? 'default' : 'black-translucent');
     document.querySelectorAll('.theme-swatch').forEach(btn => {
       const on = btn.dataset.setTheme === t;
       btn.classList.toggle('on', on);
