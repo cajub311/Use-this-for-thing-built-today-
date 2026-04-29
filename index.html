@@ -2080,6 +2080,68 @@
     color: var(--moss-deep);
   }
   .today-progress-caption { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; }
+  /* Time-of-day flow on Today — soft cards with breathing room */
+  .day-moment {
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    background: linear-gradient(165deg, rgba(244, 236, 218, 0.65) 0%, rgba(237, 227, 210, 0.35) 100%);
+    padding: clamp(18px, 4vw, 26px);
+    margin: 0 0 var(--space-section);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) inset;
+  }
+  [data-theme="forest"] .day-moment,
+  [data-theme="midnight"] .day-moment {
+    background: linear-gradient(165deg, rgba(50, 58, 51, 0.55) 0%, rgba(42, 50, 43, 0.3) 100%);
+    border-color: rgba(140, 150, 135, 0.28);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  }
+  .day-moment-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 10px;
+  }
+  .day-moment--evening .leaf { background: rgba(255, 255, 255, 0.2); }
+  @media (max-width: 600px) {
+    .day-moment { padding: 16px 14px; margin-bottom: 22px; }
+  }
+  .day-saved-toast {
+    position: fixed;
+    bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%) translateY(12px);
+    z-index: 60;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--moss);
+    color: var(--paper-3);
+    font-family: 'Lora', serif;
+    font-size: 0.92rem;
+    box-shadow: 0 8px 28px var(--shadow-deep);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-slow), transform 0.35s var(--ease-slow);
+  }
+  .day-saved-toast.on {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .practice-launch-ghost {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .practice-launch-ghost .practice-btn { min-width: 1px; min-height: 1px; padding: 0; }
+  .journal-redirect { text-align: center; padding: 8px 0 28px; color: var(--ink-soft); line-height: 1.55; max-width: 32rem; margin-left: auto; margin-right: auto; }
   .sticky-save-bar {
     position: fixed;
     bottom: calc(56px + env(safe-area-inset-bottom, 0px));
@@ -3062,11 +3124,11 @@
   .dbt-skill-stack {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    margin-top: 6px;
+    gap: 32px;
+    margin-top: 10px;
   }
   .dbt-skill-block {
-    padding: 20px 0 0 0;
+    padding: 22px 0 0 0;
     border-top: 1px dashed rgba(201, 187, 164, 0.5);
   }
   .dbt-skill-block:first-of-type {
@@ -3501,12 +3563,12 @@
         <p class="picker-label">What would help right now?</p>
         <h2>Start with one useful thing.</h2>
       </div>
-      <div class="quick-action-grid">
+      <div class="quick-action-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 520px; margin-left: auto; margin-right: auto;">
         <button type="button" class="quick-action" data-quick-go="checkin"><span>Check in</span><small>mood + body</small></button>
-        <button type="button" class="quick-action" data-quick-go="breathe"><span>Breathe</span><small>60 seconds</small></button>
-        <button type="button" class="quick-action" data-quick-go="winddown"><span>Wind down</span><small>sleep mode</small></button>
-        <button type="button" class="quick-action" data-quick-go="journal"><span>Journal</span><small>one sentence</small></button>
+        <button type="button" class="quick-action" data-quick-go="journal"><span>Journal</span><small>rest &amp; evening</small></button>
+        <button type="button" class="quick-action" data-quick-go="practice"><span>Practice</span><small>breath · DBT</small></button>
         <button type="button" class="quick-action" data-quick-go="timer"><span>Timer</span><small>quiet sound</small></button>
+        <button type="button" class="quick-action" data-quick-go="track"><span>Track body</span><small>water &amp; more</small></button>
       </div>
       <p class="storage-truth storage-truth-default" id="storageTruth">Entries stay on this device.</p>
     </section>
@@ -3518,13 +3580,15 @@
       </summary>
       <p class="leaf-sub">A gentle order for your day — you can still scroll to anything. Tap the heading to open or close.</p>
       <ol class="start-list">
-        <li><strong>Anchor &amp; check-in</strong> — intention, then mood and energy.</li>
-        <li><strong>Body &amp; basics</strong> — water, movement, light, food, what hurts.</li>
-        <li><strong>Rest &amp; close</strong> — sleep, dreams, gratitude, reflection, evening.</li>
-        <li><strong>Session sheet &amp; print</strong> — at the bottom: copy or print your whole day.</li>
+        <li><strong>Morning</strong> — quiet image, anchor, quote, a line of gratitude, soft ambience (optional).</li>
+        <li><strong>Midday</strong> — mood, energy, inner weather, body (show more if you like).</li>
+        <li><strong>Rest &amp; evening</strong> — sleep, reflection, evening close, session sheet at the end.</li>
+        <li><strong>Need more room?</strong> — the Journal tab is a long overflow page; deep practices live under Practice.</li>
       </ol>
     </details>
 
+    <div class="day-moment" data-moment="morning" role="region" aria-label="Morning check-in">
+      <span class="day-moment-label" id="morningMomentLabel">Morning &middot; anchor &amp; gentle start</span>
     <section class="peace-visual no-print rest-hide-focus" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
       <div class="peace-visual-caption">
@@ -3551,6 +3615,16 @@
       <div class="quote-author" id="quoteAuthor">—</div>
     </section>
 
+    <!-- Small gratitude (morning) -->
+    <section class="leaf" id="gratitudeSection">
+      <div class="leaf-head">
+        <h2 class="leaf-title">A small <em>gratitude</em></h2>
+        <span class="leaf-num">soft</span>
+      </div>
+      <p class="leaf-sub">Something — anything — you&apos;re thankful for today. A line is enough.</p>
+      <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
+    </section>
+
     <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft" id="ambienceDetails" aria-label="Peaceful soundscapes">
       <summary class="leaf-head">
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
@@ -3570,7 +3644,10 @@
         <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
       </div>
     </details>
+    </div>
 
+    <div class="day-moment" data-moment="midday" role="region" aria-label="Midday check-in">
+      <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; body</span>
     <!-- Mood + Energy -->
     <section class="leaf">
       <div class="leaf-head">
@@ -3613,8 +3690,8 @@
 
       <p class="picker-label" style="margin-top:18px">A few words, if you want</p>
       <textarea class="mood-note" id="moodNote" rows="2" placeholder="Nothing has to sound pretty."></textarea>
+      <p class="mini-hint no-print" style="margin-top:8px; font-size:0.72rem; color: var(--ink-faint);">Saved with your day &mdash; use the floating <strong>Save to journal</strong> when you want a firm save.</p>
       <div class="mood-text-actions no-print">
-        <button type="button" class="mini-btn" id="moodNoteSave">Add to journal (enter)</button>
         <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
       </div>
     </section>
@@ -3689,12 +3766,12 @@
       </div>
     </section>
 
-    <!-- Body weather (chips) -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Body <em>weather</em></h2>
+    <!-- Body weather (chips) — collapsed by default: tap to expand -->
+    <details class="leaf collapsible-section" id="bodyWeatherDetails" aria-label="Body weather">
+      <summary class="leaf-head" style="cursor: pointer; list-style: none;">
+        <h2 class="leaf-title">Body <em>weather</em> <span style="font-size:0.7em; font-weight:400; color: var(--ink-faint)">(show more)</span></h2>
         <span class="leaf-num">№ 03</span>
-      </div>
+      </summary>
       <p class="leaf-sub">Tap whatever feels true right now. No need to fix anything.</p>
       <div class="chips" id="chips">
         <!-- populated by JS -->
@@ -3705,6 +3782,7 @@
       <p class="leaf-sub" style="margin-top:0">0 = barely · 4 = a lot. No wrong answer.</p>
       <input type="range" min="0" max="4" step="1" value="0" class="slider" id="functionalImpactSlider" aria-label="How much symptoms affected your day" />
       <div class="functional-labels"><span>0 gentle</span><span>4 full weight</span></div>
+    </details>
 
     <!-- Mood-aware suggestion card (auto-shown by JS when mood/symptoms suggest support) -->
     <section class="recommend-panel no-print" id="recommendPanel" hidden aria-live="polite">
@@ -3714,49 +3792,172 @@
       <div class="recommend-actions" id="recommendActions"></div>
       <button type="button" class="mini-btn" id="recommendDismiss" style="margin-top:14px">Not now</button>
     </section>
+    <div class="day-moment day-moment--evening" data-moment="evening" role="region" aria-label="Rest and evening">
+      <span class="day-moment-label" id="eveningMomentLabel">Rest &amp; evening · sleep, story, and close</span>
 
-    <!-- Practice tools -->
-    <div class="practices-row">
-      <button class="practice-btn" id="breatheBtn">
-        <div class="ptitle">Take a breath</div>
-        <div class="pdesc">4 techniques · peaceful sound</div>
-        <svg class="pic"><use href="#i-breath"/></svg>
-      </button>
-      <button class="practice-btn alt" id="groundBtn">
-        <div class="ptitle">Come back home</div>
-        <div class="pdesc">5-4-3-2-1 grounding</div>
-        <svg class="pic"><use href="#i-anchor"/></svg>
-      </button>
-    </div>
-    <div class="practices-row">
-      <button class="practice-btn gold" id="kindnessBtn">
-        <div class="ptitle">Loving-kindness</div>
-        <div class="pdesc">Metta · 4 stages</div>
-        <svg class="pic"><use href="#i-lotus"/></svg>
-      </button>
-      <button class="practice-btn dusk" id="scanBtn">
-        <div class="ptitle">Body scan</div>
-        <div class="pdesc">Head to toe · soft</div>
-        <svg class="pic"><use href="#i-bodyscan"/></svg>
-      </button>
-    </div>
-    <div class="practices-row">
-      <button class="practice-btn warm" id="worryBtn" style="grid-column: 1 / -1;">
-        <div class="ptitle">Release a worry</div>
-        <div class="pdesc">Write it · let it dissolve</div>
-        <svg class="pic"><use href="#i-worry"/></svg>
-      </button>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Last night&apos;s <em>rest</em></h2>
+        <span class="leaf-num">№ 01</span>
+      </div>
+      <p class="leaf-sub">Sleep is sacred. Honor whatever it gave you.</p>
+      <div class="sleep-top">
+        <div class="sleep-hours-block">
+          <div class="sleep-row">
+            <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
+            <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
+          </div>
+        </div>
+        <div class="dream-block">
+          <label for="dreamInput">Dreams (optional)</label>
+          <textarea class="deep-input dream-input" id="dreamInput" rows="4" maxlength="2000" placeholder="Anything you remember — images, feelings, a single line…"></textarea>
+        </div>
+      </div>
+      <div class="picker-label">Quality</div>
+      <div class="moon-row" id="moonRow">
+        <button class="moon-btn" data-quality="1"><svg class="moon-svg"><use href="#moon-new"/></svg><div class="lbl">Restless</div></button>
+        <button class="moon-btn" data-quality="2"><svg class="moon-svg"><use href="#moon-half"/></svg><div class="lbl">Light</div></button>
+        <button class="moon-btn" data-quality="3"><svg class="moon-svg"><use href="#moon-gibbous"/></svg><div class="lbl">Decent</div></button>
+        <button class="moon-btn" data-quality="4"><svg class="moon-svg"><use href="#moon-full"/></svg><div class="lbl">Deep</div></button>
+      </div>
+      <p class="picker-label" style="margin-top:16px">A few sleep details (optional)</p>
+      <div class="sleep-clinical-grid">
+        <div>
+          <label for="sleepLatency" class="sub">Time to fall asleep</label>
+          <select class="retention-select" id="sleepLatency" style="width:100%">
+            <option value="0">—</option>
+            <option value="5">~5 min</option>
+            <option value="15">~15 min</option>
+            <option value="30">~30 min</option>
+            <option value="45">~45+ min</option>
+            <option value="60">~1 hr+</option>
+          </select>
+        </div>
+        <div>
+          <label for="sleepAwakenings" class="sub">Times you woke (roughly)</label>
+          <select class="retention-select" id="sleepAwakenings" style="width:100%">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        <div>
+          <label for="sleepRested" class="sub">How rested you feel now</label>
+          <select class="retention-select" id="sleepRested" style="width:100%">
+            <option value="0">—</option>
+            <option value="1">Not rested</option>
+            <option value="2">A little</option>
+            <option value="3">Mostly</option>
+            <option value="4">Deeply</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <details class="leaf collapsible-section" id="careSystemDetails" aria-label="Strengths and people who help">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Strengths &amp; <em>support</em> (optional)</h2>
+        <span class="leaf-num">soft</span>
+      </summary>
+      <p class="picker-label">What’s going a little well — even small</p>
+      <textarea class="mood-note" id="strengthsNote" rows="2" maxlength="600" placeholder="A trait, a skill, a moment of steadiness…"></textarea>
+      <p class="picker-label" style="margin-top:12px">People, places, or things that help you feel held</p>
+      <textarea class="mood-note" id="supportNote" rows="2" maxlength="600" placeholder="No names required — a partner, a pet, a group, a text thread…"></textarea>
+    </details>
+
+    <details class="leaf collapsible-section" id="stressGentleDetails" aria-label="Gentle stress check-in">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">A gentle <em>load</em> check (optional)</h2>
+        <span class="leaf-num">tender</span>
+      </summary>
+      <p class="leaf-sub">If the last while has been heavy, you can name it here in your own words. This is for you and people you choose — not a label.</p>
+      <textarea class="deep-input" id="stressCheckIn" rows="3" maxlength="1000" placeholder="Stress, old hurts, or hard things on your mind — a sentence or a list, whatever feels safe today…"></textarea>
+    </details>
+
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">A <em>reflection</em></h2>
+        <span class="leaf-num">№ 02</span>
+      </div>
+      <p class="leaf-sub">No pressure. One line about the day is enough, if you want a shape for it.</p>
+      <div class="prompt-pill" id="promptPill"><em>Today&apos;s prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
+      <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
+    </section>
+
+    <p class="leaf-sub" style="margin: 0 0 6px; text-align:center">Deeper CBT/DBT tools live in the <strong>Practice</strong> tab.</p>
+
+    <section class="leaf" id="eveningSection" aria-label="Evening check-in">
+      <div class="leaf-head">
+        <h2 class="leaf-title"><em>Evening</em> check-in</h2>
+        <span class="leaf-num">№ 03</span>
+      </div>
+      <p class="leaf-sub">A small close to the day. Everything here saves as you go — use the floating <strong>Save to journal</strong> when you want an extra, gentle commit.</p>
+
+      <p class="picker-label">Something quiet to be proud of (optional)</p>
+      <p class="feeling-context-hint" style="margin-bottom:10px">Even a tiny thing counts — you showed up, you noticed, you stayed.</p>
+      <textarea class="deep-input" id="eveningQuietPride" rows="2" maxlength="2000" placeholder="A small thing that was actually brave…"></textarea>
+
+      <p class="picker-label" style="margin-top:16px">What you need a little more of tomorrow (optional)</p>
+      <p class="feeling-context-hint" style="margin-bottom:10px">Rest, connection, silence, structure, play — no obligation to make it happen.</p>
+      <textarea class="deep-input" id="eveningNeedTomorrow" rows="2" maxlength="2000" placeholder="Gentle wish for future you…"></textarea>
+
+    <details class="leaf collapsible-section no-print" id="eveningMoreDetails" style="margin-top:8px" aria-label="More evening fields">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">More of <em>the story</em> (optional)</h2>
+        <span class="leaf-num">soft</span>
+      </summary>
+      <p class="picker-label">I did: smallest version (one two-minute start)</p>
+      <textarea class="deep-input" id="eveningWinInput" rows="2" placeholder="I did: smallest version: one two-minute start…" maxlength="2000"></textarea>
+      <p class="picker-label" style="margin-top:12px">Something I&apos;m taking with me</p>
+      <textarea class="deep-input" id="eveningNoteInput" rows="2" placeholder="Something…" maxlength="2000"></textarea>
+      <p class="picker-label" style="margin-top:12px">What got in the way?</p>
+      <textarea class="deep-input" id="eveningObstacleInput" rows="2" placeholder="What got in the way?" maxlength="2000"></textarea>
+      <p class="picker-label" style="margin-top:12px">Tomorrow&apos;s smallest start</p>
+      <textarea class="deep-input" id="eveningTomorrowInput" rows="2" placeholder="Tomorrow's smallest start…" maxlength="2000"></textarea>
+      <p class="picker-label" style="margin-top:16px">A feeling that stayed with you (optional)</p>
+      <p class="feeling-context-hint" style="margin-bottom:10px">The emotion that was loudest or most present — you can name it simply.</p>
+      <textarea class="deep-input" id="eveningStrongestEmotion" rows="2" maxlength="2000" placeholder="e.g. worry · grief · relief · love · numbness…"></textarea>
+    </details>
+    </section>
     </div>
 
-    <div class="flourish"><svg><use href="#flourish-svg"/></svg></div>
+    <section class="leaf" id="summaryCard" aria-label="Today summary">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Your <em>session sheet</em></h2>
+        <span class="leaf-num">print</span>
+      </div>
+      <p class="leaf-sub no-print">All of today&apos;s saved fields in one place — copy, print, or share from the browser.</p>
+      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
+      <div class="today-summary" id="todaySummary" role="status" aria-live="polite">—</div>
+      <p class="summary-est-note no-print" id="summaryEstNote" hidden>Calorie line items are <strong>rough estimates</strong> from your food words (not medical advice).</p>
+      <div class="data-row no-print" style="margin-top:12px; justify-content:center; flex-wrap:wrap; gap:10px">
+        <button type="button" class="sum-btn sum-btn--primary" id="copyForAiPrimary" title="Markdown + JSON for AI assistants">Copy for AI (Markdown + JSON)</button>
+      </div>
+      <div class="data-row no-print" style="margin-top:8px; justify-content:center; flex-wrap:wrap; gap:8px">
+        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
+        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
+      </div>
+      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
+      <div class="data-row no-print" style="margin-top:14px; justify-content:center; flex-wrap:wrap; gap:8px">
+        <button type="button" class="sum-btn" id="openExportModal" title="More exports: clinician PDF, print">More exports…</button>
+      </div>
+    </section>
+
+    <div class="flourish rest-mode-soft no-print" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
+
+    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
+      <span class="mindful-minutes">0</span> mindful minutes today
+    </div>
 
     <div class="today-quick-links no-print">
       <button type="button" class="today-tab-link" id="goToTrack">Track body</button>
-      <button type="button" class="today-tab-link" id="goToJournal">Journal</button>
+      <button type="button" class="today-tab-link" id="goToJournal">Long-form journal &amp; notes</button>
     </div>
 
-    <div style="text-align: center; padding: 14px 0 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
-      <span class="mindful-minutes">0</span> mindful minutes today
+    <div class="data-row no-print" style="margin-top:0; margin-bottom: 8px; justify-content: center">
+      <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
     </div>
 
   </div>
@@ -3768,7 +3969,7 @@
     <header class="plate">
       <div class="plate-rule"><span class="ornament">Practice</span></div>
       <h1 class="greeting">A place to settle.</h1>
-      <div class="date-line">Breath Â· grounding Â· kindness Â· wind down</div>
+      <div class="date-line">Breath · grounding · kindness · wind down</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
@@ -3793,6 +3994,19 @@
         <button type="button" class="quick-action" data-practice-launch="kindness"><span>Kindness</span><small>metta phrases</small></button>
         <button type="button" class="quick-action" data-practice-launch="scan"><span>Body scan</span><small>head to toe</small></button>
         <button type="button" class="quick-action" data-practice-launch="worry"><span>Release</span><small>worry paper</small></button>
+      </div>
+      <p class="leaf-sub no-print" style="margin-top:12px; font-size:0.88rem">Saved thought records from the overlay appear below (same data as <strong>Today</strong>).</p>
+      <div id="thoughtRecordList" class="no-print" style="margin-top:10px"></div>
+      <div class="practice-launch-ghost" aria-hidden="true">
+        <button type="button" class="practice-btn" id="breatheBtn">Breathe</button>
+        <button type="button" class="practice-btn alt" id="groundBtn">Ground</button>
+        <button type="button" class="practice-btn gold" id="kindnessBtn">Kindness</button>
+        <button type="button" class="practice-btn dusk" id="scanBtn">Body scan</button>
+        <button type="button" class="practice-btn warm" id="worryBtn">Worry</button>
+        <button type="button" id="tippLaunch">TIPP</button>
+        <button type="button" id="stopLaunch">STOP</button>
+        <button type="button" id="radAccLaunch">Radical acceptance</button>
+        <button type="button" id="thoughtLaunch">Thought</button>
       </div>
     </section>
 
@@ -3837,7 +4051,7 @@
         <h2 class="leaf-title">Today&apos;s <em>DBT</em> log</h2>
         <span class="leaf-num">saved</span>
       </div>
-      <p class="leaf-sub">Skills you complete from this tab are listed here and in your session sheet at the bottom of Today.</p>
+      <p class="leaf-sub">Skills you complete from this tab are listed here and in your <strong>session sheet</strong> (bottom of the Today tab).</p>
       <div id="dbtTodayLog" class="dbt-log-wrap"></div>
     </section>
 
@@ -4037,222 +4251,32 @@
 
     <header class="plate">
       <div class="plate-rule"><span class="ornament">Journal</span></div>
-      <h1 class="greeting">Your quiet page.</h1>
+      <h1 class="greeting">Extra room to write.</h1>
       <div class="date-line" id="journalDate">—</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <!-- Sleep -->
-    <section class="leaf">
+    <p class="journal-redirect" id="journalFreeWriteHint">The heart of the day is on <strong>Today</strong> — morning, midday, and evening in order. This tab is a calm overflow when you need more space than the boxes allow.</p>
+
+    <section class="leaf" id="journalFreeWrite">
       <div class="leaf-head">
-        <h2 class="leaf-title">Last night's <em>rest</em></h2>
-        <span class="leaf-num">№ 01</span>
+        <h2 class="leaf-title">Long-form <em>space</em></h2>
+        <span class="leaf-num">write</span>
       </div>
-      <p class="leaf-sub">Sleep is sacred. Honor whatever it gave you.</p>
-      <div class="sleep-top">
-        <div class="sleep-hours-block">
-          <div class="sleep-row">
-            <div class="sleep-display"><span id="sleepValue">7.0</span><span class="h">h</span></div>
-            <input type="range" min="0" max="14" step="0.5" value="7" class="slider" id="sleepSlider" />
-          </div>
-        </div>
-        <div class="dream-block">
-          <label for="dreamInput">Dreams (optional)</label>
-          <textarea class="deep-input dream-input" id="dreamInput" rows="4" maxlength="2000" placeholder="Anything you remember — images, feelings, a single line…"></textarea>
-        </div>
-      </div>
-      <div class="picker-label">Quality</div>
-      <div class="moon-row" id="moonRow">
-        <button class="moon-btn" data-quality="1"><svg class="moon-svg"><use href="#moon-new"/></svg><div class="lbl">Restless</div></button>
-        <button class="moon-btn" data-quality="2"><svg class="moon-svg"><use href="#moon-half"/></svg><div class="lbl">Light</div></button>
-        <button class="moon-btn" data-quality="3"><svg class="moon-svg"><use href="#moon-gibbous"/></svg><div class="lbl">Decent</div></button>
-        <button class="moon-btn" data-quality="4"><svg class="moon-svg"><use href="#moon-full"/></svg><div class="lbl">Deep</div></button>
-      </div>
-      <p class="picker-label" style="margin-top:16px">A few sleep details (optional)</p>
-      <div class="sleep-clinical-grid">
-        <div>
-          <label for="sleepLatency" class="sub">Time to fall asleep</label>
-          <select class="retention-select" id="sleepLatency" style="width:100%">
-            <option value="0">—</option>
-            <option value="5">~5 min</option>
-            <option value="15">~15 min</option>
-            <option value="30">~30 min</option>
-            <option value="45">~45+ min</option>
-            <option value="60">~1 hr+</option>
-          </select>
-        </div>
-        <div>
-          <label for="sleepAwakenings" class="sub">Times you woke (roughly)</label>
-          <select class="retention-select" id="sleepAwakenings" style="width:100%">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4+</option>
-          </select>
-        </div>
-        <div>
-          <label for="sleepRested" class="sub">How rested you feel now</label>
-          <select class="retention-select" id="sleepRested" style="width:100%">
-            <option value="0">—</option>
-            <option value="1">Not rested</option>
-            <option value="2">A little</option>
-            <option value="3">Mostly</option>
-            <option value="4">Deeply</option>
-          </select>
-        </div>
-      </div>
+      <p class="leaf-sub">Letters, lists, a longer story — same day, same local save. Nothing has to be tidy.</p>
+      <label for="journalLongInput" class="picker-label">Write freely (optional)</label>
+      <textarea class="deep-input" id="journalLongInput" rows="14" maxlength="12000" placeholder="When you need more than a line…"></textarea>
     </section>
 
-    <!-- Gratitude -->
-    <section class="leaf" id="gratitudeSection">
-      <div class="leaf-head">
-        <h2 class="leaf-title">A small <em>gratitude</em></h2>
-        <span class="leaf-num">№ 02</span>
-      </div>
-      <p class="leaf-sub">Something — anything — you're thankful for today.</p>
-      <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
-    </section>
-
-    <details class="leaf collapsible-section" id="careSystemDetails" aria-label="Strengths and people who help">
-      <summary class="leaf-head">
-        <h2 class="leaf-title">Strengths &amp; <em>support</em> (optional)</h2>
-        <span class="leaf-num">soft</span>
-      </summary>
-      <p class="picker-label">What’s going a little well — even small</p>
-      <textarea class="mood-note" id="strengthsNote" rows="2" maxlength="600" placeholder="A trait, a skill, a moment of steadiness…"></textarea>
-      <p class="picker-label" style="margin-top:12px">People, places, or things that help you feel held</p>
-      <textarea class="mood-note" id="supportNote" rows="2" maxlength="600" placeholder="No names required — a partner, a pet, a group, a text thread…"></textarea>
-    </details>
-
-    <details class="leaf collapsible-section" id="stressGentleDetails" aria-label="Gentle stress check-in">
-      <summary class="leaf-head">
-        <h2 class="leaf-title">A gentle <em>load</em> check (optional)</h2>
-        <span class="leaf-num">tender</span>
-      </summary>
-      <p class="leaf-sub">If the last while has been heavy, you can name it here in your own words. This is for you and people you choose — not a label.</p>
-      <textarea class="deep-input" id="stressCheckIn" rows="3" maxlength="1000" placeholder="Stress, old hurts, or hard things on your mind — a sentence or a list, whatever feels safe today…"></textarea>
-    </details>
-
-    <!-- Reflection with rotating prompt -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">A <em>reflection</em></h2>
-        <span class="leaf-num">№ 03</span>
-      </div>
-      <p class="leaf-sub">No pressure. Just a few words for your future self.</p>
-      <div class="prompt-pill" id="promptPill"><em>Today's prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
-      <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
-    </section>
-
-    <!-- Cognitive reframe (CBT thought record) -->
-    <section class="leaf">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Reframe a <em>thought</em></h2>
-        <span class="leaf-num">CBT</span>
-      </div>
-      <p class="leaf-sub">If a sticky thought has been running in the background, a five-step record can help you see it with kinder eyes. Saved on this device only.</p>
-      <button type="button" class="data-btn" data-practice-launch="thought">Open thought record</button>
-      <div id="thoughtRecordList" style="margin-top:14px"></div>
-    </section>
-
-    <!-- Evening close-out -->
-    <section class="leaf" id="eveningSection" aria-label="Evening check-in">
-      <div class="leaf-head">
-        <h2 class="leaf-title"><em>Evening</em> check-in</h2>
-        <span class="leaf-num">№ 04</span>
-      </div>
-      <p class="leaf-sub">A small close to the day. Tap <strong>Save to journal</strong> when a field feels done — or it still saves as you type.</p>
-      <p class="picker-label">I did: smallest version (one two-minute start)</p>
-      <textarea class="deep-input" id="eveningWinInput" rows="2" placeholder="I did: smallest version: one two-minute start…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="win">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="win">Save to journal</button>
-        <span class="field-saved" id="fieldSavedWin" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">Something I'm taking with me</p>
-      <textarea class="deep-input" id="eveningNoteInput" rows="2" placeholder="Something…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="note">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="note">Save to journal</button>
-        <span class="field-saved" id="fieldSavedNote" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">What got in the way?</p>
-      <textarea class="deep-input" id="eveningObstacleInput" rows="2" placeholder="What got in the way?" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="obstacle">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="obstacle">Save to journal</button>
-        <span class="field-saved" id="fieldSavedObstacle" hidden aria-live="polite">Saved</span>
-      </div>
-      <p class="picker-label" style="margin-top:16px">Tomorrow's smallest start</p>
-      <textarea class="deep-input" id="eveningTomorrowInput" rows="2" placeholder="Tomorrow's smallest start…" maxlength="2000"></textarea>
-      <div class="field-save-row" data-for="tomorrow">
-        <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="tomorrow">Save to journal</button>
-        <span class="field-saved" id="fieldSavedTomorrow" hidden aria-live="polite">Saved</span>
-      </div>
-
-      <div class="evening-extra-block">
-        <p class="picker-label">A feeling that stayed with you (optional)</p>
-        <p class="feeling-context-hint" style="margin-bottom:10px">The emotion that was loudest or most present — you can name it simply.</p>
-        <textarea class="deep-input" id="eveningStrongestEmotion" rows="2" maxlength="2000" placeholder="e.g. worry · grief · relief · love · numbness…"></textarea>
-        <div class="field-save-row" data-for="strongEmotion">
-          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="strongEmotion">Save to journal</button>
-          <span class="field-saved" id="fieldSavedStrongEmotion" hidden aria-live="polite">Saved</span>
-        </div>
-      </div>
-      <div class="evening-extra-block">
-        <p class="picker-label">Something quiet to be proud of (optional)</p>
-        <p class="feeling-context-hint" style="margin-bottom:10px">Even a tiny thing counts — you showed up, you noticed, you stayed.</p>
-        <textarea class="deep-input" id="eveningQuietPride" rows="2" maxlength="2000" placeholder="A small thing that was actually brave…"></textarea>
-        <div class="field-save-row" data-for="quietPride">
-          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="quietPride">Save to journal</button>
-          <span class="field-saved" id="fieldSavedQuietPride" hidden aria-live="polite">Saved</span>
-        </div>
-      </div>
-      <div class="evening-extra-block">
-        <p class="picker-label">What you need a little more of tomorrow (optional)</p>
-        <p class="feeling-context-hint" style="margin-bottom:10px">Rest, connection, silence, structure, play — no obligation to make it happen.</p>
-        <textarea class="deep-input" id="eveningNeedTomorrow" rows="2" maxlength="2000" placeholder="Gentle wish for future you…"></textarea>
-        <div class="field-save-row" data-for="needTomorrow">
-          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="needTomorrow">Save to journal</button>
-          <span class="field-saved" id="fieldSavedNeedTomorrow" hidden aria-live="polite">Saved</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="leaf" id="summaryCard" aria-label="Today summary">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Your <em>session sheet</em></h2>
-        <span class="leaf-num">print</span>
-      </div>
-      <p class="leaf-sub no-print">All of today's saved fields in one place — copy, print, or share from the browser.</p>
-      <p class="print-only" style="display:none; font-size:0.95rem; margin:0 0 10px">Stillness · <span id="summaryDatePrint">—</span></p>
-      <div class="today-summary" id="todaySummary" role="status" aria-live="polite">—</div>
-      <p class="summary-est-note no-print" id="summaryEstNote" hidden>Calorie line items are <strong>rough estimates</strong> from your food words (not medical advice).</p>
-      <div class="data-row no-print" style="margin-top:12px; justify-content:center; flex-wrap:wrap; gap:10px">
-        <button type="button" class="sum-btn sum-btn--primary" id="copyForAiPrimary" title="Markdown + JSON for AI assistants">Copy for AI (Markdown + JSON)</button>
-      </div>
-      <div class="data-row no-print" style="margin-top:8px; justify-content:center; flex-wrap:wrap; gap:8px">
-        <button type="button" class="sum-btn" id="copySummary" title="Copy all text to clipboard">Copy as text</button>
-        <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
-      </div>
-      <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
-      <div class="data-row no-print" style="margin-top:14px; justify-content:center; flex-wrap:wrap; gap:8px">
-        <button type="button" class="sum-btn" id="openExportModal" title="More exports: clinician PDF, print">More exports…</button>
-      </div>
-    </section>
-
-    <div class="flourish rest-mode-soft no-print" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
-
-    <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
-      <span class="mindful-minutes">0</span> mindful minutes today
-    </div>
-
-    <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
-      <button type="button" class="data-btn" id="goToLogFromToday" title="See saved entries in the Log tab">Open log &amp; see saved text</button>
+    <div class="data-row" style="justify-content:center; margin: 8px 0 28px">
+      <button type="button" class="data-btn" id="goToTodayFromJournal">Back to Today</button>
     </div>
 
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
        HISTORY VIEW
+
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-history">
     <header class="plate">
@@ -4622,6 +4646,7 @@
   <span class="sticky-save-hint" id="stickySaveHint">When you’re ready, save the day in one tap.</span>
   <button type="button" class="sticky-save-btn" id="stickySaveBtn">Save to journal</button>
 </div>
+<div class="day-saved-toast no-print" id="daySavedToast" role="status" aria-live="polite">Day saved</div>
 
 <div class="overlay" id="exportModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="exportModalTitle">
   <div class="export-modal-panel leaf" style="max-width:min(480px,92vw); margin:0 auto">
@@ -5188,6 +5213,7 @@
     gratitude: '', reflection: '',
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
     eveningStrongestEmotion: '', eveningQuietPride: '', eveningNeedTomorrow: '',
+    journalLong: '',
     activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
     dbtSkills: [],
@@ -5225,6 +5251,7 @@
     if (typeof day.eveningStrongestEmotion !== 'string') day.eveningStrongestEmotion = '';
     if (typeof day.eveningQuietPride !== 'string') day.eveningQuietPride = '';
     if (typeof day.eveningNeedTomorrow !== 'string') day.eveningNeedTomorrow = '';
+    if (typeof day.journalLong !== 'string') day.journalLong = '';
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
@@ -5937,6 +5964,11 @@
   }
   function flashSaveNow() {
     setSaveBarText('Saved just now', 'saved');
+    const toast = document.getElementById('daySavedToast');
+    if (toast) {
+      toast.classList.add('on');
+      setTimeout(() => { toast.classList.remove('on'); }, 2000);
+    }
     setTimeout(() => { setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', _lastSaveClass === 'error' ? 'error' : 'saved'); }, 1600);
   }
   function applyTextSize() {
@@ -5969,7 +6001,7 @@
       day.intention && String(day.intention).trim(), day.mood, day.energy, (day.symptoms && day.symptoms.length) || (day.symptomsFreeText && day.symptomsFreeText.trim()),
       (day.rituals && day.rituals.length), (day.moodNote && day.moodNote.trim()) || (day.moodContext && day.moodContext.trim()) || (day.emotionalWeather && day.emotionalWeather.trim()), scorePhq2() != null, scoreGad2() != null,
       day.water > 0 || day.movement > 0 || day.sun > 0 || (day.steps > 0), (day.meals && day.meals.length), (day.pains && day.pains.length) || (day.medications && day.medications.length) || (day.allergies && day.allergies.trim()),
-      (day.gratitude && day.gratitude.trim()) || (day.reflection && day.reflection.trim()) || (day.dreams && day.dreams.trim()),
+      (day.gratitude && day.gratitude.trim()) || (day.reflection && day.reflection.trim()) || (day.dreams && day.dreams.trim()) || (day.journalLong && day.journalLong.trim()),
       (day.strengthsNote && day.strengthsNote.trim()) || (day.supportNote && day.supportNote.trim()) || (day.stressCheckIn && day.stressCheckIn.trim()),
       day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()), (day.mindfulMinutes > 0)
     ];
@@ -6104,7 +6136,7 @@
            d.water || d.pee || d.coffee || d.movement || d.sun || d.steps || (d.exerciseNote && d.exerciseNote.trim()) ||
            d.outings || d.sweets || d.calories ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) || (d.medications && d.medications.length) || (d.allergies && d.allergies.trim()) ||
-           d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes ||
+           d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes || (d.journalLong && d.journalLong.trim()) ||
            d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ||
            (d.eveningStrongestEmotion && d.eveningStrongestEmotion.trim()) || (d.eveningQuietPride && d.eveningQuietPride.trim()) || (d.eveningNeedTomorrow && d.eveningNeedTomorrow.trim()) ||
            (d.phq2 && d.phq2.some(x => x != null)) || (d.gad2 && d.gad2.some(x => x != null)) ||
@@ -6169,6 +6201,13 @@
     document.getElementById('date').textContent = fmt;
     if (document.getElementById('trackDate')) document.getElementById('trackDate').textContent = fmt;
     if (document.getElementById('journalDate')) document.getElementById('journalDate').textContent = fmt;
+    const h = new Date().getHours();
+    const m = document.getElementById('morningMomentLabel');
+    const d = document.getElementById('middayMomentLabel');
+    const e = document.getElementById('eveningMomentLabel');
+    if (m) m.textContent = h < 5 ? 'Deep night · anchor & gentle start' : h < 12 ? 'Morning · anchor & gentle start' : h < 17 ? 'So far today · morning fields' : 'Start of the page · morning fields';
+    if (d) d.textContent = h < 11 ? 'Midday (or when you can) · mood & body' : h < 16 ? 'This afternoon · mood & body' : h < 21 ? 'Check-in · mood & body' : 'Today · mood & body';
+    if (e) e.textContent = h < 15 ? 'Later today · rest & evening' : h < 19 ? 'Evening · rest & close' : 'Night · rest & close';
   }
   function renderDailyPeaceImage() {
     const img = PEACE_IMAGES[seedFromDate(new Date()) % PEACE_IMAGES.length];
@@ -6364,6 +6403,8 @@
     if (nt) nt.value = day.eveningNeedTomorrow || '';
     const dr = document.getElementById('dreamInput');
     if (dr) dr.value = day.dreams || '';
+    const jl = document.getElementById('journalLongInput');
+    if (jl) jl.value = day.journalLong || '';
   }
   function renderMindful() {
     document.querySelectorAll('.mindful-minutes').forEach(el => { el.textContent = day.mindfulMinutes || 0; });
@@ -6441,6 +6482,7 @@
     if (day.stressCheckIn && day.stressCheckIn.trim()) lines.push('Gentle load / stress: ' + day.stressCheckIn.trim());
     if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
     if (day.reflection) lines.push('Reflection: ' + day.reflection);
+    if (day.journalLong && day.journalLong.trim()) lines.push('Long journal (overflow): ' + day.journalLong.trim());
     if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim())) {
       lines.push('Evening:');
       if (day.eveningWin) lines.push('  · Smallest win: ' + day.eveningWin);
@@ -6569,6 +6611,7 @@
     if (day.stressCheckIn && day.stressCheckIn.trim()) parts.push(h('p', 'sum-line', 'Load check-in: ' + e(day.stressCheckIn.trim())));
     if (day.gratitude) parts.push(h('p', 'sum-line', 'Gratitude: ' + e(day.gratitude)));
     if (day.reflection) parts.push(h('p', 'sum-line', 'Reflection: ' + e(day.reflection)));
+    if (day.journalLong && day.journalLong.trim()) parts.push(h('p', 'sum-line', 'Long journal: ' + e(day.journalLong.trim())));
 
     if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim())) {
       parts.push(h('div', 'sum-head', 'Evening'));
@@ -6660,7 +6703,7 @@
   function dayMatchesQuery(d, q) {
     if (!q) return true;
     const parts = [
-      d.date, d.intention, d.moodNote, d.moodContext, d.emotionalWeather, d.gratitude, d.reflection, d.dreams, d.exerciseNote, d.symptomsFreeText,
+      d.date, d.intention, d.moodNote, d.moodContext, d.emotionalWeather, d.gratitude, d.reflection, d.dreams, d.exerciseNote, d.symptomsFreeText, d.journalLong,
       d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow, d.eveningStrongestEmotion, d.eveningQuietPride, d.eveningNeedTomorrow, d.strengthsNote, d.supportNote, d.stressCheckIn, d.allergies
     ];
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
@@ -6684,6 +6727,7 @@
       { h: 'Context for mood', t: d.moodContext },
       { h: 'Gratitude', t: d.gratitude },
       { h: 'Reflection', t: d.reflection },
+      { h: 'Long journal', t: d.journalLong },
       { h: 'Dreams', t: d.dreams },
       { h: 'Body words', t: d.symptomsFreeText },
       { h: 'Strengths', t: d.strengthsNote },
@@ -6935,6 +6979,9 @@
   document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
     b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDay(); });
   });
+  const jLong = document.getElementById('journalLongInput');
+  if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDay(); renderTodayProgress(); });
+  document.getElementById('goToTodayFromJournal')?.addEventListener('click', () => switchView('today'));
   document.getElementById('moodNote').addEventListener('input', e => {
     day.moodNote = e.target.value; saveDay();
   });
@@ -6942,11 +6989,6 @@
   if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDay(); renderTodayProgress(); });
   const emoW = document.getElementById('emotionalWeatherInput');
   if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDay(); renderTodayProgress(); });
-  document.getElementById('moodNoteSave').addEventListener('click', () => {
-    saveDayNow();
-    setSaveBarText('Mood note saved', 'saved');
-    pushActivity('Mood note saved to journal.');
-  });
   document.getElementById('moodNoteClear').addEventListener('click', () => {
     day.moodNote = '';
     document.getElementById('moodNote').value = '';
@@ -7113,15 +7155,6 @@
   });
   document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
 
-  const fieldSavedIds = { win: 'fieldSavedWin', note: 'fieldSavedNote', obstacle: 'fieldSavedObstacle', tomorrow: 'fieldSavedTomorrow', strongEmotion: 'fieldSavedStrongEmotion', quietPride: 'fieldSavedQuietPride', needTomorrow: 'fieldSavedNeedTomorrow' };
-  function flashFieldSaved(key) {
-    const id = fieldSavedIds[key];
-    if (!id) return;
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.hidden = false;
-    setTimeout(() => { el.hidden = true; }, 1800);
-  }
   document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDay(); });
   document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDay(); });
   document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDay(); });
@@ -7143,14 +7176,6 @@
         pushActivity('Evening check-in saved (Ctrl/⌘ + Enter).');
         setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       }
-    });
-  });
-  document.querySelectorAll('.btn-save-section').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.key;
-      saveDayNow();
-      pushActivity('Evening: saved to journal' + (key ? ' (' + key + ')' : '') + '.');
-      flashFieldSaved(key);
     });
   });
   const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'memory', 'log', 'path', 'quotes']);
@@ -7239,9 +7264,10 @@
     btn.addEventListener('click', () => {
       const action = btn.dataset.quickGo;
       if (action === 'checkin') document.getElementById('moodRow')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      if (action === 'breathe') document.getElementById('breatheBtn')?.click();
+      if (action === 'practice') switchView('practice');
+      if (action === 'track') switchView('track');
       if (action === 'winddown') switchView('practice');
-      if (action === 'journal') switchView('journal');
+      if (action === 'journal') { switchView('today'); setTimeout(() => document.getElementById('eveningSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120); }
       if (action === 'timer') {
         const amb = document.getElementById('ambienceDetails');
         if (amb) amb.open = true;
@@ -7254,7 +7280,7 @@
       const action = el.dataset.supportAction;
       if (action === 'breathe') { e.preventDefault(); document.getElementById('breatheBtn')?.click(); }
       if (action === 'ground') { e.preventDefault(); document.getElementById('groundBtn')?.click(); }
-      if (action === 'write') { e.preventDefault(); switchView('journal'); setTimeout(() => document.getElementById('reflectionInput')?.focus(), 200); }
+      if (action === 'write') { e.preventDefault(); switchView('today'); setTimeout(() => document.getElementById('reflectionInput')?.focus(), 200); }
       if (action === 'thought') { e.preventDefault(); openSkillByName('thought'); }
       if (action === 'tipp') { e.preventDefault(); openSkillByName('tipp'); }
     });
@@ -7282,8 +7308,8 @@
   });
   document.querySelectorAll('[data-practice-journal]').forEach(btn => {
     btn.addEventListener('click', () => {
-      switchView('journal');
-      setTimeout(() => document.getElementById('dreamInput')?.focus(), 200);
+      switchView('today');
+      setTimeout(() => document.getElementById('dreamInput')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
     });
   });
 
@@ -8398,6 +8424,9 @@
     if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) {
       parts.push('Evening — **more of tomorrow:** ' + day.eveningNeedTomorrow.trim() + '. ');
     }
+    if (day.journalLong && day.journalLong.trim()) {
+      parts.push('**Long journal (overflow):** a longer free-write is present in the export. ');
+    }
     if (pathData && (pathData.experiments || []).length) {
       const lines = (pathData.experiments || []).map(x => {
         const f = (x.feel && PATH_EXPERIMENT_FEEL_LABELS[x.feel]) ? PATH_EXPERIMENT_FEEL_LABELS[x.feel] : 'unmarked';
@@ -9091,7 +9120,7 @@
     actionsEl.querySelectorAll('[data-recommend-launch]').forEach(btn => {
       btn.addEventListener('click', () => {
         const k = btn.dataset.recommendLaunch;
-        if (k === 'journal') { switchView('journal'); return; }
+        if (k === 'journal') { switchView('today'); setTimeout(() => { document.getElementById('gratitudeInput')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('gratitudeInput')?.focus(); }, 120); return; }
         if (['breathe','ground','kindness','scan','worry'].includes(k)) {
           document.getElementById(k + 'Btn')?.click();
         } else {
@@ -9188,6 +9217,16 @@
   loadPath();
   renderAll();
   renderPath();
+  try {
+    const ild = document.getElementById('innerLandscapeDetails');
+    const msd = document.getElementById('moodScalesDetails');
+    const bwd = document.getElementById('bodyWeatherDetails');
+    const emd = document.getElementById('eveningMoreDetails');
+    if (ild) ild.open = false;
+    if (msd) msd.open = false;
+    if (bwd) bwd.open = false;
+    if (emd) emd.open = false;
+  } catch (e) {}
   (function initRoute() {
     const v = getRouteView();
     if (v == null) {
