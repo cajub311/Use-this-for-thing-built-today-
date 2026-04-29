@@ -2957,6 +2957,97 @@
     margin: 16px 0 18px;
     position: relative;
   }
+  /* Practice tab — flowing sections */
+  .practice-flow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--flow-gap, 40px);
+    margin-bottom: 8px;
+  }
+  .flow-section { margin: 0; }
+  .flow-connector {
+    display: block;
+    height: 0;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid rgba(201, 187, 164, 0.35);
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.75;
+  }
+  .dbt-skill-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 6px;
+  }
+  .dbt-skill-block {
+    padding: 20px 0 0 0;
+    border-top: 1px dashed rgba(201, 187, 164, 0.5);
+  }
+  .dbt-skill-block:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+  .dbt-skill-block .dbt-skill-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.12rem;
+    color: var(--ink);
+    margin: 0 0 6px;
+  }
+  .dbt-skill-block .dbt-skill-hint {
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    line-height: 1.55;
+  }
+  .dbt-skill-block .quick-action {
+    width: 100%;
+    max-width: none;
+  }
+  .dbt-today-leaf { background: linear-gradient(180deg, var(--paper-3) 0%, var(--moss-mist) 100%); }
+  .dbt-log-empty {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.55;
+  }
+  .dbt-log-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .dbt-log-list li {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink);
+    padding: 10px 14px;
+    background: var(--paper);
+    border-radius: var(--r);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+  }
+  .dbt-log-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--moss);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .dbt-log-note {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 540px) {
+    .practice-flow { --flow-gap: 32px; }
+  }
   .recommend-panel h2 {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
@@ -3575,7 +3666,8 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <section class="visual-banner no-print">
+    <div class="practice-flow">
+    <section class="visual-banner no-print flow-section">
       <img src="assets/peaceful/rain-window-winddown.jpg" alt="Evening wind-down scene with tea, lamp, blanket, and rain-speckled window" />
       <div>
         <small>Low-light support</small>
@@ -3583,7 +3675,7 @@
       </div>
     </section>
 
-    <section class="leaf">
+    <section class="leaf flow-section">
       <div class="leaf-head">
         <h2 class="leaf-title">Quick <em>practice</em></h2>
         <span class="leaf-num">now</span>
@@ -3598,23 +3690,54 @@
       </div>
     </section>
 
-    <!-- DBT distress-tolerance toolkit -->
-    <section class="leaf">
+    <hr class="flow-connector" aria-hidden="true" />
+
+    <!-- DBT distress-tolerance toolkit — each skill is its own flowing block -->
+    <section class="leaf flow-section">
       <div class="leaf-head">
-        <h2 class="leaf-title">When it's <em>hard</em></h2>
-        <span class="leaf-num">DBT</span>
+        <h2 class="leaf-title">When it&apos;s <em>hard</em> — DBT</h2>
+        <span class="leaf-num">skills</span>
       </div>
-      <p class="leaf-sub">Three short, evidence-based skills for moments that feel too big. Each one logs gently, only on this device.</p>
-      <div class="quick-action-grid">
-        <button type="button" class="quick-action" data-practice-launch="tipp"><span>TIPP</span><small>cold · move · breathe · relax</small></button>
-        <button type="button" class="quick-action" data-practice-launch="stop"><span>STOP</span><small>pause an urge</small></button>
-        <button type="button" class="quick-action" data-practice-launch="radacc"><span>Radical accept</span><small>3 small prompts</small></button>
-        <button type="button" class="quick-action" data-practice-launch="thought"><span>Reframe</span><small>5-step thought record</small></button>
+      <p class="leaf-sub">Evidence-based distress-tolerance tools, phrased gently. Finishing one logs to your day on this device only.</p>
+      <div class="dbt-skill-stack" role="list">
+        <div class="dbt-skill-block" role="listitem">
+          <p class="dbt-skill-name">TIPP</p>
+          <p class="dbt-skill-hint">Temperature, Intense movement, Paced breathing, Paired muscle relaxation — a four-stage flow when the body is loud.</p>
+          <button type="button" class="quick-action" data-practice-launch="tipp"><span>Open TIPP</span><small>cold · move · breathe · relax</small></button>
+        </div>
+        <div class="dbt-skill-block" role="listitem">
+          <p class="dbt-skill-name">STOP</p>
+          <p class="dbt-skill-hint">Stop, Take a breath, Observe, Proceed — a pause before acting on an urge.</p>
+          <button type="button" class="quick-action" data-practice-launch="stop"><span>Open STOP</span><small>pause an urge</small></button>
+        </div>
+        <div class="dbt-skill-block" role="listitem">
+          <p class="dbt-skill-name">Radical acceptance</p>
+          <p class="dbt-skill-hint">Three short prompts: what is, what can&apos;t change, one small move — not agreement, just reality with kindness.</p>
+          <button type="button" class="quick-action" data-practice-launch="radacc"><span>Open radical acceptance</span><small>3 small prompts</small></button>
+        </div>
+        <div class="dbt-skill-block" role="listitem">
+          <p class="dbt-skill-name">Reframe (thought record)</p>
+          <p class="dbt-skill-hint">A five-step CBT-style path when a thought keeps looping — related but separate from DBT flows above.</p>
+          <button type="button" class="quick-action" data-practice-launch="thought"><span>Open thought record</span><small>5 steps</small></button>
+        </div>
       </div>
-      <p class="support-note" style="margin-top:14px">Not emergency care. If you might hurt yourself, call or text <strong>988</strong> in the US, or your local crisis line.</p>
+      <p class="support-note" style="margin-top:22px">Not emergency care. If you might hurt yourself, call or text <strong>988</strong> in the US, or your local crisis line.</p>
     </section>
 
-    <section class="leaf wind-down-panel" id="windDownPanel">
+    <hr class="flow-connector" aria-hidden="true" />
+
+    <section class="leaf dbt-today-leaf flow-section" id="dbtTodayLogSection" aria-label="DBT skills logged today">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Today&apos;s <em>DBT</em> log</h2>
+        <span class="leaf-num">saved</span>
+      </div>
+      <p class="leaf-sub">Skills you complete from this tab are listed here and in your session sheet at the bottom of Today.</p>
+      <div id="dbtTodayLog" class="dbt-log-wrap"></div>
+    </section>
+
+    <hr class="flow-connector" aria-hidden="true" />
+
+    <section class="leaf wind-down-panel flow-section" id="windDownPanel">
       <div class="leaf-head">
         <h2 class="leaf-title"><em>Wind down</em> flow</h2>
         <span class="leaf-num">night</span>
@@ -3628,6 +3751,7 @@
       </div>
       <p class="support-note">Tip: sound starts only after a tap, which keeps Android Chrome happy.</p>
     </section>
+    </div>
   </div>
 
   <div class="view" id="view-track">
@@ -6218,11 +6342,14 @@
       if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) lines.push('  · Needing more of tomorrow: ' + day.eveningNeedTomorrow.trim());
     }
     if (day.dbtSkills && day.dbtSkills.length) {
-      lines.push('DBT / support skills:');
-      day.dbtSkills.forEach(s => lines.push('  - ' + (s.skill || 'Skill') + (s.note ? ': ' + s.note : '')));
+      const dbtRows = day.dbtSkills.filter(s => s && s.skill && s.skill.indexOf('Thought') === -1);
+      if (dbtRows.length) {
+        lines.push('DBT skills (distress tolerance):');
+        dbtRows.forEach(s => lines.push('  - ' + (s.skill || 'Skill') + (s.note ? ': ' + s.note : '')));
+      }
     }
     if (day.thoughtRecords && day.thoughtRecords.length) {
-      lines.push('Thought records:');
+      lines.push('Thought records (reframe / CBT):');
       day.thoughtRecords.forEach(r => {
         const thought = r.automatic || r.automaticThought || '';
         const reframe = r.reframe || r.balancedThought || '';
@@ -6344,11 +6471,16 @@
       if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) parts.push(h('p', 'sum-line', 'Needing more of tomorrow: ' + e(day.eveningNeedTomorrow.trim())));
     }
 
-    if ((day.dbtSkills && day.dbtSkills.length) || (day.thoughtRecords && day.thoughtRecords.length)) {
-      parts.push(h('div', 'sum-head', 'Skills & reframes'));
-      (day.dbtSkills || []).forEach(s => {
-        parts.push(h('p', 'sum-line', 'Skill: ' + e(s.skill || 'Support skill') + (s.note ? ' - ' + e(s.note) : '')));
+    const dbtToday = (day.dbtSkills || []).filter(s => s && s.skill && s.skill.indexOf('Thought') === -1);
+    if (dbtToday.length) {
+      parts.push(h('div', 'sum-head', 'DBT — distress tolerance'));
+      dbtToday.forEach(s => {
+        parts.push(h('p', 'sum-line', e(s.skill || 'Skill') + (s.note && s.note.trim() ? ' — ' + e(s.note.trim()) : '')));
       });
+    }
+
+    if (day.thoughtRecords && day.thoughtRecords.length) {
+      parts.push(h('div', 'sum-head', 'Reframe — thought records'));
       (day.thoughtRecords || []).forEach(r => {
         const thought = r.automatic || r.automaticThought || '';
         const reframe = r.reframe || r.balancedThought || '';
@@ -6364,6 +6496,26 @@
       const showK = day.meals && day.meals.length && totalMealsKcal(day.meals) > 0;
       est.hidden = !showK;
     }
+  }
+  function formatShortTime(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  }
+  function renderDbtTodayLog() {
+    const wrap = document.getElementById('dbtTodayLog');
+    if (!wrap) return;
+    const list = (day.dbtSkills || []).filter(s => s && (s.skill || '').indexOf('Thought') === -1);
+    if (!list.length) {
+      wrap.innerHTML = '<p class="dbt-log-empty">No DBT skills saved yet today. When you finish TIPP, STOP, or Radical acceptance, they will appear here.</p>';
+      return;
+    }
+    wrap.innerHTML = '<ul class="dbt-log-list">' + list.map(s => {
+      const name = escapeHtml(s.skill || 'Skill');
+      const note = s.note && String(s.note).trim() ? '<span class="dbt-log-note">' + escapeHtml(s.note) + '</span>' : '';
+      return '<li><span class="dbt-log-time">' + escapeHtml(formatShortTime(s.ts)) + '</span> · ' + name + note + '</li>';
+    }).join('') + '</ul>';
   }
   function formatActivityTime(t) {
     return new Date(t).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -6410,6 +6562,7 @@
       parts.push(r.situation, r.feeling, r.automatic, r.automaticThought, r.evidenceFor, r.evidenceAgainst, r.reframe, r.balancedThought, r.nextMove);
       if (r.distortions) parts.push(r.distortions.join(' '));
     });
+    if (d.dbtSkills && d.dbtSkills.length) d.dbtSkills.forEach(s => { parts.push(s.skill, s.note); });
     const blob = parts.filter(Boolean).join(' ').toLowerCase();
     return blob.includes(q);
   }
@@ -6650,6 +6803,7 @@
     renderTodayProgress();
     renderLowMoodSupport();
     renderThoughtRecordList();
+    renderDbtTodayLog();
     updateVoiceToggle();
     setRetentionSelect();
     applyTextSize();
@@ -6924,6 +7078,7 @@
     if (target === 'quotes') renderQuotes();
     if (target === 'log') renderLogView();
     if (target === 'path') renderPath();
+    if (target === 'practice') renderDbtTodayLog();
     if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
     if (target === 'today') renderTodaySummary();
     if (target === 'journal') renderTodaySummary();
@@ -8123,6 +8278,12 @@
       });
       if (lines.length) parts.push('**Path experiments (subjective follow-up):** ' + lines.join(' '));
     }
+    if (day.dbtSkills && day.dbtSkills.length) {
+      const dbtOnly = day.dbtSkills.filter(s => s && s.skill && !/^thought record$/i.test(s.skill) && s.skill.indexOf('Thought') === -1);
+      if (dbtOnly.length) {
+        parts.push('**DBT skills (today):** ' + dbtOnly.map(s => (s.skill || '') + (s.note && s.note.trim() ? ' — ' + s.note.trim() : '')).join(' · ') + ' ');
+      }
+    }
     parts.push('Sleep about **' + (day.sleepHours != null ? day.sleepHours.toFixed(1) : '7') + ' h**' + (day.sleepQuality ? ' with quality ' + (SLEEP_Q[day.sleepQuality] || '') : '') + '. ');
     parts.push('Data is **local-only** unless the user copies or prints it. ');
     parts.push('Do not infer a medical diagnosis; treat as user-reported context for support.');
@@ -8589,6 +8750,7 @@
     day.dbtSkills.push({ skill, note, ts: Date.now() });
     saveDay();
     renderTodaySummary();
+    renderDbtTodayLog();
     renderLogView();
     renderThoughtRecordList();
   }
