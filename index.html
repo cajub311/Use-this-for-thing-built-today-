@@ -3008,7 +3008,7 @@
 
     <div class="streak-card" id="streakCard">
       <div class="streak-num" id="streakNum">0</div>
-      <div class="streak-label">days you've shown up</div>
+      <div class="streak-label">saved days</div>
     </div>
 
     <div class="insight-row" id="insightRow"></div>
@@ -3394,12 +3394,42 @@
      (works offline as a downloaded file), with memory fallback.
   ──────────────────────────────────────────────────────── */
   const memStore = {};
+  let storageDurable = true;
+  function markStorageDurable(isDurable) {
+    storageDurable = !!isDurable;
+    const truth = document.getElementById('storageTruth');
+    if (truth) {
+      truth.textContent = storageDurable ? 'Saved on this device.' : 'Saved for this session only. Download a backup.';
+      truth.classList.toggle('session-only', !storageDurable);
+    }
+    const sync = document.getElementById('syncNote');
+    if (sync) {
+      sync.innerHTML = storageDurable
+        ? 'Saved on <strong>this device</strong>. It does not sync to Vercel or the server; use Memory -> backup file to keep a copy.'
+        : '<strong>Session-only storage.</strong> Your browser blocked durable storage. Download a backup before closing.';
+    }
+  }
   const Storage = {
     get(key) {
-      try { return localStorage.getItem(key); } catch { return memStore[key] || null; }
+      try {
+        const val = localStorage.getItem(key);
+        markStorageDurable(true);
+        return val;
+      } catch {
+        markStorageDurable(false);
+        return memStore[key] || null;
+      }
     },
     set(key, val) {
-      try { localStorage.setItem(key, val); } catch { memStore[key] = val; }
+      try {
+        localStorage.setItem(key, val);
+        markStorageDurable(true);
+        return true;
+      } catch {
+        memStore[key] = val;
+        markStorageDurable(false);
+        return false;
+      }
     },
     remove(key) {
       try { localStorage.removeItem(key); } catch {}
@@ -3624,7 +3654,7 @@
     clearTimeout(saveTimer);
     try {
       Storage.set(getStorageKey(), JSON.stringify(day));
-      setSaveBarText('Saved in this browser', 'saved');
+      setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
     } catch (e) {
       setSaveBarText('Could not save — storage may be full or blocked', 'error');
       pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -3636,7 +3666,7 @@
     saveTimer = setTimeout(() => {
       try {
         Storage.set(getStorageKey(), JSON.stringify(day));
-        setSaveBarText('Saved in this browser', 'saved');
+        setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
       } catch (e) {
         setSaveBarText('Could not save — storage may be full or blocked', 'error');
@@ -4359,10 +4389,18 @@
         if (i === -1) day.symptoms.push(s.id);
         else day.symptoms.splice(i, 1);
         c.classList.toggle('on');
+        renderLowMoodSupport();
         saveDay();
       });
       wrap.appendChild(c);
     });
+  }
+  function renderLowMoodSupport() {
+    const panel = document.getElementById('supportPanel');
+    if (!panel) return;
+    const lowSymptoms = ['sad', 'lonely', 'numb', 'overwhelmed', 'anxious', 'panic'];
+    const show = day.mood === 1 || (day.symptoms || []).some(id => lowSymptoms.includes(id));
+    panel.hidden = !show;
   }
   function renderWater() {
     document.getElementById('waterValue').textContent = day.water;
@@ -4753,6 +4791,7 @@
     renderTextFields();
     renderMindful();
     renderTodaySummary();
+    renderLowMoodSupport();
     setRetentionSelect();
     renderRetentionStatus();
   }
@@ -4765,7 +4804,7 @@
   });
 
   document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
-    b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); renderMood(); saveDay(); });
+    b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); renderMood(); renderLowMoodSupport(); saveDay(); });
   });
   document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
     b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDay(); });
@@ -4939,6 +4978,28 @@
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
   ──────────────────────────────────────────────────────── */
+  document.querySelectorAll('[data-quick-go]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.quickGo;
+      if (action === 'checkin') document.getElementById('moodRow')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (action === 'breathe') document.getElementById('breatheBtn')?.click();
+      if (action === 'winddown' || action === 'journal') switchView('journal');
+      if (action === 'timer') {
+        const amb = document.getElementById('ambienceDetails');
+        if (amb) amb.open = true;
+        amb?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+  document.querySelectorAll('[data-support-action]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const action = el.dataset.supportAction;
+      if (action === 'breathe') { e.preventDefault(); document.getElementById('breatheBtn')?.click(); }
+      if (action === 'ground') { e.preventDefault(); document.getElementById('groundBtn')?.click(); }
+      if (action === 'write') { e.preventDefault(); switchView('journal'); setTimeout(() => document.getElementById('reflectionInput')?.focus(), 200); }
+    });
+  });
+
   const TECHNIQUES = {
     '478': { name: '4-7-8 · calming', steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 7, label: 'Hold…' }, { phase: 'exhale', dur: 8, label: 'Release…' }] },
     'box': { name: 'Box · steady',    steps: [{ phase: 'inhale', dur: 4, label: 'Breathe in…' }, { phase: 'hold', dur: 4, label: 'Hold…' }, { phase: 'exhale', dur: 4, label: 'Breathe out…' }, { phase: 'hold-out', dur: 4, label: 'Pause…' }] },
@@ -5525,19 +5586,12 @@
       }
     });
 
-    // Streak: count consecutive days back from today with any data
-    let streak = 0;
+    // Continuity: count saved days with any data, without streak pressure.
+    let savedDays = 0;
     const dayMap = {};
     days.forEach(d => dayMap[d.date] = d);
-    let cursor = new Date();
-    while (true) {
-      const key = dateKey(cursor);
-      if (dayMap[key] && hasAnyData(dayMap[key])) {
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else break;
-    }
-    document.getElementById('streakNum').textContent = streak;
+    days.forEach(d => { if (hasAnyData(d)) savedDays++; });
+    document.getElementById('streakNum').textContent = savedDays;
 
     // Insights — averages
     const validMoods = days.filter(d => d.mood > 0).map(d => d.mood);
@@ -5779,6 +5833,17 @@
      Quotes view
   ──────────────────────────────────────────────────────── */
   function renderQuotes() {
+    const gallery = document.querySelector('.peace-gallery');
+    if (gallery) {
+      const count = gallery.closest('.leaf')?.querySelector('.leaf-num');
+      if (count) count.textContent = `${PEACE_IMAGES.length} scenes`;
+      gallery.innerHTML = PEACE_IMAGES.map(img => `
+        <figure class="peace-card">
+          <img src="${escapeHtml(img.src)}" alt="${escapeHtml(img.alt)}" loading="lazy" />
+          <figcaption>${escapeHtml(img.title)}</figcaption>
+        </figure>
+      `).join('');
+    }
     const list = document.getElementById('quotesList');
     list.innerHTML = '';
     QUOTES.forEach(q => {
