@@ -12,8 +12,8 @@
     users keep a copy via Memory → Download backup (JSON import/export in the same area).
   - Themes: document.documentElement has data-theme — parchment (default), forest, midnight.
     Theme tokens live under :root / [data-theme="…"] in the <style> block; see setTheme().
-  - Main view roots (search by id when editing): #view-today, #view-practice, #view-track,
-    #view-journal, #view-history (log + insights), #view-memory, #view-log, #view-path, #view-quotes.
+  - Main view roots: #view-today, #view-practice, #view-track, #view-journal, #view-history (Garden + log),
+    #view-settings (Memory, Path, Library, backup), plus legacy hash aliases in JS.
   - Repo siblings (not inlined here): manifest.json, icon.svg, sw.js (offline shell),
     vercel.json (headers / cache). Deploy the repo root as a static site (e.g. Vercel, main).
 -->
@@ -44,7 +44,7 @@
 </script>
 <meta name="twitter:title" content="Stillness — a botanical journal for your days" />
 <meta name="twitter:description" content="A gentle daily journal in the browser. Mood, rest, intention, evening check-in, and small practices—stored locally on this device." />
-<meta name="theme-color" content="#EDE3D2" />
+<meta name="theme-color" content="#F8F4ED" />
 <meta name="color-scheme" content="light" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -54,34 +54,35 @@
 <title>Stillness — a botanical journal for your days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root, [data-theme="parchment"] {
-    /* Botanical journal palette */
-    --paper: #EDE3D2;
-    --paper-2: #E5DAC5;
-    --paper-3: #F4ECDA;
-    --ink: #2A241B;
-    --ink-soft: #5A4F3F;
-    --ink-faint: #8C7F6E;
-    --moss: #4A6B4F;
-    --moss-deep: #2F4A35;
-    --moss-soft: #B8C5B2;
-    --moss-mist: #D6DCC9;
-    --clay: #B5654A;
-    --clay-soft: #E8C5B2;
-    --gold: #C9A961;
-    --gold-soft: #E5D5AA;
-    --shadow-warm: rgba(74, 64, 49, 0.12);
-    --shadow-deep: rgba(74, 64, 49, 0.18);
-    --line: #C9BBA4;
-    --noise-opacity: 0.35;
-    --bg-grad-1: rgba(184, 197, 178, 0.30);
-    --bg-grad-2: rgba(232, 197, 178, 0.22);
-    --bg-grad-3: rgba(201, 169, 97, 0.18);
-    --nav-bg: rgba(237, 227, 210, 0.94);
-    --nav-border: rgba(201, 187, 164, 0.55);
-    --nav-hover: rgba(74, 107, 79, 0.1);
+    /* Quiet garden — default */
+    --paper: #F8F4ED;
+    --paper-2: #F0ECE4;
+    --paper-3: #FCF9F4;
+    --ink: #2C3E2D;
+    --ink-soft: #4A5D4B;
+    --ink-faint: #7A8A7B;
+    --moss: #5A7A5C;
+    --moss-deep: #2C3E2D;
+    --moss-soft: #8FAE8B;
+    --moss-mist: #D8E3D4;
+    --clay: #9B6B5C;
+    --clay-soft: #E5D0C8;
+    --gold: #A6906E;
+    --gold-soft: #E8DCC8;
+    --shadow-warm: rgba(44, 62, 45, 0.08);
+    --shadow-deep: rgba(44, 62, 45, 0.14);
+    --line: #D4D4C8;
+    --noise-opacity: 0.25;
+    --bg-grad-1: rgba(143, 174, 139, 0.18);
+    --bg-grad-2: rgba(232, 220, 200, 0.2);
+    --bg-grad-3: rgba(200, 210, 195, 0.12);
+    --nav-bg: rgba(248, 244, 237, 0.96);
+    --nav-border: rgba(212, 212, 200, 0.8);
+    --nav-hover: rgba(90, 122, 92, 0.08);
     --r-sm: 8px;
     --r: 14px;
     --r-lg: 22px;
@@ -143,6 +144,28 @@
     --nav-border: rgba(58, 64, 96, 0.65);
     --nav-hover: rgba(255, 255, 255, 0.1);
   }
+  [data-theme="sage"] {
+    --paper: #EEF3EB;
+    --paper-2: #E3EBE0;
+    --paper-3: #F5F8F4;
+    --ink: #1E2B1F;
+    --ink-soft: #3D4F3E;
+    --ink-faint: #6B7D6C;
+    --moss: #4F6B51;
+    --moss-deep: #2A3D2C;
+    --moss-soft: #8FAE8B;
+    --moss-mist: #C5D4C0;
+    --clay: #8B5E4A;
+    --clay-soft: #DCC8BC;
+    --gold: #9A8B6A;
+    --gold-soft: #E0D4B8;
+    --shadow-warm: rgba(30, 43, 31, 0.1);
+    --shadow-deep: rgba(30, 43, 31, 0.16);
+    --line: #C4D0C0;
+    --nav-bg: rgba(238, 243, 235, 0.95);
+    --nav-border: rgba(196, 208, 192, 0.9);
+    --nav-hover: rgba(79, 107, 81, 0.1);
+  }
 
   html { font-size: 16px; }
   html[data-text-size="large"] { font-size: 19px; }
@@ -159,7 +182,7 @@
     filter: brightness(0.94) saturate(0.96);
     transition: filter 0.6s var(--ease-slow);
   }
-  body[data-rest-mode="on"] .nav {
+  body[data-rest-mode="on"] .nav, body[data-rest-mode="on"] .top-nav {
     filter: none;
   }
   /* Mobile / Android: force normal horizontal text (prevents any stray vertical-rl bugs) */
@@ -347,6 +370,50 @@
     margin: 6px 0 8px;
     letter-spacing: -0.01em;
   }
+  .greeting-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 20px;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .greeting-row .greeting { margin: 6px 0; flex: 1 1 12rem; }
+  .garden-growth {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    background: rgba(244, 236, 218, 0.4);
+    color: var(--ink-soft);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 0.82rem;
+    font-style: normal;
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 44px;
+    transition: background 0.3s var(--ease-slow), box-shadow 0.3s var(--ease-slow);
+  }
+  .garden-growth:hover, .garden-growth:focus-visible {
+    background: rgba(74, 107, 79, 0.08);
+    box-shadow: 0 0 0 1px rgba(74, 107, 79, 0.15);
+    outline: none;
+  }
+  .garden-growth:focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
+  .garden-growth-leaf { display: flex; gap: 2px; }
+  .garden-growth-leaf span {
+    display: block;
+    width: 5px; height: 10px;
+    border-radius: 0 6px 0 6px;
+    background: linear-gradient(180deg, var(--moss-soft) 0%, var(--moss) 100%);
+    opacity: 0.4;
+  }
+  .garden-growth-leaf span.on { opacity: 1; }
+  .garden-growth-txt { white-space: nowrap; }
   .date-line {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.74rem;
@@ -2106,15 +2173,25 @@
     border-color: rgba(140, 150, 135, 0.28);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
   }
+  #view-today .day-moment:not(.is-open) > *:not(.day-moment-label) { display: none !important; }
   .day-moment-label {
+    all: unset;
     display: block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 10px;
+    color: var(--moss-deep);
+    margin: 0 0 12px;
+    padding: 6px 0 10px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    list-style: none;
   }
+  .day-moment-label:focus-visible { outline: 2px solid var(--moss-soft); outline-offset: 2px; }
   .day-moment--evening .leaf { background: rgba(255, 255, 255, 0.2); }
   @media (max-width: 600px) {
     .day-moment { padding: 20px 16px; margin-bottom: 32px; }
@@ -2143,6 +2220,36 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+  .app-toast {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 65;
+    max-width: min(92%, 20rem);
+    padding: 12px 16px;
+    border-radius: var(--r);
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    box-shadow: 0 8px 32px var(--shadow-warm);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 0.35s var(--ease-slow), transform 0.35s var(--ease-slow);
+  }
+  .app-toast.on {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  [data-reduce-motion="1"] .leaf, details.leaf, .overlay, .app-toast, .garden-growth, .breathe-circle, .breathe-halo {
+    transition-duration: 0.15s !important;
+  }
+  #importConfirmModal, #growthDetailModal { display: none; align-items: center; justify-content: center; padding: 20px; }
+  #importConfirmModal.open, #growthDetailModal.open { display: flex; }
   .practice-launch-ghost {
     position: absolute;
     width: 1px;
@@ -2318,6 +2425,72 @@
     color: var(--ink);
     margin: 0 0 14px;
   }
+  .garden-charts-wrap { display: flex; flex-direction: column; gap: 18px; }
+  .garden-chart-canvas {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--r-sm);
+    background: rgba(255, 255, 255, 0.25);
+  }
+  [data-theme="midnight"] .garden-chart-canvas,
+  [data-theme="forest"] .garden-chart-canvas { background: rgba(0, 0, 0, 0.12); }
+  .garden-chart-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.72rem; color: var(--ink-faint); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+  .garden-chart-legend span { display: flex; align-items: center; gap: 5px; }
+  .garden-chart-legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; }
+  .garden-body-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+  @media (max-width: 500px) { .garden-body-row { grid-template-columns: 1fr; } }
+  .garden-spark { background: rgba(255, 255, 255, 0.2); border-radius: var(--r-sm); padding: 8px; }
+  .garden-spark h4 { margin: 0 0 6px; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }
+  .garden-spark canvas { width: 100%; height: 40px; display: block; }
+  .skill-dots { display: flex; justify-content: center; gap: 7px; margin: 10px 0; flex-wrap: wrap; }
+  .skill-dots i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(201, 187, 164, 0.35);
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .skill-dots i.on { background: var(--moss); border-color: var(--moss-deep); transform: scale(1.1); }
+  .skill-timer { text-align: center; font-size: 0.78rem; color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; margin: 6px 0; }
+  .skill-timer-line { font-size: 0.78rem; color: rgba(237, 227, 210, 0.65); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; }
+  .skill-timer-opt { display: block; text-align: center; font-size: 0.78rem; color: rgba(237, 227, 210, 0.55); margin: 0 0 8px; cursor: pointer; }
+  .skill-timer-opt input { margin-right: 6px; }
+  .skill-orb {
+    width: 160px; height: 160px; margin: 0 auto 18px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, rgba(138, 175, 144, 0.55), rgba(45, 80, 53, 0.4));
+    box-shadow: 0 0 48px rgba(74, 107, 79, 0.25);
+    transform: scale(0.75);
+    transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 1.1s ease;
+  }
+  .skill-orb--amber {
+    background: radial-gradient(circle at 40% 35%, rgba(201, 169, 97, 0.45), rgba(74, 56, 41, 0.5));
+    box-shadow: 0 0 48px rgba(201, 169, 97, 0.2);
+  }
+  .skill-orb.pulse { transform: scale(1.02); box-shadow: 0 0 64px rgba(201, 169, 97, 0.35); }
+  #breatheOverlay .breathe-orb-wrap {
+    position: relative; width: min(280px, 72vw); height: min(280px, 72vw);
+    max-width: 280px; max-height: 280px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #breatheOverlay .breathe-orb-wrap .breathe-circle {
+    width: 100%; height: 100%;
+    max-width: 240px; max-height: 240px;
+  }
+  .breathe-halo {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200, 232, 200, 0.2) 0%, transparent 65%);
+    transform: scale(0.9); opacity: 0.4;
+    animation: breatheHalo 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes breatheHalo {
+    0%, 100% { transform: scale(0.88); opacity: 0.3; }
+    50% { transform: scale(1.12); opacity: 0.6; }
+  }
+  .memory-search { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: var(--r); border: 1px solid rgba(201, 187, 164, 0.5); background: var(--paper); color: var(--ink); font-family: 'Lora', serif; font-size: 1rem; }
+  .memory-search-hint { font-size: 0.78rem; color: var(--ink-faint); margin: 6px 0 0; }
+  .garden-growth { box-shadow: 0 2px 10px var(--shadow-warm); }
 
   .history-day {
     background: var(--paper-3);
@@ -3332,9 +3505,15 @@
     50% { transform: scale(1.06); opacity: 0.15; }
   }
   .recommend-panel .sum-btn { font-size: 0.92rem; }
-  @media (max-width: 600px) {
-    .recommend-panel { padding: 18px; }
-    .weekly-grid { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 901px) {
+    .top-nav { display: flex; }
+    .nav { display: none; }
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-top: calc(52px + env(safe-area-inset-top, 0px) + 8px);
+      padding-bottom: 2rem;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════
@@ -3826,11 +4005,74 @@
     .streak-num { font-size: 3.6rem; }
     .day-moment::after { opacity: 0.10; }
   }
-  /* ═══ END REDESIGN LAYER v2 ══════════════════════════════════ */
+  }
+  /* ═══ END REDESIGN LAYER v2 + shell nav (merged) ═════════════════ */
+  @media (max-width: 900px) {
+    .top-nav { display: none; }
+    .nav { display: flex; }
+  }
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 55;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px max(20px, env(safe-area-inset-left)) 10px max(20px, env(safe-area-inset-right));
+    padding-top: max(10px, env(safe-area-inset-top, 0px) + 4px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  }
+  .top-nav__brand {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--moss-deep);
+  }
+  .top-nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .top-nav__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 4.5rem;
+    padding: 8px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+  }
+  .top-nav__btn .nav-icon { width: 20px; height: 20px; }
+  .top-nav__btn:hover, .top-nav__btn:focus-visible { color: var(--ink); background: var(--nav-hover); }
+  .top-nav__btn.active { color: var(--moss-deep); background: rgba(90, 122, 92, 0.1); }
+  .shell-v2 .leaf { font-family: 'Lora', Georgia, serif; }
+  .shell-v2 .picker-label, .shell-v2 .data-hint, .shell-v2 .mini-hint { font-family: 'Inter', system-ui, sans-serif; }
+  .shell-v2 h1.greeting, .shell-v2 .leaf-title { font-family: 'Inter', system-ui, sans-serif; font-weight: 500; font-style: normal; letter-spacing: -0.02em; }
+  .shell-v2 h1.greeting { font-size: clamp(1.5rem, 4vw, 1.85rem); }
+  #view-today .day-moment { border: none; background: rgba(255,255,255,0.45); }
+  [data-theme="forest"] #view-today .day-moment, [data-theme="midnight"] #view-today .day-moment { background: rgba(0,0,0,0.12); }
+  [data-theme="sage"] #view-today .day-moment { background: rgba(255,255,255,0.5); }
+  #view-today details.leaf:not([open]) { margin-bottom: 0.75rem; }
+  #view-today details.leaf[open] { margin-bottom: var(--space-section); }
 </style>
 <link rel="stylesheet" href="visual-polish.css" />
 </head>
-<body>
+<body class="shell-v2">
 <a class="skip-link" href="#main">Skip to journal</a>
 <div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved locally</span></div>
 <button type="button" class="data-corner no-print" id="dataCorner" aria-label="Open saved data and backup">
@@ -4032,6 +4274,31 @@
   </defs>
 </svg>
 
+<div class="top-nav no-print" role="navigation" aria-label="Main">
+  <span class="top-nav__brand">Stillness</span>
+  <div class="top-nav__inner">
+    <button type="button" class="top-nav__btn active" data-nav="today" aria-pressed="true" aria-label="Today">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-today"/></svg>
+      <span>Today</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="practice" aria-pressed="false" aria-label="Practice">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
+      <span>Practice</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="track" aria-pressed="false" aria-label="Track body">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-track"/></svg>
+      <span>Track</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="history" aria-pressed="false" aria-label="Garden — review and log">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
+      <span>Garden</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="settings" aria-pressed="false" aria-label="Settings">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-memory"/></svg>
+      <span>Settings</span>
+    </button>
+  </div>
+</div>
 <div class="app" id="main" tabindex="-1">
 
   <!-- ═══════════════════════════════════════════════════════
@@ -4042,7 +4309,13 @@
     <!-- Title plate -->
     <header class="plate">
       <div class="plate-rule"><span class="ornament">Stillness</span></div>
-      <h1 class="greeting" id="greeting">Good morning.</h1>
+      <div class="greeting-row no-print">
+        <h1 class="greeting" id="greeting">Good morning.</h1>
+        <button type="button" class="garden-growth" id="growthWidget" aria-label="Your garden this month" title="A small celebration — no pressure">
+          <span class="garden-growth-leaf" id="growthLeaves" aria-hidden="true"></span>
+          <span class="garden-growth-txt" id="growthText">0 days this month</span>
+        </button>
+      </div>
       <div class="date-line" id="date">—</div>
       <p class="sync-hint" id="syncNote">Stored in this browser only — not on a server. For a portable copy, use <strong>Memory</strong> → backup.</p>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
@@ -4092,8 +4365,8 @@
       </ol>
     </details>
 
-    <div class="day-moment" data-moment="morning" role="region" aria-label="Morning check-in">
-      <span class="day-moment-label" id="morningMomentLabel">Morning &middot; anchor &amp; gentle start</span>
+    <div class="day-moment" data-moment="morning" data-day-step="morning" role="region" aria-label="Morning check-in">
+      <button type="button" class="day-moment-label" id="morningMomentLabel" aria-expanded="false">1 · Morning</button>
     <section class="peace-visual no-print rest-hide-focus" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
       <div class="peace-visual-caption">
@@ -4132,8 +4405,8 @@
 
     </div>
 
-    <div class="day-moment" data-moment="midday" role="region" aria-label="Midday check-in">
-      <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; what shaped this</span>
+    <div class="day-moment" data-moment="midday" data-day-step="midday" role="region" aria-label="Midday check-in">
+      <button type="button" class="day-moment-label" id="middayMomentLabel" aria-expanded="false">2 · Midday</button>
     <!-- Mood + Energy -->
     <section class="leaf">
       <div class="leaf-head">
@@ -4279,8 +4552,8 @@
       <button type="button" class="mini-btn" id="recommendDismiss" style="margin-top:14px">Not now</button>
     </section>
     </div>
-    <div class="day-moment day-moment--evening" data-moment="evening" role="region" aria-label="Rest and evening">
-      <span class="day-moment-label" id="eveningMomentLabel">Rest &amp; evening · sleep, story, and close</span>
+    <div class="day-moment day-moment--evening" data-moment="evening" data-day-step="evening" role="region" aria-label="Rest and evening">
+      <button type="button" class="day-moment-label" id="eveningMomentLabel" aria-expanded="false">3 · Rest &amp; evening</button>
 
     <section class="leaf">
       <div class="leaf-head">
@@ -4752,36 +5025,6 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       JOURNAL VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-journal">
-
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Journal</span></div>
-      <h1 class="greeting">Extra room to write.</h1>
-      <div class="date-line" id="journalDate">—</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-
-    <p class="journal-redirect" id="journalFreeWriteHint">The heart of the day is on <strong>Today</strong> — morning, midday, and evening in order. This tab is a calm overflow when you need more space than the boxes allow.</p>
-
-    <section class="leaf" id="journalFreeWrite">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Long-form <em>space</em></h2>
-        <span class="leaf-num">write</span>
-      </div>
-      <p class="leaf-sub">Letters, lists, a longer story — same day, same local save. Nothing has to be tidy.</p>
-      <label for="journalLongInput" class="picker-label">Write freely (optional)</label>
-      <textarea class="deep-input" id="journalLongInput" rows="14" maxlength="12000" placeholder="When you need more than a line…"></textarea>
-    </section>
-
-    <div class="data-row" style="justify-content:center; margin: 8px 0 28px">
-      <button type="button" class="data-btn" id="goToTodayFromJournal">Back to Today</button>
-    </div>
-
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
        HISTORY VIEW
 
   ═══════════════════════════════════════════════════════ -->
@@ -4820,9 +5063,43 @@
     </div>
 
     <div class="mood-graph" id="moodGraphCard">
-      <h3>Last 30 days · mood</h3>
-      <svg id="moodGraph" viewBox="0 0 400 100" preserveAspectRatio="none" style="width:100%;height:100px"></svg>
+      <h3>Last 30 days · mood &amp; energy</h3>
+      <div class="garden-charts-wrap">
+        <canvas class="garden-chart-canvas" id="gardenChart30" width="800" height="220" role="img" aria-label="Mood and energy over the last 30 days"></canvas>
+        <div class="garden-chart-legend" aria-hidden="true">
+          <span><i style="background:var(--moss)"></i> mood</span>
+          <span><i style="background:var(--clay)"></i> energy</span>
+        </div>
+      </div>
     </div>
+    <div class="mood-graph" id="gardenChart90Card">
+      <h3>Last 90 days · mood &amp; energy</h3>
+      <div class="garden-charts-wrap">
+        <canvas class="garden-chart-canvas" id="gardenChart90" width="1000" height="200" role="img" aria-label="Mood and energy over the last 90 days"></canvas>
+        <div class="garden-chart-legend" aria-hidden="true">
+          <span><i style="background:var(--moss)"></i> mood</span>
+          <span><i style="background:var(--clay)"></i> energy</span>
+        </div>
+      </div>
+    </div>
+    <div class="mood-graph" id="gardenBodySparks">
+      <h3>Last 30 days · body (gentle pattern)</h3>
+      <div class="garden-body-row">
+        <div class="garden-spark">
+          <h4>Water</h4>
+          <canvas id="sparkWater" width="400" height="50" role="img" aria-label="Water over 30 days"></canvas>
+        </div>
+        <div class="garden-spark">
+          <h4>Sleep (h)</h4>
+          <canvas id="sparkSleep" width="400" height="50" role="img" aria-label="Sleep over 30 days"></canvas>
+        </div>
+        <div class="garden-spark">
+          <h4>Move (min)</h4>
+          <canvas id="sparkMove" width="400" height="50" role="img" aria-label="Movement over 30 days"></canvas>
+        </div>
+      </div>
+    </div>
+    <p class="data-hint" id="gardenChartInsights" style="margin: 0 0 18px; line-height:1.55"></p>
 
     <div id="historyList"></div>
 
@@ -4833,14 +5110,35 @@
       </div>
     </div>
 
+    <section class="leaf garden-log-embed" id="gardenLogSection" aria-label="Activity and search">
+      <div class="leaf-head">
+        <h2 class="leaf-title">The <em>log</em></h2>
+        <span class="leaf-num">trail</span>
+      </div>
+      <p class="leaf-sub">Search and a gentle trail of saves — same as before, now gathered with the garden.</p>
+      <p class="log-refresh-hint" id="logRefreshHint" role="status" aria-live="polite"></p>
+      <div class="leaf" style="padding-bottom:12px">
+        <p class="picker-label">Search everything you’ve written</p>
+        <div class="log-search-wrap">
+          <input type="search" class="log-search" id="logSearch" enterkeyhint="search" placeholder="Search days, Path, Library — any word you saved…" autocomplete="off" />
+        </div>
+      </div>
+      <div id="logSearchExtras" class="log-search-extras" hidden aria-live="polite"></div>
+      <div class="leaf" style="padding-bottom:18px">
+        <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
+        <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
+      </div>
+      <div id="logEntryList"></div>
+    </section>
+
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       MEMORY VIEW
+       SETTINGS (Memory + Path + Library)
   ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-memory">
+  <div class="view" id="view-settings">
     <header class="plate">
-      <div class="plate-rule"><span class="ornament">Memory</span></div>
+      <div class="plate-rule"><span class="ornament">Settings</span></div>
       <h1 class="greeting">Kept close, on your device.</h1>
       <div class="date-line" id="memoryDateLine">—</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
@@ -4867,7 +5165,11 @@
         <option value="365">1 year</option>
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
-      <p class="picker-label" style="margin-top:20px">Reading size (this device)</p>
+      <p class="picker-label" style="margin-top:20px">Filter saved days</p>
+      <div class="memory-search-wrap no-print" style="max-width:28rem; margin: 0 auto 6px">
+        <input type="search" class="memory-search" id="memoryDaySearch" enterkeyhint="search" placeholder="A word, mood, or date fragment…" autocomplete="off" aria-label="Filter saved day records" />
+        <p class="memory-search-hint" id="memorySearchHint" hidden>—</p>
+      </div>
       <div class="data-row" style="flex-wrap:wrap; gap:8px; margin-bottom:4px">
         <button type="button" class="data-btn" id="textSizeDefault" data-text-size="default" aria-pressed="true">Comfortable</button>
         <button type="button" class="data-btn data-btn-ghost" id="textSizeLarge" data-text-size="large" aria-pressed="false">Larger</button>
@@ -4883,10 +5185,13 @@
           <span class="sw" style="background:#2A332B;border-color:#4A5448"></span>
           <span class="sw-name">Forest</span>
         </button>
-        <button type="button" class="theme-swatch" data-set-theme="midnight" title="Midnight">
-          <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
-          <span class="sw-name">Midnight</span>
+        <button type="button" class="theme-swatch" data-set-theme="sage" title="Sage">
+          <span class="sw" style="background:#EEF3EB;border-color:#B8C9B2"></span>
+          <span class="sw-name">Sage</span>
         </button>
+      <p class="data-hint" style="margin-top:10px">Match your system or use the toggle if animations feel like too much.</p>
+      <div class="data-row" style="margin-top:8px">
+        <button type="button" class="data-btn data-btn-ghost" id="reduceMotionToggle" aria-pressed="false" aria-label="Use calmer motion">Motion: full</button>
       </div>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
       <p class="picker-label" style="margin-top:20px">Breathing sound</p>
@@ -4916,8 +5221,9 @@
       </div>
       <div class="data-row">
         <button type="button" class="data-btn" id="exportBtn">Download backup</button>
+        <button type="button" class="data-btn" id="importBackupBtn" aria-label="Import backup from JSON file">Import backup (.json)</button>
         <input type="file" id="importFile" class="sr-only" accept="application/json,.json" />
-        <label for="importFile" class="file-label">Restore from file</label>
+        <label for="importFile" class="file-label" id="importFileLabel" hidden>Restore from file</label>
       </div>
       <p class="data-hint" id="importMessage"></p>
     </section>
@@ -4928,53 +5234,12 @@
       <p class="leaf-sub">Removes all saved days, activity, and local settings in this browser. This cannot be undone. Export a backup first if you might need it.</p>
       <button type="button" class="data-btn data-btn-danger" id="wipeAllBtn">Erase all Stillness data</button>
     </section>
-    <section class="leaf">
+    <section class="leaf" id="settingsPath">
       <div class="leaf-head">
-        <h2 class="leaf-title">More <em>spaces</em></h2>
+        <h2 class="leaf-title">Path — <em>values &amp; steps</em></h2>
+        <span class="leaf-num">long view</span>
       </div>
-      <p class="leaf-sub">Extra sections for deeper reflection and quiet reading.</p>
-      <div class="data-row" style="flex-wrap:wrap;gap:8px">
-        <button type="button" class="data-btn" id="goToPath">Path — values &amp; steps</button>
-        <button type="button" class="data-btn" id="goToLibrary">The Library — words &amp; images</button>
-      </div>
-    </section>
-  </div>
-
-  <!-- LOG VIEW — activity + rolling feed -->
-  <div class="view" id="view-log">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">The log</span></div>
-      <h1 class="greeting">What changed.</h1>
-      <div class="date-line">A gentle trail of your check-ins</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <p class="log-refresh-hint" id="logRefreshHint" role="status" aria-live="polite"></p>
-    <div class="leaf" style="padding-bottom:12px">
-      <p class="picker-label">Search everything you’ve written</p>
-      <div class="log-search-wrap">
-        <input type="search" class="log-search" id="logSearch" enterkeyhint="search" placeholder="Search days, Path, Library — any word you saved…" autocomplete="off" />
-      </div>
-    </div>
-    <div id="logSearchExtras" class="log-search-extras" hidden aria-live="polite"></div>
-    <div class="leaf" style="padding-bottom:18px">
-      <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
-      <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
-    </div>
-    <div id="logEntryList"></div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
-       PATH VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-path">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Path</span></div>
-      <h1 class="greeting">The life you are tending.</h1>
-      <div class="date-line">Values, experiments, and next small steps</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="pathBackBtn">← Memory</button></div>
-
+      <p class="leaf-sub">The same path tools as before — now living beside settings.</p>
     <div class="path-cluster">
     <section class="leaf intention">
       <div class="leaf-head">
@@ -5060,21 +5325,12 @@
       <textarea class="deep-input" id="pathLetter" rows="6" placeholder="Dear future me..."></textarea>
     </section>
     </div>
-  </div>
+    </section>
 
-  <!-- QUOTES VIEW -->
-  <div class="view" id="view-quotes">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">The Library</span></div>
-      <h1 class="greeting">Words to return to.</h1>
-      <div class="date-line">25 quiet teachings</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="quotesBackBtn">← Memory</button></div>
-    <section class="leaf">
+    <section class="leaf" id="settingsLibrary">
       <div class="leaf-head">
-        <h2 class="leaf-title">Peaceful <em>images</em></h2>
-        <span class="leaf-num">10 scenes</span>
+        <h2 class="leaf-title">The <em>Library</em></h2>
+        <span class="leaf-num">images</span>
       </div>
       <p class="leaf-sub">A small visual library for breathing, reflection, and softer starts.</p>
       <div class="peace-gallery">
@@ -5119,33 +5375,62 @@
           <figcaption>Sunrise bamboo</figcaption>
         </figure>
       </div>
-    </section>
     <div class="quotes-list" id="quotesList"></div>
+    </section>
+
+  </div>
+
+  <!-- (Journal overflow — #journal) -->
+  <div class="view" id="view-journal">
+
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Journal</span></div>
+      <h1 class="greeting">Extra room to write.</h1>
+      <div class="date-line" id="journalDate">—</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <p class="journal-redirect" id="journalFreeWriteHint">The heart of the day is on <strong>Today</strong> — morning, midday, and evening in order. This tab is a calm overflow when you need more space than the boxes allow.</p>
+
+    <section class="leaf" id="journalFreeWrite">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Long-form <em>space</em></h2>
+        <span class="leaf-num">write</span>
+      </div>
+      <p class="leaf-sub">Letters, lists, a longer story — same day, same local save. Nothing has to be tidy.</p>
+      <label for="journalLongInput" class="picker-label">Write freely (optional)</label>
+      <textarea class="deep-input" id="journalLongInput" rows="14" maxlength="12000" placeholder="When you need more than a line…"></textarea>
+    </section>
+
+    <div class="data-row" style="justify-content:center; margin: 8px 0 28px">
+      <button type="button" class="data-btn" id="goToTodayFromJournal">Back to Today</button>
+    </div>
+
   </div>
 
 </div>
 
-<!-- Bottom navigation -->
+<!-- Bottom navigation (mobile) -->
 <nav class="nav" aria-label="Main">
-  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">
+  <button type="button" class="nav-btn active" data-view="today" data-nav="today" aria-pressed="true" aria-label="Today">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-today"/></svg>
     <span class="nav-label">Today</span>
   </button>
-  <button type="button" class="nav-btn" data-view="practice" aria-pressed="false" aria-label="Practice — breath, DBT, body">
+  <button type="button" class="nav-btn" data-view="practice" data-nav="practice" aria-pressed="false" aria-label="Practice">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
     <span class="nav-label">Practice</span>
   </button>
-  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">
-    <svg class="nav-icon" aria-hidden="true"><use href="#nav-journal"/></svg>
-    <span class="nav-label">Journal</span>
+  <button type="button" class="nav-btn" data-view="track" data-nav="track" aria-pressed="false" aria-label="Track body">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-track"/></svg>
+    <span class="nav-label">Track</span>
   </button>
-  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">
+  <button type="button" class="nav-btn" data-view="history" data-nav="history" aria-pressed="false" aria-label="Garden — review and log">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
     <span class="nav-label">Garden</span>
   </button>
-  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="More — backup, log, and settings">
+  <button type="button" class="nav-btn" data-view="settings" data-nav="settings" aria-pressed="false" aria-label="Settings">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-memory"/></svg>
-    <span class="nav-label">More</span>
+    <span class="nav-label">Settings</span>
   </button>
 </nav>
 
@@ -5153,7 +5438,27 @@
   <span class="sticky-save-hint" id="stickySaveHint">When you’re ready, save the day in one tap.</span>
   <button type="button" class="sticky-save-btn" id="stickySaveBtn">Save to journal</button>
 </div>
-<div class="day-saved-toast no-print" id="daySavedToast" role="status" aria-live="polite">Day saved</div>
+<div class="app-toast no-print" id="appToast" role="status" aria-live="polite"></div>
+<div class="app-toast no-print" id="onboardingToast" role="status" aria-live="polite"></div>
+
+<div class="overlay" id="importConfirmModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="importConfirmTitle" style="z-index:70">
+  <div class="export-modal-panel leaf" style="max-width:min(400px,92vw); margin:0 auto; position: relative; z-index:2">
+    <h2 class="leaf-title" id="importConfirmTitle" style="margin-top:0">Add this backup?</h2>
+    <p class="leaf-sub" id="importConfirmText">This will add or update day records in this browser only. Nothing is uploaded.</p>
+    <div class="data-row" style="justify-content:center; flex-wrap:wrap; gap:10px; margin-top:16px">
+      <button type="button" class="data-btn" id="importConfirmYes">continue</button>
+      <button type="button" class="data-btn data-btn-ghost" id="importConfirmNo">not now</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="growthDetailModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="growthDetailTitle" style="z-index:70">
+  <div class="export-modal-panel leaf" style="max-width:min(400px,92vw); margin:0 auto; position: relative; z-index:2">
+    <button type="button" class="overlay-close" id="growthDetailClose" style="position:absolute; top:12px; right:12px" aria-label="Close">×</button>
+    <h2 class="leaf-title" id="growthDetailTitle" style="margin-top:0">Your <em>garden</em> this month</h2>
+    <p class="leaf-sub" id="growthDetailBody">—</p>
+  </div>
+</div>
 
 <div class="overlay" id="exportModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="exportModalTitle">
   <div class="export-modal-panel leaf" style="max-width:min(480px,92vw); margin:0 auto">
@@ -5197,7 +5502,10 @@
     <button class="tech-tab" data-tech="calm">Calm</button>
     <button class="tech-tab" data-tech="coh" title="Coherent breathing: 5 in, 5 out">5 · 5</button>
   </div>
+  <div class="breathe-orb-wrap" id="breatheOrbWrap" aria-hidden="true">
+  <div class="breathe-halo" id="breatheHalo" aria-hidden="true"></div>
   <div class="breathe-circle" id="breatheCircle"></div>
+  </div>
   <div class="breathe-text" id="breatheText">Settle in…</div>
   <div class="breathe-counter" id="breatheCounter">cycle 0</div>
 </div>
@@ -5263,10 +5571,12 @@
   <div class="skill-banner">DBT · TIPP</div>
   <button class="overlay-close" id="tippClose">close</button>
   <div class="meditation-content">
-    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="skill-orb" id="tippSkillOrb" aria-hidden="true"></div>
     <div class="meditation-step" id="tippStep">stage 1 of 4</div>
     <div class="meditation-phrase" id="tippPhrase">—</div>
-    <div class="meditation-progress" id="tippProgress" aria-hidden="true"></div>
+    <div class="skill-dots" id="tippDots" role="group" aria-label="TIPP progress"></div>
+    <p class="skill-timer-line" id="tippTimerText" style="min-height:1.3em"></p>
+    <label class="skill-timer-opt" id="tippTimerOpt"><input type="checkbox" id="tippUseTimer" /> <span>Soft timer for timed steps (optional)</span></label>
     <button type="button" class="meditation-next" id="tippNext">continue →</button>
     <p class="skill-safety">If you might hurt yourself, call or text 988 in the US, or your local crisis line.</p>
   </div>
@@ -5279,10 +5589,12 @@
   <div class="skill-banner">DBT · STOP</div>
   <button class="overlay-close" id="stopClose">close</button>
   <div class="meditation-content">
-    <div class="meditation-pulse" aria-hidden="true"></div>
+    <div class="skill-orb skill-orb--amber" id="stopSkillOrb" aria-hidden="true"></div>
     <div class="meditation-step" id="stopStep">step 1 of 4</div>
     <div class="meditation-phrase" id="stopPhrase">—</div>
-    <div class="meditation-progress" id="stopProgress" aria-hidden="true"></div>
+    <div class="skill-dots" id="stopDots" role="group" aria-label="STOP progress"></div>
+    <p class="skill-timer-line" id="stopTimerText" style="min-height:1.3em"></p>
+    <label class="skill-timer-opt" id="stopTimerOpt"><input type="checkbox" id="stopUseTimer" /> <span>Soft timer for pause steps (optional)</span></label>
     <button type="button" class="meditation-next" id="stopNext">continue →</button>
     <p class="skill-safety">If you might hurt yourself, call or text 988 in the US, or your local crisis line.</p>
   </div>
@@ -5723,6 +6035,7 @@
     journalLong: '',
     activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
+    practiceFlags: { breathe: false, tipp: false, stop: false },
     dbtSkills: [],
     thoughtRecords: []
   });
@@ -5759,6 +6072,8 @@
     if (typeof day.eveningQuietPride !== 'string') day.eveningQuietPride = '';
     if (typeof day.eveningNeedTomorrow !== 'string') day.eveningNeedTomorrow = '';
     if (typeof day.journalLong !== 'string') day.journalLong = '';
+    if (!day.practiceFlags || typeof day.practiceFlags !== 'object') day.practiceFlags = { breathe: false, tipp: false, stop: false };
+    ['breathe', 'tipp', 'stop'].forEach(k => { if (typeof day.practiceFlags[k] !== 'boolean') day.practiceFlags[k] = false; });
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
@@ -5908,13 +6223,13 @@
     Storage.set(PATH_KEY, JSON.stringify(pathData));
     setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     renderDataCorner();
-    if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
+    if (document.getElementById('view-history') && document.getElementById('view-history').classList.contains('active')) {
       try { renderLogView(); } catch (e) {}
     }
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
-  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0, reduceMotion: false, onboardingSeen: false };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -5928,13 +6243,15 @@
           }
           if (typeof j.retentionUserSet === 'boolean') config.retentionUserSet = j.retentionUserSet;
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
-          if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
+          if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight' || j.theme === 'sage') config.theme = j.theme;
           if (j.textSize === 'large' || j.textSize === 'default') config.textSize = j.textSize;
           if (typeof j.restMode === 'boolean') config.restMode = j.restMode;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
           if (j.lastBackupAt != null) config.lastBackupAt = Math.max(0, Number(j.lastBackupAt) || 0);
           if (typeof j.voiceCues === 'boolean') config.voiceCues = j.voiceCues;
+          if (typeof j.reduceMotion === 'boolean') config.reduceMotion = j.reduceMotion;
+          if (typeof j.onboardingSeen === 'boolean') config.onboardingSeen = j.onboardingSeen;
         }
       } catch {}
     }
@@ -5951,22 +6268,23 @@
       breatheSound: config.breatheSound,
       breatheCues: config.breatheCues,
       voiceCues: config.voiceCues,
-      lastBackupAt: config.lastBackupAt || 0
+      lastBackupAt: config.lastBackupAt || 0,
+      reduceMotion: !!config.reduceMotion,
+      onboardingSeen: !!config.onboardingSeen
     }));
   }
 
-  const THEME_COLORS = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
+  const THEME_COLORS = { parchment: '#F8F4ED', forest: '#2A332B', midnight: '#1B1F2E', sage: '#EEF3EB' };
   function applyTheme(name) {
-    const t = (name === 'forest' || name === 'midnight' || name === 'parchment') ? name : 'parchment';
+    const t = (name === 'forest' || name === 'midnight' || name === 'parchment' || name === 'sage') ? name : 'parchment';
     config.theme = t;
     Storage.set(THEME_KEY, t);
     document.documentElement.setAttribute('data-theme', t);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
     const schemeMeta = document.querySelector('meta[name="color-scheme"]');
-    if (schemeMeta) schemeMeta.setAttribute('content', t === 'parchment' ? 'light' : 'dark');
-    const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleStatus) appleStatus.setAttribute('content', t === 'parchment' ? 'default' : 'black-translucent');
+    if (schemeMeta) schemeMeta.setAttribute('content', (t === 'parchment' || t === 'sage') ? 'light' : 'dark');
+    if (appleStatus) appleStatus.setAttribute('content', (t === 'parchment' || t === 'sage') ? 'default' : 'black-translucent');
     document.querySelectorAll('.theme-swatch').forEach(btn => {
       const on = btn.dataset.setTheme === t;
       btn.classList.toggle('on', on);
@@ -6409,6 +6727,250 @@
     return days.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
   }
 
+  function getCssVar(name) {
+    try {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || name;
+    } catch (e) { return name; }
+  }
+  function parseCssColorToRgb(s) {
+    if (!s) return [120, 140, 100];
+    if (s.startsWith('#') && s.length === 4) {
+      return [parseInt(s[1] + s[1], 16), parseInt(s[2] + s[2], 16), parseInt(s[3] + s[3], 16)];
+    }
+    if (s.startsWith('#') && s.length >= 7) {
+      return [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
+    }
+    if (s.startsWith('rgb')) {
+      const m = s.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (m) return [Number(m[1]), Number(m[2]), Number(m[3])];
+    }
+    return [100, 120, 90];
+  }
+  function getChartColors() {
+    return {
+      paper: getCssVar('--paper') || '#f4f0e8',
+      line: getCssVar('--line') || '#C9BBA4',
+      moss: getCssVar('--moss') || '#4A6B4F',
+      clay: getCssVar('--clay') || '#B5654A',
+      ink: getCssVar('--ink') || '#2A241B',
+      inkFaint: getCssVar('--ink-faint') || '#8C7F6E'
+    };
+  }
+  function openModalEl(id) { const m = document.getElementById(id); if (m) { m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); } }
+  function closeModalEl(id) { const m = document.getElementById(id); if (m) { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); } }
+  function drawDualLineChart(canvas, days, windowDays) {
+    if (!canvas) return;
+    const ctx2 = canvas.getContext('2d');
+    if (!ctx2) return;
+    const dpr = (window.devicePixelRatio || 1) > 1.5 ? 2 : 1;
+    const wCss = Math.min(960, window.innerWidth - 32);
+    const hCss = windowDays > 50 ? 180 : 200;
+    canvas.width = wCss * dpr;
+    canvas.height = hCss * dpr;
+    canvas.style.width = wCss + 'px';
+    canvas.style.height = hCss + 'px';
+    ctx2.setTransform(1, 0, 0, 1, 0, 0);
+    ctx2.scale(dpr, dpr);
+    const c = getChartColors();
+    const mRgb = parseCssColorToRgb(c.moss);
+    const eRgb = parseCssColorToRgb(c.clay);
+    const padL = 34, padR = 8, padT = 10, padB = 24;
+    const w = wCss, h = hCss;
+    ctx2.fillStyle = c.paper;
+    ctx2.fillRect(0, 0, w, h);
+    const byDate = {};
+    (days || []).forEach(d => { if (d && d.date) byDate[d.date] = d; });
+    const today = new Date();
+    const pts = [];
+    for (let i = windowDays - 1; i >= 0; i--) {
+      const dt = new Date(today);
+      dt.setDate(dt.getDate() - i);
+      const k = dateKey(dt);
+      const d = byDate[k];
+      pts.push({ k, m: d && d.mood > 0 ? d.mood : null, e: d && d.energy > 0 ? d.energy : null });
+    }
+    const plotW = w - padL - padR, plotH = h - padT - padB;
+    const toY = v => padT + plotH - ((v - 1) / 4) * plotH;
+    const toX = i => padL + (plotW * i) / Math.max(1, windowDays - 1);
+    ctx2.strokeStyle = c.line; ctx2.lineWidth = 0.5;
+    for (let i = 1; i <= 4; i++) { const y = toY(i); ctx2.beginPath(); ctx2.moveTo(padL, y); ctx2.lineTo(w - padR, y); ctx2.stroke(); }
+    const drawPath = (key, colRgb) => {
+      let started = false;
+      ctx2.beginPath();
+      ctx2.lineWidth = 1.6;
+      ctx2.lineJoin = 'round';
+      pts.forEach((p, i) => {
+        const v = p[key];
+        if (v == null) { started = false; return; }
+        const x = toX(i), y = toY(v);
+        if (!started) { ctx2.moveTo(x, y); started = true; } else { ctx2.lineTo(x, y); }
+      });
+      ctx2.strokeStyle = 'rgb(' + colRgb[0] + ',' + colRgb[1] + ',' + colRgb[2] + ')';
+      ctx2.stroke();
+      pts.forEach((p, i) => {
+        const v = p[key];
+        if (v == null) return;
+        ctx2.beginPath();
+        ctx2.arc(toX(i), toY(v), 3, 0, Math.PI * 2);
+        ctx2.fillStyle = 'rgb(' + colRgb[0] + ',' + colRgb[1] + ',' + colRgb[2] + ')';
+        ctx2.fill();
+      });
+    };
+    drawPath('m', mRgb);
+    drawPath('e', eRgb);
+    ctx2.fillStyle = c.inkFaint; ctx2.font = '9px "JetBrains Mono", monospace';
+    for (const lab of [1, 2, 3, 4, 5]) {
+      ctx2.fillText(String(lab), 2, toY(lab) + 3);
+    }
+  }
+  function drawBodySparkline(canvas, days, n, getVal) {
+    if (!canvas) return;
+    const ctx2 = canvas.getContext('2d');
+    if (!ctx2) return;
+    const dpr = (window.devicePixelRatio || 1) > 1.2 ? 2 : 1;
+    const wCss = canvas.parentElement ? canvas.parentElement.clientWidth - 16 : 200;
+    const hCss = 44;
+    canvas.width = wCss * dpr; canvas.height = hCss * dpr;
+    canvas.style.width = wCss + 'px';
+    canvas.style.height = hCss + 'px';
+    ctx2.setTransform(1, 0, 0, 1, 0, 0);
+    ctx2.scale(dpr, dpr);
+    const c = getChartColors();
+    ctx2.fillStyle = c.paper;
+    ctx2.fillRect(0, 0, wCss, hCss);
+    const by = {};
+    (days || []).forEach(d => { if (d && d.date) by[d.date] = d; });
+    const today = new Date();
+    const arr = [];
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const k = dateKey(d);
+      const v = getVal(by[k]);
+      if (v != null && isFinite(v)) arr.push(v); else arr.push(0);
+    }
+    if (!arr.length) return;
+    const min = Math.min(...arr, 0);
+    const max = Math.max(...arr, 0.1);
+    const r = max - min || 1;
+    const padT = 6, padB = 4;
+    ctx2.beginPath();
+    const plotH = hCss - padT - padB, plotW = wCss;
+    arr.forEach((v, i) => {
+      const x = (plotW * i) / Math.max(1, arr.length - 1);
+      const y = padT + (1 - (v - min) / r) * plotH;
+      if (i === 0) ctx2.moveTo(x, y);
+      else ctx2.lineTo(x, y);
+    });
+    const rgb = parseCssColorToRgb(c.moss);
+    ctx2.strokeStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.85)'; ctx2.lineWidth = 1.2;
+    ctx2.stroke();
+  }
+  function mergeBackupPayload(data) {
+    let count = 0, pathTouched = false;
+    if (data && data.days && typeof data.days === 'object') {
+      Object.keys(data.days).forEach(k => {
+        if (k.startsWith(DAY_KEY_PREFIX) && typeof data.days[k] === 'string') {
+          Storage.set(k, data.days[k]);
+          count++;
+        }
+      });
+      if (typeof data.path === 'string') { Storage.set(PATH_KEY, data.path); pathTouched = true; }
+      else if (data.path && typeof data.path === 'object') { Storage.set(PATH_KEY, JSON.stringify(data.path)); pathTouched = true; }
+    } else if (data && typeof data === 'object' && !data.days) {
+      Object.keys(data).forEach(k => {
+        if (k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string') { Storage.set(k, data[k]); count++; }
+      });
+      if (typeof data[PATH_KEY] === 'string') { Storage.set(PATH_KEY, data[PATH_KEY]); pathTouched = true; }
+    } else { throw new Error('not-stillness'); }
+    return { count, pathTouched };
+  }
+  function afterBackupMerge() {
+    currentDateKey = dateKey();
+    loadDay();
+    loadPath();
+    try { renderAll(); } catch (e) {}
+    try { renderPath(); } catch (e) {}
+    try { renderHistory(); renderInsights(); } catch (e) {}
+    try { renderLogView(); } catch (e) {}
+    try { renderDataCorner(); } catch (e) {}
+  }
+  let __pendingImport = null;
+  function setSkillDots(id, n, i) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = Array.from({ length: n }, (_, j) => '<i role="presentation" class="' + (j <= i ? 'on' : '') + '"></i>').join('');
+  }
+  function renderSevenDayMoodSummary() {
+    const by = {};
+    getAllDayRecords().forEach(d => { if (d.date) by[d.date] = d; });
+    const out = { mood: [], energy: [], dates: [] };
+    for (let i = 6; i >= 0; i--) {
+      const t = new Date();
+      t.setDate(t.getDate() - i);
+      const k = dateKey(t);
+      const d = by[k];
+      out.dates.push(k);
+      out.mood.push(d && d.mood > 0 ? d.mood : null);
+      out.energy.push(d && d.energy > 0 ? d.energy : null);
+    }
+    const moodAvg = (() => { const f = out.mood.filter(x => x != null); if (!f.length) return '—'; return (f.reduce((a, b) => a + b, 0) / f.length).toFixed(1); })();
+    const nrgAvg = (() => { const f = out.energy.filter(x => x != null); if (!f.length) return '—'; return (f.reduce((a, b) => a + b, 0) / f.length).toFixed(1); })();
+    const lines = [];
+    lines.push('**Last 7 days (including today if saved)**');
+    lines.push('Dates: ' + out.dates.join(' · '));
+    lines.push('Mood 1–5: ' + out.mood.map(x => (x == null ? '·' : x)).join('  ') + '  → avg ' + moodAvg);
+    lines.push('Energy 1–5: ' + out.energy.map(x => (x == null ? '·' : x)).join('  ') + '  → avg ' + nrgAvg);
+    return lines.join('\n');
+  }
+  function countDaysTendedThisMonth() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = d.getMonth();
+    let c = 0;
+    getAllDayRecords().forEach(rec => {
+      if (!rec.date) return;
+      if (!hasAnyData(rec)) return;
+      const dt = new Date(rec.date + 'T12:00:00');
+      if (dt.getFullYear() === y && dt.getMonth() === m) c++;
+    });
+    return c;
+  }
+  function updateGrowthHeaderUI() {
+    const n = countDaysTendedThisMonth();
+    const t = document.getElementById('growthText');
+    if (t) t.textContent = n === 0 ? 'month · begin gently' : n + ' ' + (n === 1 ? 'day' : 'days') + ' tended this month';
+    const w = document.getElementById('growthLeaves');
+    if (w) {
+      const leaves = Math.min(7, n);
+      w.innerHTML = Array.from({ length: 7 }, (_, j) => '<span class="' + (j < leaves ? 'on' : '') + '"></span>').join('');
+    }
+  }
+  function memoryDaySearchBlob(d) {
+    if (!d) return '';
+    return [
+      d.date, d.intention, d.mood, d.energy, d.moodNote, d.moodContext, d.emotionalWeather,
+      d.gratitude, d.reflection, d.dreams, d.journalLong, d.strengthsNote, d.supportNote, d.stressCheckIn,
+      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow, d.eveningStrongestEmotion, d.eveningQuietPride, d.eveningNeedTomorrow, d.symptomsFreeText, d.exerciseNote
+    ].map(x => (x == null ? '' : String(x))).join(' ').toLowerCase();
+  }
+  function buildBotanicalPrintHtml() {
+    const t = 'Stillness — ' + escapeHtml(formatDate(currentDateKey));
+    const sum = buildTodaySummaryText().replace(/\n/g, '<br>');
+    return `
+      <div style="max-width:720px;margin:0 auto">
+        <p style="font:italic 0.7rem/1.2 Georgia,serif;color:#6b5d4a;letter-spacing:0.28em;margin:0 0 4px">stillness</p>
+        <h1 style="font:22pt/1.2 'Cormorant Garamond', Georgia,serif;font-weight:400;font-style:italic;margin:0 0 4px">Your day, gently gathered</h1>
+        <p style="color:#5a4f3f;font:10pt/1.4 Georgia,serif;margin:0 0 20px">` + t + ` &middot; stored only on your device until you print or share this dialog.</p>
+        <div style="border:1px solid #c9bba4;border-radius:10px;padding:14px 16px;margin-bottom:18px;background:linear-gradient(180deg, #f4f0e8, #f9f5ee)">
+          <p style="font:8pt/1.2 Georgia,serif;color:#5a4f3f;letter-spacing:0.1em;margin:0 0 4px">Summary</p>
+          <p style="font:9pt/1.45 Georgia,serif;margin:0;color:#3a2f22">A soft snapshot of this page — for your records or a care team, not a diagnosis.</p>
+        </div>
+        <div style="font:11pt/1.6 Georgia,serif;color:#2a241b">${sum}</div>
+        <p style="font:8.5pt/1.4 Georgia,serif;color:#7a6d5d;margin-top:20px">Printed from Stillness. The person holding this copy is responsible for who sees it next.</p>
+      </div>`;
+  }
+
   function dateStrCompare(a, b) {
     if (a === b) return 0;
     return a < b ? -1 : 1;
@@ -6471,6 +7033,7 @@
   }
   function flashSaveNow() {
     setSaveBarText('Saved just now', 'saved');
+    showAppToast('Day saved — tenderly kept on this device.', 2400);
     const toast = document.getElementById('daySavedToast');
     if (toast) {
       toast.classList.add('on');
@@ -6494,6 +7057,28 @@
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       btn.textContent = on ? 'Rest mode: on' : 'Rest mode: off';
     }
+  }
+  function applyMotionPreference() {
+    const sys = (typeof window.matchMedia === 'function') && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const on = !!config.reduceMotion || sys;
+    document.documentElement.setAttribute('data-reduce-motion', on ? '1' : '0');
+    const t = document.getElementById('reduceMotionToggle');
+    if (t) {
+      t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      t.textContent = on ? 'Motion: calmer' : 'Motion: full';
+    }
+  }
+  function motionStepMs(phase, durSec) {
+    if (document.documentElement.getAttribute('data-reduce-motion') === '1') return Math.min(800, Math.max(120, durSec * 100));
+    return Math.round(durSec * 1000);
+  }
+  function showAppToast(msg, shortMs) {
+    const el = document.getElementById('appToast');
+    if (!el) return;
+    el.textContent = msg;
+    el.setAttribute('role', 'status');
+    el.classList.add('on');
+    setTimeout(() => { el.classList.remove('on'); }, shortMs || 2800);
   }
   function scorePhq2() {
     if (!day.phq2 || day.phq2[0] == null || day.phq2[1] == null) return null;
@@ -6704,6 +7289,7 @@
   ──────────────────────────────────────────────────────── */
   function renderHeader() {
     document.getElementById('greeting').textContent = greeting();
+    try { updateGrowthHeaderUI(); } catch (e) {}
     const fmt = formatDateLine();
     document.getElementById('date').textContent = fmt;
     if (document.getElementById('trackDate')) document.getElementById('trackDate').textContent = fmt;
@@ -6712,9 +7298,9 @@
     const m = document.getElementById('morningMomentLabel');
     const d = document.getElementById('middayMomentLabel');
     const e = document.getElementById('eveningMomentLabel');
-    if (m) m.textContent = h < 5 ? 'Deep night · anchor & gentle start' : h < 12 ? 'Morning · anchor & gentle start' : h < 17 ? 'So far today · morning fields' : 'Start of the page · morning fields';
-    if (d) d.textContent = h < 11 ? 'Midday (or when you can) · mood & what shaped this' : h < 16 ? 'This afternoon · mood & what shaped this' : h < 21 ? 'Check-in · mood & what shaped this' : 'Today · mood & what shaped this';
-    if (e) e.textContent = h < 15 ? 'Later today · rest & evening' : h < 19 ? 'Evening · rest & close' : 'Night · rest & close';
+    if (m) m.textContent = '1 · Morning';
+    if (d) d.textContent = '2 · Midday';
+    if (e) e.textContent = '3 · Rest & evening';
   }
   function renderDailyPeaceImage() {
     const img = PEACE_IMAGES[seedFromDate(new Date()) % PEACE_IMAGES.length];
@@ -7205,7 +7791,10 @@
   }
   function getLogFilter() {
     const q = document.getElementById('logSearch');
-    return (q && q.value) ? q.value.trim().toLowerCase() : '';
+    const m = document.getElementById('memoryDaySearch');
+    const a = (q && q.value) ? q.value.trim().toLowerCase() : '';
+    const b = (m && m.value) ? m.value.trim().toLowerCase() : '';
+    return a || b || '';
   }
   function dayMatchesQuery(d, q) {
     if (!q) return true;
@@ -7305,6 +7894,15 @@
     `;
   }
   function renderLogView() {
+    const memQ = document.getElementById('memoryDaySearch');
+    const memHint = document.getElementById('memorySearchHint');
+    if (memQ && memHint) {
+      const mq = memQ.value.trim().toLowerCase();
+      const allD = getAllDayRecords().filter(d => hasAnyData(d));
+      const memMatch = mq ? allD.filter(d => memoryDaySearchBlob(d).indexOf(mq) !== -1) : allD;
+      memHint.hidden = !mq;
+      memHint.textContent = mq ? (memMatch.length ? `Showing ${memMatch.length} of ${allD.length} saved days.` : 'No saved days match that phrase yet.') : '';
+    }
     const actWrap = document.getElementById('logActivity');
     const listWrap = document.getElementById('logEntryList');
     const line = document.getElementById('logCountLine');
@@ -7685,14 +8283,39 @@
       }
     });
   });
-  const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'memory', 'log', 'path', 'quotes']);
+  const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'settings', 'garden', 'log', 'memory', 'path', 'quotes', 'export']);
   function isValidViewId(v) { return v && document.getElementById('view-' + v); }
+  function mapRouteToView(seg) {
+    if (!seg) return 'today';
+    const s = String(seg).toLowerCase();
+    if (s === 'garden' || s === 'log') return 'history';
+    if (s === 'settings' || s === 'memory' || s === 'export' || s === 'path' || s === 'quotes' || s === 'library') return 'settings';
+    if (s === 'history' || s === 'insights') return 'history';
+    return s;
+  }
   function getRouteView() {
     if (!location.hash) return 'today';
-    const seg = (location.hash.replace(/^#\/?/, '').split(/[/?#]/)[0] || '');
-    if (!seg || seg === 'today') return 'today';
-    if (ROUTE_VIEWS.has(seg) && isValidViewId(seg)) return seg;
+    const raw = (location.hash.replace(/^#\/?/, '').split(/[/?#]/)[0] || '');
+    const m = mapRouteToView(raw);
+    if (m === 'today' && !raw) return 'today';
+    if (isValidViewId(m)) return m;
     return null;
+  }
+  function applyRouteHashScroll() {
+    const h = (location.hash || '').replace(/^#\/?/, '');
+    if (!h) return;
+    setTimeout(() => {
+      const low = h.toLowerCase();
+      if (low === 'log' || low.startsWith('log/') || low.indexOf('log') === 0) {
+        document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'path' || low.indexOf('path') >= 0) {
+        document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'quotes' || low === 'library' || low.indexOf('library') >= 0) {
+        document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'backup' || low === 'data' || low === 'export') {
+        document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 60);
   }
   function syncUrlToView(target) {
     const p = location.pathname + location.search;
@@ -7700,7 +8323,9 @@
       if (location.hash) history.replaceState({ stillness: 1 }, '', p);
       return;
     }
-    const want = '#' + target;
+    const hmap = { practice: 'practice', track: 'track', journal: 'journal', history: 'garden', settings: 'settings' };
+    const h = hmap[target] != null ? hmap[target] : target;
+    const want = '#' + h;
     if (location.hash !== want) history.replaceState({ stillness: 1 }, '', p + want);
   }
   function switchView(target, opts) {
@@ -7708,23 +8333,23 @@
     const viewEl = document.getElementById('view-' + target);
     if (!viewEl) return;
     if (!opts || !opts.fromHash) syncUrlToView(target);
-    document.querySelectorAll('.nav-btn').forEach(x => {
-      const isOn = x.dataset.view === target;
+    document.querySelectorAll('.nav-btn, .top-nav__btn').forEach(x => {
+      const d = x.getAttribute('data-nav') || (x.dataset && x.dataset.view);
+      if (!d) return;
+      const isOn = d === target;
       x.classList.toggle('active', isOn);
       x.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     });
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     viewEl.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (target === 'history') { renderHistory(); renderInsights(); }
-    if (target === 'quotes') renderQuotes();
-    if (target === 'log') renderLogView();
-    if (target === 'path') renderPath();
+    if (target === 'history') { renderHistory(); renderInsights(); renderLogView(); }
+    if (target === 'settings') { setRetentionSelect(); renderRetentionStatus(); try { renderPath(); renderQuotes(); } catch (e) {} }
     if (target === 'practice') renderDbtTodayLog();
-    if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
     if (target === 'today') renderTodaySummary();
     if (target === 'journal') renderTodaySummary();
     updateStickySaveBar();
+    if (opts && opts.fromHash) applyRouteHashScroll();
   }
   window.addEventListener('hashchange', () => {
     const v = getRouteView();
@@ -7744,25 +8369,23 @@
     e.preventDefault();
     renderQuoteAndAffirmation(true);
   });
-  document.getElementById('goToLogFromToday').addEventListener('click', () => switchView('log'));
+  document.getElementById('goToLogFromToday')?.addEventListener('click', () => { switchView('history'); setTimeout(() => document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('goToTrack').addEventListener('click', () => switchView('track'));
-  document.getElementById('goToJournal').addEventListener('click', () => switchView('journal'));
-  document.getElementById('memoryOpenLog')?.addEventListener('click', () => switchView('log'));
+  document.getElementById('goToJournal')?.addEventListener('click', () => switchView('journal'));
+  document.getElementById('memoryOpenLog')?.addEventListener('click', () => { switchView('history'); setTimeout(() => document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('memoryOpenTrack')?.addEventListener('click', () => switchView('track'));
   document.getElementById('memoryOpenInsights')?.addEventListener('click', () => switchView('history'));
-  document.getElementById('memoryOpenPath')?.addEventListener('click', () => switchView('path'));
-  document.getElementById('memoryOpenLibrary')?.addEventListener('click', () => switchView('quotes'));
+  document.getElementById('memoryOpenPath')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
+  document.getElementById('memoryOpenLibrary')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('dataCorner')?.addEventListener('click', () => {
-    switchView('memory');
+    switchView('settings');
     setTimeout(() => document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
   });
   document.getElementById('backupReminderExport')?.addEventListener('click', () => {
     document.getElementById('exportBtn')?.click();
   });
-  document.getElementById('goToPath')?.addEventListener('click', () => switchView('path'));
-  document.getElementById('goToLibrary')?.addEventListener('click', () => switchView('quotes'));
-  document.getElementById('pathBackBtn')?.addEventListener('click', () => switchView('memory'));
-  document.getElementById('quotesBackBtn')?.addEventListener('click', () => switchView('memory'));
+  document.getElementById('goToPath')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
+  document.getElementById('goToLibrary')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -7936,6 +8559,7 @@
     ov.setAttribute('aria-hidden', 'true');
     document.getElementById('breatheCircle').className = 'breathe-circle';
     if (breatheStartTime) {
+      if (breatheCycle > 0) markPracticeComplete('breathe');
       addMindfulSeconds(Date.now() - breatheStartTime);
       breatheStartTime = null;
     }
@@ -7945,6 +8569,7 @@
     const circle = document.getElementById('breatheCircle');
     const text = document.getElementById('breatheText');
     const counter = document.getElementById('breatheCounter');
+    const wrap = document.getElementById('breatheOrbWrap');
     await ensureAudioRunning();
     text.textContent = 'Settle in…';
     counter.textContent = TECHNIQUES[activeTech].name;
@@ -7955,8 +8580,17 @@
       counter.textContent = `cycle ${breatheCycle} · ${TECHNIQUES[activeTech].name}`;
       for (const step of TECHNIQUES[activeTech].steps) {
         if (!breatheRunning) return;
+        const stepSec = step.dur;
+        const transMs = motionStepMs(step.phase, stepSec);
         circle.className = 'breathe-circle ' + step.phase;
-        circle.style.transitionDuration = step.dur + 's';
+        circle.style.transitionDuration = (transMs / 1000) + 's';
+        if (wrap) wrap.style.transform = 'scale(1)';
+        void circle.offsetWidth;
+        if (document.documentElement.getAttribute('data-reduce-motion') === '1') {
+          if (wrap) wrap.style.transform = (step.phase === 'inhale' || step.phase === 'hold') ? 'scale(1.02)' : 'scale(0.98)';
+        } else {
+          if (wrap) wrap.style.transform = (step.phase === 'inhale' || step.phase === 'hold') ? 'scale(1.04)' : 'scale(0.96)';
+        }
         text.textContent = step.label;
         const s = getEffectiveBreatheSound();
         if (s !== 'silent') await playBreathTone(step.phase, s, step.dur);
@@ -7967,7 +8601,7 @@
                   : 'Pause';
           speakCue(v);
         }
-        await wait(step.dur * 1000);
+        await wait(motionStepMs(step.phase, step.dur));
       }
     }
   }
@@ -8462,15 +9096,15 @@
   const pathGoalInput = document.getElementById('pathGoalInput');
   if (pathGoalInput) pathGoalInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathGoal(); });
 
-  document.querySelectorAll('.nav-btn').forEach(b => {
+  document.querySelectorAll('.nav-btn, .top-nav__btn').forEach(b => {
     b.addEventListener('click', () => {
-      const target = b.dataset.view;
-      switchView(target);
+      const target = b.getAttribute('data-nav') || b.dataset.view;
+      if (target) switchView(target);
     });
   });
 
   /* ── Android: swipe between tabs (requires deliberate horizontal swipe) ─ */
-  const SWIPE_VIEWS = ['today', 'practice', 'track', 'journal', 'history', 'memory', 'log'];
+  const SWIPE_VIEWS = ['today', 'practice', 'track', 'history', 'settings'];
   const SWIPE_MIN_PX = 108;
   const SWIPE_MAX_VERT_RATIO = 0.48;
   let _swX = 0, _swY = 0;
@@ -8569,63 +9203,97 @@
       <div class="insight-stat"><div class="num">${totalMindful}</div><div class="lbl">Mindful min</div></div>
     `;
 
-    // Mood graph — last 30 days
-    drawMoodGraph(days);
+    // Canvas mood/energy + body minis
+    const keySort = (a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    const sorted = days.slice().sort(keySort);
+    drawDualLineChart(document.getElementById('gardenChart30'), sorted, 30);
+    drawDualLineChart(document.getElementById('gardenChart90'), sorted, 90);
+    drawBodySparkline(document.getElementById('sparkWater'), sorted, 30, (d) => (d && d.water != null) ? Number(d.water) : null);
+    drawBodySparkline(document.getElementById('sparkSleep'), sorted, 30, (d) => (d && d.sleepHours) ? Number(d.sleepHours) : null);
+    drawBodySparkline(document.getElementById('sparkMove'), sorted, 30, (d) => (d && d.movement != null) ? Number(d.movement) : null);
     renderMoodHeatmap();
+    renderGardenChartInsights(sorted);
 
-    // List
+    // List (optional filter from Memory tab)
+    const memQEl = document.getElementById('memoryDaySearch');
+    const mq = (memQEl && memQEl.value) ? memQEl.value.trim().toLowerCase() : '';
+    let listDays = days;
+    if (mq) listDays = days.filter(d => memoryDaySearchBlob(d).indexOf(mq) !== -1);
+
     const list = document.getElementById('historyList');
     if (days.length === 0) {
       list.innerHTML = '<div class="history-empty">No days saved yet — your first line on <strong>Today</strong> will start the Garden. There is no rush. ✦</div>';
       return;
     }
+    if (mq && listDays.length === 0) {
+      list.innerHTML = '<div class="history-empty">No saved days match that phrase. Try another word or clear the filter in <strong>Memory</strong>.</div>';
+      return;
+    }
     list.innerHTML = '';
-    days.forEach(d => {
+    listDays.forEach(d => {
       const el = document.createElement('div');
       el.className = 'history-day';
-      el.innerHTML = buildLogCardHtml(d);
+      el.innerHTML = buildLogCardHtml(d, { query: mq || undefined });
       list.appendChild(el);
     });
   }
 
-  function drawMoodGraph(days) {
-    const svg = document.getElementById('moodGraph');
-    const w = 400, h = 100, pad = 8;
-    const today = new Date();
-    const points = [];
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const k = dateKey(d);
-      const found = days.find(x => x.date === k);
-      points.push({ idx: 29 - i, mood: found && found.mood ? found.mood : null });
-    }
-    const xStep = (w - pad * 2) / 29;
-    let path = '';
-    let lastValid = null;
-    points.forEach((p, i) => {
-      if (p.mood !== null) {
-        const x = pad + i * xStep;
-        const y = h - pad - ((p.mood - 1) / 4) * (h - pad * 2);
-        path += (lastValid === null ? `M ${x} ${y}` : ` L ${x} ${y}`);
-        lastValid = i;
+  function mean(arr) {
+    const f = arr.filter(x => x != null && isFinite(x));
+    if (!f.length) return null;
+    return f.reduce((a, b) => a + b, 0) / f.length;
+  }
+  function meanEnergy(daysArr) {
+    const e = daysArr.filter(d => d && d.energy > 0).map(d => d.energy);
+    return e.length ? e.reduce((a, b) => a + b, 0) / e.length : null;
+  }
+  function renderGardenChartInsights(sortedDays) {
+    const el = document.getElementById('gardenChartInsights');
+    if (!el) return;
+    const n = sortedDays.length;
+    if (n < 2) { el.textContent = ''; return; }
+    const last30 = sortedDays.filter(d => d.date && d.date >= dateKey(new Date(Date.now() - 30 * 864e5)));
+    const breathDays = last30.filter(d => d && d.practiceFlags && d.practiceFlags.breathe);
+    const otherDays = last30.filter(d => d && (!d.practiceFlags || !d.practiceFlags.breathe));
+    const lines = [];
+    if (breathDays.length >= 2 && otherDays.length >= 2) {
+      const b = meanEnergy(breathDays);
+      const o = meanEnergy(otherDays);
+      if (b != null && o != null && b - o >= 0.25) {
+        lines.push('On days you used guided breath, your logged energy was a little softer and sometimes higher on average than other recent days — not a rule, just a gentle thread.');
       }
-    });
-    let dots = '';
-    points.forEach((p, i) => {
-      if (p.mood !== null) {
-        const x = pad + i * xStep;
-        const y = h - pad - ((p.mood - 1) / 4) * (h - pad * 2);
-        dots += `<circle cx="${x}" cy="${y}" r="3" fill="var(--moss-deep)"/>`;
-      }
-    });
-    // grid lines
-    let grid = '';
-    for (let i = 1; i <= 5; i++) {
-      const y = h - pad - ((i - 1) / 4) * (h - pad * 2);
-      grid += `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="var(--line)" stroke-width="0.5" opacity="0.4"/>`;
     }
-    svg.innerHTML = `${grid}<path d="${path}" fill="none" stroke="var(--moss-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${dots}`;
+    const withBreathe = last30.filter(d => d.mindfulMinutes > 0);
+    if (withBreathe.length >= 3) {
+      const wAvg = mean(withBreathe.map(d => d.energy > 0 ? d.energy : null));
+      const allE = last30.map(d => d.energy > 0 ? d.energy : null);
+      const allAvg = mean(allE);
+      if (wAvg != null && allAvg != null && wAvg - allAvg >= 0.2) {
+        lines.push('When mindful minutes are logged, energy often reads slightly kinder in the line above.');
+      }
+    }
+    if (last30.length >= 5) {
+      const mLine = last30.map(d => d.mood > 0 ? d.mood : null);
+      const sLine = last30.map(d => d.sleepHours > 0 ? d.sleepHours : null);
+      const mm = mean(mLine);
+      const sm = mean(sLine);
+      if (mm != null && sm != null) {
+        let cov = 0, c = 0;
+        for (let i = 0; i < last30.length; i++) {
+          if (mLine[i] != null && sLine[i] != null) { cov += (mLine[i] - mm) * (sLine[i] - sm); c++; }
+        }
+        if (c >= 4) {
+          cov /= c;
+          if (cov > 0.08) lines.push('Lately, longer sleep lines and a slightly brighter mood often travel together in your log.');
+          else if (cov < -0.08) lines.push('Some days sleep and mood do not line up — that is human; both still belong in the book.');
+        }
+      }
+    }
+    if (lines.length === 0) {
+      el.textContent = 'Gentle patterns: as more days join the garden, a few soft observations will sit here. No right shape.';
+      return;
+    }
+    el.textContent = lines.slice(0, 3).join(' ');
   }
 
   function renderInsights() {
@@ -8955,12 +9623,27 @@
     parts.push('Do not infer a medical diagnosis; treat as user-reported context for support.');
     return parts.join('');
   }
+  function mergePreview(data) {
+    if (data && data.days && typeof data.days === 'object') {
+      return { dayKeys: Object.keys(data.days).filter(k => k.startsWith(DAY_KEY_PREFIX) && typeof data.days[k] === 'string') };
+    }
+    if (data && typeof data === 'object' && !data.days) {
+      return { dayKeys: Object.keys(data).filter(k => k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string') };
+    }
+    return { dayKeys: [] };
+  }
   function buildExportAiBundle() {
-    const md = buildAiNarrativeSummary() + '\n\n---\n\n## Full day (plain text)\n\n```\n' + buildTodaySummaryText() + '\n```';
+    const trend7 = renderSevenDayMoodSummary();
+    const intro = '## For an assistant' + String.fromCharCode(10) + String.fromCharCode(10) + '**Date (this device):** ' + formatDate(currentDateKey) + String.fromCharCode(10) + String.fromCharCode(10);
+    const md = intro
+      + buildAiNarrativeSummary() + String.fromCharCode(10) + String.fromCharCode(10)
+      + '## Last 7 days — mood & energy' + String.fromCharCode(10) + String.fromCharCode(10) + '```' + String.fromCharCode(10) + trend7 + String.fromCharCode(10) + '```' + String.fromCharCode(10) + String.fromCharCode(10)
+      + '## Full day (plain text)' + String.fromCharCode(10) + String.fromCharCode(10) + '```' + String.fromCharCode(10) + buildTodaySummaryText() + String.fromCharCode(10) + '```';
     const payload = {
-      meta: { app: 'Stillness', exportVersion: 2, date: currentDateKey, generatedAt: new Date().toISOString() },
+      meta: { app: 'Stillness', exportVersion: 3, date: currentDateKey, generatedAt: new Date().toISOString() },
       day: day,
       path: pathData,
+      last7dayTrend: trend7,
       narrativeForModels: buildAiNarrativeSummary()
     };
     return { md, json: JSON.stringify(payload, null, 2) };
@@ -9020,10 +9703,11 @@
   }
   function openExportModal() { const m = document.getElementById('exportModal'); if (m) { m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); } }
   function closeExportModal() { const m = document.getElementById('exportModal'); if (m) { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); } }
-  function runPrintForHtmlDoc(innerBody, title) {
+  function runPrintForHtmlDoc(innerBody, title, opts) {
+    const extra = (opts && opts.extraCss) ? ('<style>' + opts.extraCss + '</style>') : '';
     const w = window.open('', '_blank');
     if (!w) { window.print(); return; }
-    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><style>body{font-family:Georgia,serif;padding:20px;max-width:700px;margin:0 auto} h1{font-size:18pt}.clin-table th{background:#f0f0f0}</style></head><body>' + innerBody + '</body></html>');
+    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><style>@media print{body{margin:0;padding:16mm}h1{break-after:avoid}p,div,pre,section{break-inside:avoid}}</style><style>body{font-family:Georgia,serif;padding:20px;max-width:700px;margin:0 auto; color: #1a1a1a; background: #f9f5ee} h1{font-size:18pt}.clin-table th{background:#f0f0f0}</style>' + extra + '</head><body>' + innerBody + '</body></html>');
     w.document.close();
     w.focus();
     setTimeout(() => { w.print(); }, 300);
@@ -9035,9 +9719,11 @@
   document.getElementById('exportModal')?.addEventListener('click', (e) => { if (e.target && e.target.id === 'exportModal') closeExportModal(); });
   document.getElementById('exportBeautifulPdf')?.addEventListener('click', () => {
     closeExportModal();
-    const box = document.getElementById('summaryCard');
-    if (box) { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    setTimeout(() => window.print(), 200);
+    runPrintForHtmlDoc(
+      buildBotanicalPrintHtml() + '<p style="page-break-before:always; height:0; margin:0"></p><h2 style="font:12pt Georgia;margin:16px 0 8px; color:#5a4f3f">Full text snapshot</h2><pre style="white-space:pre-wrap;font:10pt/1.5 Lora,Georgia,serif;color:#2a241b;border:1px solid #e0d8cc;border-radius:8px;padding:12px; background: #faf7f1">' + escapeHtml(buildTodaySummaryText()) + '</pre>',
+      'Stillness — gentle journal',
+      { extraCss: 'pre { break-inside: avoid; }' }
+    );
   });
   document.getElementById('exportClinicalSummaryPdf')?.addEventListener('click', () => {
     closeExportModal();
@@ -9097,10 +9783,14 @@
   if (restBtn) restBtn.addEventListener('click', () => { config.restMode = !config.restMode; applyRestMode(); saveConfig(); pushActivity(config.restMode ? 'Rest mode on.' : 'Rest mode off.'); });
   const stickyBtn = document.getElementById('stickySaveBtn');
   if (stickyBtn) stickyBtn.addEventListener('click', () => { saveDayNow(); flashSaveNow(); try { if (window.navigator && navigator.vibrate) navigator.vibrate(12); } catch (e) {} renderTodayProgress(); updateStickySaveBar(); });
-  let logSearchTimer = null;
+  let logSearchTimer = null, memorySearchTimer = null;
   document.getElementById('logSearch').addEventListener('input', () => {
     clearTimeout(logSearchTimer);
     logSearchTimer = setTimeout(() => renderLogView(), 200);
+  });
+  document.getElementById('memoryDaySearch')?.addEventListener('input', () => {
+    clearTimeout(memorySearchTimer);
+    memorySearchTimer = setTimeout(() => { try { renderHistory(); renderLogView(); } catch (e) {} }, 200);
   });
   (function initPullToRefresh() {
     let y0 = 0;
@@ -9112,14 +9802,16 @@
       const active = document.querySelector('.view.active');
       if (!active) return;
       const v = active.id;
-      if (v === 'view-log') {
+      if (v === 'view-history') {
+        try { renderHistory(); renderInsights(); renderLogView(); } catch (err) {}
+        const h = document.getElementById('gardenRefreshHint');
+        if (h) { h.textContent = 'Refreshed your garden. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
+        const hl = document.getElementById('logRefreshHint');
+        if (hl) { hl.textContent = 'Refreshed. ·✦·'; hl.classList.add('on'); setTimeout(() => { hl.textContent = ''; hl.classList.remove('on'); }, 1400); }
+      } else if (v === 'view-settings') {
         try { renderLogView(); } catch (err) {}
         const h = document.getElementById('logRefreshHint');
         if (h) { h.textContent = 'Refreshed. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
-      } else if (v === 'view-history') {
-        try { renderHistory(); renderInsights(); } catch (err) {}
-        const h = document.getElementById('gardenRefreshHint');
-        if (h) { h.textContent = 'Refreshed your garden. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
       }
     }, { passive: true });
   })();
@@ -9131,7 +9823,25 @@
     if (document.visibilityState === 'visible') ensureCurrentDay();
   });
   document.addEventListener('keydown', (e) => {
+    if ((e.key === 's' || e.key === 'S') && (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if (tag !== 'input' && tag !== 'textarea' && !e.target.isContentEditable) {
+        e.preventDefault();
+        const v = document.querySelector('.view.active');
+        if (v && v.id === 'view-today') {
+          saveDayNow();
+          flashSaveNow();
+          try { if (window.navigator && navigator.vibrate) navigator.vibrate(10); } catch (err) {}
+          renderTodayProgress();
+          updateStickySaveBar();
+        }
+      }
+    }
     if (e.key !== 'Escape') return;
+    const gdm = document.getElementById('growthDetailModal');
+    if (gdm && gdm.classList.contains('open')) { closeModalEl('growthDetailModal'); return; }
+    const icm = document.getElementById('importConfirmModal');
+    if (icm && icm.classList.contains('open')) { __pendingImport = null; closeModalEl('importConfirmModal'); return; }
     const ex = document.getElementById('exportModal');
     if (ex && ex.classList.contains('open')) { closeExportModal(); return; }
     const b = document.getElementById('breatheOverlay');
@@ -9139,11 +9849,15 @@
     const k = document.getElementById('kindnessOverlay');
     const s = document.getElementById('scanOverlay');
     const w = document.getElementById('worryOverlay');
-    if (b.classList.contains('open')) document.getElementById('breatheClose').click();
-    else if (g.classList.contains('open')) document.getElementById('groundClose').click();
-    else if (k.classList.contains('open')) document.getElementById('kindnessClose').click();
-    else if (s.classList.contains('open')) document.getElementById('scanClose').click();
-    else if (w.classList.contains('open')) document.getElementById('worryClose').click();
+    const tippO = document.getElementById('tippOverlay');
+    const stopO = document.getElementById('stopOverlay');
+    if (b && b.classList.contains('open')) document.getElementById('breatheClose').click();
+    else if (g && g.classList.contains('open')) document.getElementById('groundClose').click();
+    else if (k && k.classList.contains('open')) document.getElementById('kindnessClose').click();
+    else if (s && s.classList.contains('open')) document.getElementById('scanClose').click();
+    else if (w && w.classList.contains('open')) document.getElementById('worryClose').click();
+    else if (tippO && tippO.classList.contains('open')) document.getElementById('tippClose')?.click();
+    else if (stopO && stopO.classList.contains('open')) document.getElementById('stopClose')?.click();
   });
 
   document.querySelectorAll('.theme-swatch').forEach(btn => {
@@ -9173,7 +9887,74 @@
       updateBreatheCueToggle();
     });
   }
-
+  if (window.matchMedia) {
+    try {
+      const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const onMq = () => { applyMotionPreference(); };
+      if (mq.addEventListener) mq.addEventListener('change', onMq);
+      else if (mq.addListener) mq.addListener(onMq);
+    } catch (e) {}
+  }
+  document.getElementById('reduceMotionToggle')?.addEventListener('click', () => {
+    config.reduceMotion = !config.reduceMotion;
+    saveConfig();
+    applyMotionPreference();
+    showAppToast(config.reduceMotion ? 'Calmer motion on.' : 'Full motion on.', 2200);
+  });
+  document.getElementById('importBackupBtn')?.addEventListener('click', () => { document.getElementById('importFile')?.click(); });
+  document.getElementById('importFile')?.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    const msg = document.getElementById('importMessage');
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onerror = () => { if (msg) msg.textContent = 'Could not read that file.'; e.target.value = ''; };
+    reader.onload = () => {
+      let data = null, count = 0;
+      try { data = JSON.parse(reader.result); } catch (err) {
+        if (msg) msg.textContent = 'This file is not valid JSON. Try a Stillness export.';
+        e.target.value = '';
+        return;
+      }
+      try {
+        if (data && data.days && typeof data.days === 'object') {
+          count = Object.keys(data.days).filter(k => k.startsWith(DAY_KEY_PREFIX) && typeof data.days[k] === 'string').length;
+        } else if (data && typeof data === 'object') {
+          count = Object.keys(data).filter(k => k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string').length;
+        } else {
+          if (msg) msg.textContent = 'That file does not look like a Stillness backup.';
+          e.target.value = '';
+          return;
+        }
+      } catch (err) {
+        if (msg) msg.textContent = 'That file could not be read as a backup.';
+        e.target.value = '';
+        return;
+      }
+      __pendingImport = { data, count };
+      const t = document.getElementById('importConfirmText');
+      if (t) t.textContent = `This will add or overwrite up to ${count} day record(s) in this browser. Nothing is uploaded. Continue?`;
+      openModalEl('importConfirmModal');
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+  document.getElementById('importConfirmYes')?.addEventListener('click', () => {
+    if (!__pendingImport || !__pendingImport.data) { closeModalEl('importConfirmModal'); return; }
+    const impMsg = document.getElementById('importMessage');
+    try {
+      const r = mergeBackupPayload(__pendingImport.data);
+      afterBackupMerge();
+      showAppToast('Garden restored — everything stays on this device. 🌿', 4000);
+      if (impMsg) impMsg.textContent = r.count ? `Merged ${r.count} day record(s) from the file.` : 'The file had no new day lines — nothing changed.';
+    } catch (err) {
+      if (impMsg) impMsg.textContent = 'This file does not match what Stillness expects. Try a backup you exported from the app.';
+      showAppToast('Import did not go through — that file is not a Stillness backup.', 4200);
+    }
+    __pendingImport = null;
+    closeModalEl('importConfirmModal');
+  });
+  document.getElementById('importConfirmNo')?.addEventListener('click', () => { __pendingImport = null; closeModalEl('importConfirmModal'); });
+  document.getElementById('importConfirmModal')?.addEventListener('click', (e) => { if (e.target && e.target.id === 'importConfirmModal') { __pendingImport = null; closeModalEl('importConfirmModal'); } });
   document.getElementById('exportBtn').addEventListener('click', () => {
     const payload = {
       version: BACKUP_VERSION,
@@ -9199,61 +9980,10 @@
     document.getElementById('importMessage').textContent = 'Backup downloaded. Keep that file somewhere safe.';
   });
 
-  document.getElementById('importFile').addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    const msg = document.getElementById('importMessage');
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result);
-        let count = 0;
-        if (data && data.days && typeof data.days === 'object') {
-          Object.keys(data.days).forEach(k => {
-            if (k.startsWith(DAY_KEY_PREFIX) && typeof data.days[k] === 'string') {
-              Storage.set(k, data.days[k]);
-              count++;
-            }
-          });
-          if (typeof data.path === 'string') {
-            Storage.set(PATH_KEY, data.path);
-          } else if (data.path && typeof data.path === 'object') {
-            Storage.set(PATH_KEY, JSON.stringify(data.path));
-          }
-        } else if (data && typeof data === 'object') {
-          Object.keys(data).forEach(k => {
-            if (k.startsWith(DAY_KEY_PREFIX) && typeof data[k] === 'string') {
-              Storage.set(k, data[k]);
-              count++;
-            }
-          });
-          if (typeof data[PATH_KEY] === 'string') Storage.set(PATH_KEY, data[PATH_KEY]);
-        } else {
-          msg.textContent = 'That file does not look like a Stillness backup.';
-          return;
-        }
-        currentDateKey = dateKey();
-        loadDay();
-        loadPath();
-        renderAll();
-        renderPath();
-        renderHistory();
-        renderLogView();
-        renderDataCorner();
-        msg.textContent = count ? `Restored ${count} day record(s).` : 'No day records found in file.';
-        pushActivity('Restored backup (' + count + ' day record(s)).');
-      } catch (err) {
-        msg.textContent = 'Could not read that file.';
-      }
-      e.target.value = '';
-    };
-    reader.readAsText(file);
-  });
-
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
     if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+    config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0, reduceMotion: false, onboardingSeen: false };
     applyTheme('parchment');
     saveConfig();
     currentDateKey = dateKey();
@@ -9304,8 +10034,8 @@
      openSkillByName — unified launcher for new overlays
   ──────────────────────────────────────────────────────── */
   function openSkillByName(name) {
-    if (name === 'tipp') { tippIdx = 0; setOverlayOpen('tippOverlay', true); renderTipp(); document.getElementById('tippClose')?.focus(); tippStart = Date.now(); }
-    if (name === 'stop') { stopIdx = 0; setOverlayOpen('stopOverlay', true); renderStop(); document.getElementById('stopClose')?.focus(); stopStart = Date.now(); }
+    if (name === 'tipp') { clearTippTimer(); tippIdx = 0; setOverlayOpen('tippOverlay', true); renderTipp(); document.getElementById('tippClose')?.focus(); tippStart = Date.now(); }
+    if (name === 'stop') { clearStopTimer(); stopIdx = 0; setOverlayOpen('stopOverlay', true); renderStop(); document.getElementById('stopClose')?.focus(); stopStart = Date.now(); }
     if (name === 'radacc') { radAccIdx = 0; setOverlayOpen('radAccOverlay', true); renderRadAcc(); document.getElementById('radAccClose')?.focus(); radAccStart = Date.now(); }
     if (name === 'thought') { thoughtStep = 1; setOverlayOpen('thoughtOverlay', true); renderThought(); document.getElementById('thoughtClose')?.focus(); thoughtStart = Date.now(); }
   }
@@ -9314,37 +10044,73 @@
      DBT · TIPP
   ──────────────────────────────────────────────────────── */
   const TIPP_STAGES = [
-    { letter: 'T', label: 'Temperature', phrase: 'Splash cold water on your face, or hold something cold for 30 seconds. Let the chill interrupt the spiral.' },
-    { letter: 'I', label: 'Intense exercise', phrase: 'Move your body hard for 60 seconds — jumping jacks, run in place, push-ups. Burn off the intensity.' },
-    { letter: 'P', label: 'Paced breathing', phrase: 'Breathe in for 4 counts, out for 8. The long exhale signals your nervous system to soften. Do six rounds.' },
-    { letter: 'P', label: 'Paired muscle relaxation', phrase: 'Tense each muscle group for 5 seconds, then release for 10. Feet — calves — thighs — belly — fists — shoulders — face.' }
+    { letter: 'T', label: 'Temperature', phrase: 'Splash cold water on your face, or hold something cold for 30 seconds. Let the chill interrupt the spiral.', timerSec: 30 },
+    { letter: 'I', label: 'Intense exercise', phrase: 'Move your body hard for 60 seconds — jumping jacks, run in place, push-ups. Burn off the intensity.', timerSec: 60 },
+    { letter: 'P', label: 'Paced breathing', phrase: 'Breathe in for 4 counts, out for 8. The long exhale signals your nervous system to soften. Do six rounds.', timerSec: null },
+    { letter: 'P', label: 'Paired muscle relaxation', phrase: 'Tense each muscle group for 5 seconds, then release for 10. Feet — calves — thighs — belly — fists — shoulders — face.', timerSec: null }
   ];
-  let tippIdx = 0, tippStart = null;
+  let tippIdx = 0, tippStart = null, tippTimerId = null;
+
+  function clearTippTimer() {
+    if (tippTimerId) { clearInterval(tippTimerId); tippTimerId = null; }
+  }
+  function markPracticeComplete(kind) {
+    if (!day.practiceFlags || typeof day.practiceFlags !== 'object') day.practiceFlags = { breathe: false, tipp: false, stop: false };
+    if (kind === 'breathe') day.practiceFlags.breathe = true;
+    if (kind === 'tipp') day.practiceFlags.tipp = true;
+    if (kind === 'stop') day.practiceFlags.stop = true;
+    saveDayNow();
+  }
 
   function renderTipp() {
     const stage = TIPP_STAGES[tippIdx];
     if (!stage) return;
+    clearTippTimer();
     document.getElementById('tippStep').textContent = `${stage.letter} · ${stage.label} · stage ${tippIdx + 1} of 4`;
     document.getElementById('tippPhrase').textContent = stage.phrase;
-    renderProgress('tippProgress', TIPP_STAGES.length, tippIdx);
+    setSkillDots('tippDots', TIPP_STAGES.length, tippIdx);
+    const orb = document.getElementById('tippSkillOrb');
+    if (orb) {
+      orb.classList.toggle('pulse', !!(stage.timerSec));
+    }
     const nextBtn = document.getElementById('tippNext');
     if (nextBtn) nextBtn.textContent = tippIdx < TIPP_STAGES.length - 1 ? 'continue →' : 'log this skill';
+    const useT = document.getElementById('tippUseTimer') && document.getElementById('tippUseTimer').checked;
+    const tt = document.getElementById('tippTimerText');
+    if (useT && stage.timerSec) {
+      if (nextBtn) nextBtn.disabled = false;
+      let left = stage.timerSec;
+      if (tt) tt.textContent = `Optional · ${left}s of focus — you can go on when you are ready`;
+      clearTippTimer();
+      tippTimerId = setInterval(() => {
+        left--;
+        if (tt) tt.textContent = left > 0 ? `Optional soft timer · ${left}s` : 'Continue whenever feels right';
+        if (left <= 0) clearTippTimer();
+      }, 1000);
+    } else {
+      if (nextBtn) nextBtn.disabled = false;
+      if (tt) tt.textContent = '';
+    }
     if (config.voiceCues) speakCue(stage.phrase);
   }
 
   document.getElementById('tippNext')?.addEventListener('click', () => {
     tippIdx++;
     if (tippIdx >= TIPP_STAGES.length) {
+      markPracticeComplete('tipp');
       saveDbtSkill('TIPP', '');
       setOverlayOpen('tippOverlay', false);
+      clearTippTimer();
       if (tippStart) { addMindfulSeconds(Date.now() - tippStart); tippStart = null; }
       pushActivity('Completed TIPP distress-tolerance skill.');
       return;
     }
     renderTipp();
   });
+  document.getElementById('tippUseTimer')?.addEventListener('change', () => { renderTipp(); });
   document.getElementById('tippClose')?.addEventListener('click', () => {
     setOverlayOpen('tippOverlay', false);
+    clearTippTimer();
     if (tippStart) { addMindfulSeconds(Date.now() - tippStart); tippStart = null; }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   });
@@ -9353,37 +10119,64 @@
      DBT · STOP
   ──────────────────────────────────────────────────────── */
   const STOP_STEPS = [
-    { letter: 'S', phrase: 'Stop. Freeze. Don\'t move. Don\'t act. The urge will not last forever.' },
-    { letter: 'T', phrase: 'Take a breath. One slow inhale through your nose. One slow exhale through your mouth.' },
-    { letter: 'O', phrase: 'Observe. What is happening inside your body? What is happening around you? Just notice, without judging.' },
-    { letter: 'P', phrase: 'Proceed mindfully. What would the calm, wise part of you do next?' }
+    { letter: 'S', phrase: 'Stop. Freeze. Don\'t move. Don\'t act. The urge will not last forever.', timerSec: 45 },
+    { letter: 'T', phrase: 'Take a breath. One slow inhale through your nose. One slow exhale through your mouth.', timerSec: 45 },
+    { letter: 'O', phrase: 'Observe. What is happening inside your body? What is happening around you? Just notice, without judging.', timerSec: null },
+    { letter: 'P', phrase: 'Proceed mindfully. What would the calm, wise part of you do next?', timerSec: null }
   ];
-  let stopIdx = 0, stopStart = null;
+  let stopIdx = 0, stopStart = null, stopTimerId = null;
+
+  function clearStopTimer() {
+    if (stopTimerId) { clearInterval(stopTimerId); stopTimerId = null; }
+  }
 
   function renderStop() {
     const step = STOP_STEPS[stopIdx];
     if (!step) return;
+    clearStopTimer();
     document.getElementById('stopStep').textContent = `${step.letter} · step ${stopIdx + 1} of 4`;
     document.getElementById('stopPhrase').textContent = step.phrase;
-    renderProgress('stopProgress', STOP_STEPS.length, stopIdx);
+    setSkillDots('stopDots', STOP_STEPS.length, stopIdx);
+    const orb = document.getElementById('stopSkillOrb');
+    if (orb) orb.classList.toggle('pulse', !!(step.timerSec));
     const nextBtn = document.getElementById('stopNext');
     if (nextBtn) nextBtn.textContent = stopIdx < STOP_STEPS.length - 1 ? 'continue →' : 'log this skill';
+    const useT = document.getElementById('stopUseTimer') && document.getElementById('stopUseTimer').checked;
+    const tt = document.getElementById('stopTimerText');
+    if (useT && step.timerSec) {
+      if (nextBtn) nextBtn.disabled = false;
+      let left = step.timerSec;
+      if (tt) tt.textContent = `Optional · ${left}s pause — you can go on any time`;
+      clearStopTimer();
+      stopTimerId = setInterval(() => {
+        left--;
+        if (tt) tt.textContent = left > 0 ? `Optional soft timer · ${left}s` : 'Continue whenever it feels right';
+        if (left <= 0) clearStopTimer();
+      }, 1000);
+    } else {
+      if (nextBtn) nextBtn.disabled = false;
+      if (tt) tt.textContent = '';
+    }
     if (config.voiceCues) speakCue(step.phrase);
   }
 
   document.getElementById('stopNext')?.addEventListener('click', () => {
     stopIdx++;
     if (stopIdx >= STOP_STEPS.length) {
+      markPracticeComplete('stop');
       saveDbtSkill('STOP', '');
       setOverlayOpen('stopOverlay', false);
+      clearStopTimer();
       if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
       pushActivity('Completed STOP skill.');
       return;
     }
     renderStop();
   });
+  document.getElementById('stopUseTimer')?.addEventListener('change', () => { renderStop(); });
   document.getElementById('stopClose')?.addEventListener('click', () => {
     setOverlayOpen('stopOverlay', false);
+    clearStopTimer();
     if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   });
@@ -9719,6 +10512,7 @@
   applyTheme(config.theme || 'parchment');
   applyTextSize();
   applyRestMode();
+  applyMotionPreference();
   syncBreatheSoundSelects();
   updateBreatheCueToggle();
   setRetentionSelect();
@@ -9727,6 +10521,25 @@
   loadPath();
   renderAll();
   renderPath();
+  try { updateGrowthHeaderUI(); } catch (e) {}
+  document.getElementById('growthWidget')?.addEventListener('click', () => {
+    const n = countDaysTendedThisMonth();
+    const b = document.getElementById('growthDetailBody');
+    if (b) b.textContent = n ? `You have shown up for ${n} day${n === 1 ? '' : 's'} this month — the garden is not a score, only a soft record of care.` : 'The month is open; one line is enough to begin. There is no minimum worth.';
+    openModalEl('growthDetailModal');
+  });
+  document.getElementById('growthDetailClose')?.addEventListener('click', () => closeModalEl('growthDetailModal'));
+  document.getElementById('growthDetailModal')?.addEventListener('click', (e) => { if (e.target && e.target.id === 'growthDetailModal') closeModalEl('growthDetailModal'); });
+  if (!config.onboardingSeen) {
+    const ob = document.getElementById('onboardingToast');
+    if (ob) {
+      ob.textContent = 'Welcome. Nothing here is urgent — your words stay in this browser until you back them up in Settings.';
+      ob.classList.add('on');
+      setTimeout(() => { ob.classList.remove('on'); }, 6000);
+    }
+    config.onboardingSeen = true;
+    saveConfig();
+  }
   try {
     const ild = document.getElementById('innerLandscapeDetails');
     const msd = document.getElementById('moodScalesDetails');
@@ -9737,6 +10550,31 @@
     if (bwd) bwd.open = false;
     if (emd) emd.open = false;
   } catch (e) {}
+  (function initDayStepAccordions() {
+    const root = document.getElementById('view-today');
+    if (!root) return;
+    const steps = root.querySelectorAll('[data-day-step]');
+    const setOpen = (el) => {
+      steps.forEach(x => {
+        const on = el && x === el;
+        x.classList.toggle('is-open', on);
+        const lab = x.querySelector('.day-moment-label');
+        if (lab) lab.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+    };
+    steps.forEach(s => {
+      const lab = s.querySelector('.day-moment-label');
+      if (!lab) return;
+      lab.addEventListener('click', () => {
+        if (s.classList.contains('is-open')) setOpen(null);
+        else setOpen(s);
+      });
+    });
+    const hr = new Date().getHours();
+    const pick = hr < 12 ? 'morning' : hr < 18 ? 'midday' : 'evening';
+    const el = root.querySelector('[data-day-step="' + pick + '"]');
+    if (el) setOpen(el);
+  })();
   (function initRoute() {
     const v = getRouteView();
     if (v == null) {
