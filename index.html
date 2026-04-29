@@ -86,6 +86,10 @@
     --r: 14px;
     --r-lg: 22px;
     --r-xl: 32px;
+    /* Breathable layout */
+    --space-section: 28px;
+    --space-in-leaf: 24px;
+    --ease-slow: cubic-bezier(0.4, 0, 0.2, 1);
   }
   [data-theme="forest"] {
     --paper: #2A332B;
@@ -142,7 +146,10 @@
 
   html { font-size: 16px; }
   html[data-text-size="large"] { font-size: 19px; }
-  html[data-text-size="large"] .app { line-height: 1.6; }
+  html[data-text-size="large"] .app { line-height: 1.66; }
+  body[data-rest-mode="on"] .rest-hide-focus {
+    display: none !important;
+  }
 
   :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .path-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn, .overlay-close, .tech-tab, .audio-toggle, .soundscape-btn, .mini-stop, .prompt-shuffle):focus {
     outline: none;
@@ -169,8 +176,8 @@
     background-attachment: fixed;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    line-height: 1.55;
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    line-height: 1.62;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
     position: relative;
     overflow-x: hidden;
     overscroll-behavior: none;
@@ -212,7 +219,7 @@
   .app {
     max-width: 720px;
     margin: 0 auto;
-    padding: 32px 24px 0;
+    padding: 40px 24px 0;
     position: relative;
     z-index: 3;
   }
@@ -276,16 +283,16 @@
   .leaf {
     background: var(--paper-3);
     border-radius: var(--r-lg);
-    padding: 26px 26px 24px;
-    margin-bottom: 18px;
+    padding: 32px 28px 30px;
+    margin-bottom: var(--space-section);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.56) inset,
       0 2px 0 rgba(255, 255, 255, 0.22) inset,
       0 8px 28px var(--shadow-warm);
-    transition: box-shadow .3s ease;
+    transition: box-shadow .45s var(--ease-slow);
     position: relative;
     border: 1px solid rgba(201, 187, 164, 0.42);
-    animation: fadeUp .8s ease both;
+    animation: fadeUp 1.05s var(--ease-slow) both;
   }
   .leaf:focus-within {
     box-shadow:
@@ -324,8 +331,9 @@
     font-style: italic;
     font-size: 0.98rem;
     color: var(--ink-soft);
-    margin: 0 0 18px;
+    margin: 0 0 22px;
     font-weight: 400;
+    line-height: 1.55;
   }
 
   /* ── Intention card (special hero card) ─────────────────── */
@@ -491,6 +499,105 @@
     font-weight: 500;
     letter-spacing: 0.04em;
   }
+  .picker-row.picker-row--vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .mood-scale-col, .energy-scale-col {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .mood-scale-col {
+    --scale-track: var(--moss);
+    --scale-fill: linear-gradient(180deg, var(--moss-mist) 0%, var(--moss) 100%);
+  }
+  .energy-scale-col {
+    --scale-track: var(--clay);
+    --scale-fill: linear-gradient(180deg, #f0e0d5 0%, #d4a07a 100%);
+  }
+  .mood-intensity-track {
+    width: 4px;
+    min-height: 100%;
+    border-radius: 4px;
+    background: rgba(201, 187, 164, 0.4);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .mood-intensity-fill {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 0%;
+    max-height: 100%;
+    border-radius: 4px;
+    background: var(--scale-fill);
+    opacity: 0.5;
+    transition: height 0.55s var(--ease-slow);
+    pointer-events: none;
+  }
+  .mood-scale-col:has(.picker-btn.on) .mood-intensity-fill,
+  .energy-scale-col:has(.picker-btn.on) .mood-intensity-fill { opacity: 0.9; }
+  .picker-col-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .picker-row--vertical .picker-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 14px 16px 14px 18px;
+    min-height: 56px;
+    width: 100%;
+    border-radius: var(--r);
+    transition: background 0.45s var(--ease-slow), border-color 0.45s var(--ease-slow), box-shadow 0.45s var(--ease-slow);
+  }
+  .picker-row--vertical .picker-btn .icon-wrap { margin: 0 12px 0 0; flex-shrink: 0; }
+  .picker-row--vertical .picker-btn .lbl { font-size: 0.88rem; }
+
+  .feeling-context-hint, .emotional-weather-hint { font-size: 0.82rem; color: var(--ink-faint); margin: 0 0 10px; line-height: 1.5; }
+  .inner-landscape-wrap { margin-top: 8px; }
+  .evening-extra-block { margin-top: 20px; padding-top: 18px; border-top: 1px dashed rgba(201, 187, 164, 0.5); }
+  .evening-extra-block:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .path-cluster {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-section);
+  }
+  .path-cluster .path-grid { margin: 0; }
+  .path-sep { height: 0; border: 0; border-top: 1px solid rgba(201, 187, 164, 0.35); margin: 0; }
+  .path-experiment-block {
+    margin-top: 14px;
+    padding: 12px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .path-experiment-block .sub { font-size: 0.72rem; }
+  .path-experiment-block select, .path-experiment-block textarea { width: 100%; }
+  .path-exp-feel-select { margin-top: 2px; }
+
+  .rest-mode-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    background: var(--moss-mist);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    border-radius: var(--r);
+  }
+  .rest-mode-pill .rest-copy { font-size: 0.85rem; color: var(--ink-soft); margin: 0; line-height: 1.45; }
+  .rest-mode-toggle { min-height: 44px; padding: 0 16px; }
 
   /* Energy uses different palette */
   .energy-row .picker-btn.on {
@@ -504,12 +611,12 @@
     background: var(--paper);
     border: 1px solid rgba(201, 187, 164, 0.5);
     border-radius: var(--r);
-    padding: 12px 14px;
+    padding: 16px 18px;
     font-family: 'Lora', serif;
     font-size: 0.95rem;
     color: var(--ink);
     resize: none;
-    line-height: 1.5;
+    line-height: 1.7;
   }
   .mood-note:focus { outline: none; border-color: var(--moss); background: var(--paper-3); }
 
@@ -553,12 +660,13 @@
   .grid-trackers {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 20px;
   }
   .tracker {
     background: var(--paper-3);
     border-radius: var(--r-lg);
-    padding: 18px 16px 14px;
+    padding: 22px 20px 18px;
+    margin-bottom: 4px;
     border: 1px solid rgba(201, 187, 164, 0.5);
     box-shadow: 0 4px 14px var(--shadow-warm);
     position: relative;
@@ -955,13 +1063,13 @@
     border: 1px solid rgba(201, 187, 164, 0.5);
     background: var(--paper);
     border-radius: var(--r-lg);
-    padding: 16px 18px;
+    padding: 18px 20px;
     font-family: 'Lora', serif;
     font-size: 0.98rem;
     color: var(--ink);
     resize: vertical;
-    min-height: 80px;
-    line-height: 1.65;
+    min-height: 88px;
+    line-height: 1.72;
     background-image:
       repeating-linear-gradient(transparent, transparent 27px, rgba(201, 187, 164, 0.25) 27px, rgba(201, 187, 164, 0.25) 28px);
   }
@@ -1668,12 +1776,17 @@
   }
   .path-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
-    padding: 10px 12px;
+    padding: 14px 14px;
     border-radius: var(--r);
     background: var(--paper);
     border: 1px solid rgba(201, 187, 164, 0.42);
+  }
+  .path-item .path-item-body { width: 100%; min-width: 0; }
+  @media (min-width: 520px) {
+    .path-item:has(.path-experiment-block) { flex-wrap: nowrap; }
+    .path-item:has(.path-experiment-block) .path-item-body { width: auto; }
   }
   .path-check {
     width: 24px;
@@ -1692,7 +1805,7 @@
     background: var(--moss);
     border-color: var(--moss-deep);
   }
-  .path-item.done .desc {
+  .path-item.done .path-item-body > .desc {
     text-decoration: line-through;
     color: var(--ink-faint);
   }
@@ -2192,7 +2305,7 @@
 
   /* ── Animations ─────────────────────────────────────────── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @keyframes fadeIn {
@@ -2215,10 +2328,11 @@
   /* ── Responsive ─────────────────────────────────────────── */
   @media (max-width: 540px) {
     .pair-row { gap: 10px; }
-    .grid-trackers { grid-template-columns: 1fr; }
+    .grid-trackers { grid-template-columns: 1fr; gap: 16px; }
     .practices-row { grid-template-columns: 1fr; }
     .pain-input { grid-template-columns: 1fr; }
     .picker-btn .lbl { font-size: 0.66rem; }
+    .picker-row--vertical .picker-btn { min-height: 52px; padding: 16px 14px; }
     .nav {
       left: 10px;
       right: 10px;
@@ -2226,8 +2340,8 @@
       width: auto;
       max-width: none;
     }
-    .nav-btn { padding: 8px 2px; font-size: 0.76rem; }
-    .leaf { padding: 22px 20px 20px; }
+    .nav-btn { padding: 10px 4px; font-size: 0.78rem; min-height: 44px; }
+    .leaf { padding: 26px 20px 24px; margin-bottom: 24px; }
   }
 
   /* Section flourish between cards */
@@ -2589,7 +2703,9 @@
     user-select: none;
   }
   details.leaf.collapsible-section > summary::-webkit-details-marker { display: none; }
-  details.leaf.collapsible-section > summary::marker { content: ''; }
+  details.leaf.collapsible-section[open] > *:not(summary) {
+    animation: fadeIn 0.6s var(--ease-slow) both;
+  }
 
   .sleep-top {
     display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;
@@ -3178,10 +3294,12 @@
         </svg>
         <span class="tpr-pct" id="todayProgressText">0%</span>
       </div>
-      <p class="today-progress-caption" id="todayProgressCaption">A little at a time — there is no pass or fail.</p>
+    <div class="rest-mode-pill no-print" role="group" aria-label="Rest mode">
+      <p class="rest-copy">Rest mode tucks away quick links and the peace image for a calmer, quieter page — optional, anytime.</p>
+      <button type="button" class="data-btn data-btn-ghost rest-mode-toggle" id="restModeBtn" aria-pressed="false">Rest mode: off</button>
     </div>
 
-    <section class="quick-start no-print" aria-label="What would help right now">
+    <section class="quick-start no-print rest-hide-focus" aria-label="What would help right now">
       <div class="quick-start-copy">
         <p class="picker-label">What would help right now?</p>
         <h2>Start with one useful thing.</h2>
@@ -3210,7 +3328,7 @@
       </ol>
     </details>
 
-    <section class="peace-visual no-print" aria-label="Peaceful image for today">
+    <section class="peace-visual no-print rest-hide-focus" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
       <div class="peace-visual-caption">
         <small>Today&apos;s quiet image</small>
@@ -3262,32 +3380,60 @@
         <h2 class="leaf-title">How are you, <em>really?</em></h2>
         <span class="leaf-num">№ 02</span>
       </div>
-      <p class="leaf-sub">Mood and energy are different — both deserve a check-in.</p>
+      <p class="leaf-sub">Mood and energy are different — both deserve a check-in. Choose one step for each; the line beside them is just a soft guide, not a report card.</p>
 
       <div class="picker-label">Mood</div>
-      <div class="picker-row" id="moodRow">
-        <button class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy / low</span></button>
-        <button class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off / flat</span></button>
-        <button class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Okay / mixed</span></button>
-        <button class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Good / light</span></button>
-        <button class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Really good</span></button>
+      <div class="mood-scale-col" id="moodScaleWrap">
+        <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="moodIntensityFill"></div></div>
+        <div class="picker-col-inner">
+      <div class="picker-row picker-row--vertical" id="moodRow">
+        <button type="button" class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy / low</span></button>
+        <button type="button" class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off / flat</span></button>
+        <button type="button" class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Okay / mixed</span></button>
+        <button type="button" class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Good / light</span></button>
+        <button type="button" class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Really good</span></button>
+      </div>
+        </div>
       </div>
 
-      <div class="picker-label">Energy</div>
-      <div class="picker-row energy-row" id="energyRow">
-        <button class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Wiped out</span></button>
-        <button class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low / flat</span></button>
-        <button class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Steady</span></button>
-        <button class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Up / alert</span></button>
-        <button class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Fired up</span></button>
+      <div class="picker-label" style="margin-top:8px">Energy</div>
+      <div class="energy-scale-col" id="energyScaleWrap">
+        <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="energyIntensityFill"></div></div>
+        <div class="picker-col-inner">
+      <div class="picker-row picker-row--vertical energy-row" id="energyRow">
+        <button type="button" class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Wiped out</span></button>
+        <button type="button" class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low / flat</span></button>
+        <button type="button" class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Steady</span></button>
+        <button type="button" class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Up / alert</span></button>
+        <button type="button" class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Fired up</span></button>
+      </div>
+        </div>
       </div>
 
-      <textarea class="mood-note" id="moodNote" rows="2" placeholder="A few words, if you want — nothing has to sound pretty."></textarea>
+      <p class="picker-label" style="margin-top:20px">What helped shape this? (optional)</p>
+      <p class="feeling-context-hint">People, places, sleep, food, news, weather, a hard moment, a kind one — no need to be complete.</p>
+      <textarea class="mood-note" id="moodContextInput" rows="2" maxlength="800" placeholder="A few words about what was in the story of today — if you want."></textarea>
+
+      <p class="picker-label" style="margin-top:18px">A few words, if you want</p>
+      <textarea class="mood-note" id="moodNote" rows="2" placeholder="Nothing has to sound pretty."></textarea>
       <div class="mood-text-actions no-print">
         <button type="button" class="mini-btn" id="moodNoteSave">Add to journal (enter)</button>
         <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
       </div>
     </section>
+
+    <details class="leaf collapsible-section" id="innerLandscapeDetails" aria-label="Emotional weather">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Inner <em>landscape</em> (optional)</h2>
+        <span class="leaf-num">soft</span>
+      </summary>
+      <p class="leaf-sub">Name the weather inside — not to fix it, only to see it with kindness.</p>
+      <p class="emotional-weather-hint">Specific feelings (e.g. tender, restless, hollow, hopeful, wired, heavy) can help a therapist or a trusted AI understand the shape of your day.</p>
+      <div class="inner-landscape-wrap">
+        <label for="emotionalWeatherInput" class="picker-label">Emotional weather today</label>
+        <textarea class="mood-note" id="emotionalWeatherInput" rows="3" maxlength="1200" placeholder="A few feelings, images, or words — however mixed."></textarea>
+      </div>
+    </details>
 
     <details class="leaf collapsible-section no-print" id="moodScalesDetails" aria-label="Optional gentle check-in scales">
       <summary class="leaf-head">
@@ -3811,6 +3957,34 @@
         <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="tomorrow">Save to journal</button>
         <span class="field-saved" id="fieldSavedTomorrow" hidden aria-live="polite">Saved</span>
       </div>
+
+      <div class="evening-extra-block">
+        <p class="picker-label">A feeling that stayed with you (optional)</p>
+        <p class="feeling-context-hint" style="margin-bottom:10px">The emotion that was loudest or most present — you can name it simply.</p>
+        <textarea class="deep-input" id="eveningStrongestEmotion" rows="2" maxlength="2000" placeholder="e.g. worry · grief · relief · love · numbness…"></textarea>
+        <div class="field-save-row" data-for="strongEmotion">
+          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="strongEmotion">Save to journal</button>
+          <span class="field-saved" id="fieldSavedStrongEmotion" hidden aria-live="polite">Saved</span>
+        </div>
+      </div>
+      <div class="evening-extra-block">
+        <p class="picker-label">Something quiet to be proud of (optional)</p>
+        <p class="feeling-context-hint" style="margin-bottom:10px">Even a tiny thing counts — you showed up, you noticed, you stayed.</p>
+        <textarea class="deep-input" id="eveningQuietPride" rows="2" maxlength="2000" placeholder="A small thing that was actually brave…"></textarea>
+        <div class="field-save-row" data-for="quietPride">
+          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="quietPride">Save to journal</button>
+          <span class="field-saved" id="fieldSavedQuietPride" hidden aria-live="polite">Saved</span>
+        </div>
+      </div>
+      <div class="evening-extra-block">
+        <p class="picker-label">What you need a little more of tomorrow (optional)</p>
+        <p class="feeling-context-hint" style="margin-bottom:10px">Rest, connection, silence, structure, play — no obligation to make it happen.</p>
+        <textarea class="deep-input" id="eveningNeedTomorrow" rows="2" maxlength="2000" placeholder="Gentle wish for future you…"></textarea>
+        <div class="field-save-row" data-for="needTomorrow">
+          <button type="button" class="data-btn data-btn-ghost btn-save-section" data-key="needTomorrow">Save to journal</button>
+          <span class="field-saved" id="fieldSavedNeedTomorrow" hidden aria-live="polite">Saved</span>
+        </div>
+      </div>
     </section>
 
     <section class="leaf" id="summaryCard" aria-label="Today summary">
@@ -4037,6 +4211,7 @@
     </header>
     <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="pathBackBtn">← Memory</button></div>
 
+    <div class="path-cluster">
     <section class="leaf intention">
       <div class="leaf-head">
         <h2 class="leaf-title">North <em>star</em></h2>
@@ -4047,6 +4222,8 @@
       <div class="path-meter" aria-hidden="true"><div class="path-meter-fill" id="pathMeterFill"></div></div>
       <p class="data-hint" id="pathMeterText">A few honest words are enough.</p>
     </section>
+
+    <hr class="path-sep" aria-hidden="true" />
 
     <div class="path-grid">
       <section class="leaf">
@@ -4070,13 +4247,14 @@
           <h2 class="leaf-title">Tiny <em>experiments</em></h2>
           <span class="leaf-num">02</span>
         </div>
-        <p class="leaf-sub">Try one gentle change. Learn from it. No perfection required.</p>
+        <p class="leaf-sub">Try one gentle change. When you can, name how it felt in your body — that helps the learning stick.</p>
         <div class="path-prompt" id="pathExperimentPrompt">Try a 10-minute walk after lunch for three days.</div>
         <div class="path-suggest-grid" id="pathSuggestGrid"></div>
         <div class="path-input-row">
           <input type="text" class="text-in" id="pathExperimentInput" maxlength="100" placeholder="Add your own experiment..." />
           <button class="add-btn" id="pathAddExperiment">Add</button>
         </div>
+        <p class="sub">After each line: how it felt in you (softly)</p>
         <div class="path-list" id="pathExperimentList"></div>
       </section>
     </div>
@@ -4107,6 +4285,8 @@
       <div class="path-list" id="pathStepList"></div>
     </section>
 
+    <hr class="path-sep" aria-hidden="true" />
+
     <section class="leaf">
       <div class="leaf-head">
         <h2 class="leaf-title">Future self <em>letter</em></h2>
@@ -4115,6 +4295,7 @@
       <p class="leaf-sub">A note for the you who keeps going.</p>
       <textarea class="deep-input" id="pathLetter" rows="6" placeholder="Dear future me..."></textarea>
     </section>
+    </div>
   </div>
 
   <!-- QUOTES VIEW -->
@@ -4668,7 +4849,11 @@
     if (typeof pathData === 'undefined' || !pathData) return '';
     const p = pathData;
     const bits = [p.northStar, p.values, p.practice, p.letter, 'path', 'values', 'north star', 'step', 'experiment'];
-    (p.experiments || []).forEach(x => { if (x && x.text) bits.push(x.text); });
+    (p.experiments || []).forEach(x => {
+      if (x && x.text) bits.push(x.text);
+      if (x && x.feel && PATH_EXPERIMENT_FEEL_LABELS[x.feel]) bits.push(PATH_EXPERIMENT_FEEL_LABELS[x.feel]);
+      if (x && x.feelNote) bits.push(x.feelNote);
+    });
     (p.steps || []).forEach(x => { if (x && x.text) bits.push(x.text); });
     (p.therapyGoals || []).forEach(x => { if (x && x.text) bits.push(x.text); });
     return bits.filter(Boolean).join(' ');
@@ -4690,8 +4875,12 @@
     });
     (p.experiments || []).forEach((x, j) => {
       const t = (x && x.text) ? x.text : '';
+      const fn = (x && x.feelNote) ? x.feelNote : '';
       if (t && t.toLowerCase().indexOf(q) !== -1) {
         out.push({ label: 'Experiment', k: 'exp' + j, snippet: snippetAround(t, q, 140) });
+      }
+      if (fn && fn.toLowerCase().indexOf(q) !== -1) {
+        out.push({ label: 'Experiment (how it felt)', k: 'expfeel' + j, snippet: snippetAround(fn, q, 140) });
       }
     });
     (p.steps || []).forEach((x, j) => {
@@ -4751,7 +4940,7 @@
   ──────────────────────────────────────────────────────── */
   const blankDay = () => ({
     intention: '',
-    mood: 0, energy: 0, moodNote: '',
+    mood: 0, energy: 0, moodNote: '', moodContext: '', emotionalWeather: '',
     symptoms: [], symptomsFreeText: '', rituals: [],
     phq2: [null, null], gad2: [null, null],
     supportNote: '', strengthsNote: '', stressCheckIn: '',
@@ -4764,6 +4953,7 @@
     sleepHours: 7.0, sleepQuality: 0, sleepLatencyMins: 0, sleepAwakenings: 0, sleepRested: 0, dreams: '',
     gratitude: '', reflection: '',
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
+    eveningStrongestEmotion: '', eveningQuietPride: '', eveningNeedTomorrow: '',
     activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
     dbtSkills: [],
@@ -4796,6 +4986,11 @@
     if (typeof day.supportNote !== 'string') day.supportNote = '';
     if (typeof day.strengthsNote !== 'string') day.strengthsNote = '';
     if (typeof day.stressCheckIn !== 'string') day.stressCheckIn = '';
+    if (typeof day.moodContext !== 'string') day.moodContext = '';
+    if (typeof day.emotionalWeather !== 'string') day.emotionalWeather = '';
+    if (typeof day.eveningStrongestEmotion !== 'string') day.eveningStrongestEmotion = '';
+    if (typeof day.eveningQuietPride !== 'string') day.eveningQuietPride = '';
+    if (typeof day.eveningNeedTomorrow !== 'string') day.eveningNeedTomorrow = '';
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
@@ -4917,19 +5112,27 @@
     steps: []
   });
   let pathData = blankPath();
+  const PATH_EXPERIMENT_FEEL_LABELS = { unmarked: '—', softer: 'Softer in me', same: 'About the same', heavy: 'Heavier / more stirred', good: 'Surprisingly good' };
   function loadPath() {
     const raw = Storage.get(PATH_KEY);
     if (!raw) {
       pathData = blankPath();
       return;
     }
-    try {
-      const parsed = JSON.parse(raw);
-      pathData = { ...blankPath(), ...(parsed && typeof parsed === 'object' ? parsed : {}) };
-      if (!Array.isArray(pathData.experiments)) pathData.experiments = [];
-      if (!Array.isArray(pathData.steps)) pathData.steps = [];
-      if (!Array.isArray(pathData.therapyGoals)) pathData.therapyGoals = [];
-    } catch {
+      try {
+        const parsed = JSON.parse(raw);
+        pathData = { ...blankPath(), ...(parsed && typeof parsed === 'object' ? parsed : {}) };
+        if (!Array.isArray(pathData.experiments)) pathData.experiments = [];
+        if (!Array.isArray(pathData.steps)) pathData.steps = [];
+        if (!Array.isArray(pathData.therapyGoals)) pathData.therapyGoals = [];
+        pathData.experiments = pathData.experiments.map((x) => ({
+          text: x && x.text ? x.text : '',
+          done: !!(x && x.done),
+          createdAt: x && x.createdAt ? x.createdAt : new Date().toISOString(),
+          feel: (x && x.feel && PATH_EXPERIMENT_FEEL_LABELS[x.feel]) ? x.feel : 'unmarked',
+          feelNote: x && typeof x.feelNote === 'string' ? x.feelNote : ''
+        }));
+      } catch {
       pathData = blankPath();
     }
   }
@@ -4943,7 +5146,7 @@
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
-  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -4959,6 +5162,7 @@
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
           if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
           if (j.textSize === 'large' || j.textSize === 'default') config.textSize = j.textSize;
+          if (typeof j.restMode === 'boolean') config.restMode = j.restMode;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
           if (j.lastBackupAt != null) config.lastBackupAt = Math.max(0, Number(j.lastBackupAt) || 0);
@@ -4975,6 +5179,7 @@
       activityCap: config.activityCap,
       theme: config.theme,
       textSize: config.textSize || 'default',
+      restMode: !!config.restMode,
       breatheSound: config.breatheSound,
       breatheCues: config.breatheCues,
       voiceCues: config.voiceCues,
@@ -5000,6 +5205,7 @@
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     applyTextSize();
+    applyRestMode();
   }
 
   const BREATHE_SOUNDS = ['rain', 'forest', 'steam', 'bowl', 'bali', 'silent'];
@@ -5507,6 +5713,15 @@
     if (def) { def.classList.toggle('data-btn-ghost', s === 'large'); def.setAttribute('aria-pressed', s === 'default' ? 'true' : 'false'); }
     if (lg) { lg.classList.toggle('data-btn-ghost', s === 'default'); lg.setAttribute('aria-pressed', s === 'large' ? 'true' : 'false'); }
   }
+  function applyRestMode() {
+    const on = !!config.restMode;
+    document.body.setAttribute('data-rest-mode', on ? 'on' : 'off');
+    const btn = document.getElementById('restModeBtn');
+    if (btn) {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.textContent = on ? 'Rest mode: on' : 'Rest mode: off';
+    }
+  }
   function scorePhq2() {
     if (!day.phq2 || day.phq2[0] == null || day.phq2[1] == null) return null;
     return Number(day.phq2[0]) + Number(day.phq2[1]);
@@ -5518,11 +5733,11 @@
   function computeProgressPct() {
     const checks = [
       day.intention && String(day.intention).trim(), day.mood, day.energy, (day.symptoms && day.symptoms.length) || (day.symptomsFreeText && day.symptomsFreeText.trim()),
-      (day.rituals && day.rituals.length), (day.moodNote && day.moodNote.trim()), scorePhq2() != null, scoreGad2() != null,
+      (day.rituals && day.rituals.length), (day.moodNote && day.moodNote.trim()) || (day.moodContext && day.moodContext.trim()) || (day.emotionalWeather && day.emotionalWeather.trim()), scorePhq2() != null, scoreGad2() != null,
       day.water > 0 || day.movement > 0 || day.sun > 0 || (day.steps > 0), (day.meals && day.meals.length), (day.pains && day.pains.length) || (day.medications && day.medications.length) || (day.allergies && day.allergies.trim()),
       (day.gratitude && day.gratitude.trim()) || (day.reflection && day.reflection.trim()) || (day.dreams && day.dreams.trim()),
       (day.strengthsNote && day.strengthsNote.trim()) || (day.supportNote && day.supportNote.trim()) || (day.stressCheckIn && day.stressCheckIn.trim()),
-      day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow, (day.mindfulMinutes > 0)
+      day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()), (day.mindfulMinutes > 0)
     ];
     const n = checks.filter(Boolean).length;
     return Math.min(100, Math.round((n / checks.length) * 100));
@@ -5650,12 +5865,14 @@
 
   function hasAnyData(d) {
     return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) || (d.symptomsFreeText && d.symptomsFreeText.trim()) ||
+           (d.moodContext && d.moodContext.trim()) || (d.emotionalWeather && d.emotionalWeather.trim()) ||
            (d.rituals && d.rituals.length) ||
            d.water || d.pee || d.coffee || d.movement || d.sun || d.steps || (d.exerciseNote && d.exerciseNote.trim()) ||
            d.outings || d.sweets || d.calories ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) || (d.medications && d.medications.length) || (d.allergies && d.allergies.trim()) ||
            d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes ||
            d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ||
+           (d.eveningStrongestEmotion && d.eveningStrongestEmotion.trim()) || (d.eveningQuietPride && d.eveningQuietPride.trim()) || (d.eveningNeedTomorrow && d.eveningNeedTomorrow.trim()) ||
            (d.phq2 && d.phq2.some(x => x != null)) || (d.gad2 && d.gad2.some(x => x != null)) ||
            d.functionalImpact > 0 || (d.strengthsNote && d.strengthsNote.trim()) || (d.supportNote && d.supportNote.trim()) || (d.stressCheckIn && d.stressCheckIn.trim());
   }
@@ -5753,6 +5970,17 @@
     document.querySelectorAll('#energyRow .picker-btn').forEach(b =>
       b.classList.toggle('on', Number(b.dataset.energy) === day.energy));
     document.getElementById('moodNote').value = day.moodNote || '';
+    const mc = document.getElementById('moodContextInput');
+    if (mc) mc.value = day.moodContext || '';
+    const ew = document.getElementById('emotionalWeatherInput');
+    if (ew) ew.value = day.emotionalWeather || '';
+    updateMoodEnergyIntensity();
+  }
+  function updateMoodEnergyIntensity() {
+    const mf = document.getElementById('moodIntensityFill');
+    const ef = document.getElementById('energyIntensityFill');
+    if (mf) mf.style.height = (day.mood ? ((day.mood - 1) / 4) * 100 : 0) + '%';
+    if (ef) ef.style.height = (day.energy ? ((day.energy - 1) / 4) * 100 : 0) + '%';
   }
   function renderChips() {
     const wrap = document.getElementById('chips');
@@ -5894,6 +6122,12 @@
     document.getElementById('eveningNoteInput').value = day.eveningNote || '';
     document.getElementById('eveningObstacleInput').value = day.eveningObstacle || '';
     document.getElementById('eveningTomorrowInput').value = day.eveningTomorrow || '';
+    const se = document.getElementById('eveningStrongestEmotion');
+    if (se) se.value = day.eveningStrongestEmotion || '';
+    const qp = document.getElementById('eveningQuietPride');
+    if (qp) qp.value = day.eveningQuietPride || '';
+    const nt = document.getElementById('eveningNeedTomorrow');
+    if (nt) nt.value = day.eveningNeedTomorrow || '';
     const dr = document.getElementById('dreamInput');
     if (dr) dr.value = day.dreams || '';
   }
@@ -5910,7 +6144,9 @@
     if (day.intention) lines.push('Intention: ' + day.intention);
     if (day.mood) lines.push('Mood: ' + MOOD_L[day.mood] + ' (' + day.mood + '/5)');
     if (day.energy) lines.push('Energy: ' + ENERGY_L[day.energy] + ' (' + day.energy + '/5)');
+    if (day.moodContext && day.moodContext.trim()) lines.push('What contributed to this feeling: ' + day.moodContext.trim());
     if (day.moodNote) lines.push('Mood note: ' + day.moodNote);
+    if (day.emotionalWeather && day.emotionalWeather.trim()) lines.push('Inner landscape / emotional weather: ' + day.emotionalWeather.trim());
     if (day.symptoms && day.symptoms.length) {
       const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
       if (lbs.length) lines.push('Body weather: ' + lbs.join(', '));
@@ -5971,12 +6207,15 @@
     if (day.stressCheckIn && day.stressCheckIn.trim()) lines.push('Gentle load / stress: ' + day.stressCheckIn.trim());
     if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
     if (day.reflection) lines.push('Reflection: ' + day.reflection);
-    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
+    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim())) {
       lines.push('Evening:');
       if (day.eveningWin) lines.push('  · Smallest win: ' + day.eveningWin);
       if (day.eveningNote) lines.push('  · Carrying: ' + day.eveningNote);
       if (day.eveningObstacle) lines.push('  · In the way: ' + day.eveningObstacle);
       if (day.eveningTomorrow) lines.push('  · Tomorrow: ' + day.eveningTomorrow);
+      if (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) lines.push('  · Strongest feeling: ' + day.eveningStrongestEmotion.trim());
+      if (day.eveningQuietPride && day.eveningQuietPride.trim()) lines.push('  · Quiet pride: ' + day.eveningQuietPride.trim());
+      if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) lines.push('  · Needing more of tomorrow: ' + day.eveningNeedTomorrow.trim());
     }
     if (day.dbtSkills && day.dbtSkills.length) {
       lines.push('DBT / support skills:');
@@ -5989,6 +6228,13 @@
         const reframe = r.reframe || r.balancedThought || '';
         if (thought) lines.push('  - Thought: ' + thought);
         if (reframe) lines.push('    Reframe: ' + reframe);
+      });
+    }
+    if (pathData && (pathData.experiments || []).length) {
+      lines.push('Path — experiments:');
+      pathData.experiments.forEach(x => {
+        const fl = (x.feel && PATH_EXPERIMENT_FEEL_LABELS[x.feel]) ? PATH_EXPERIMENT_FEEL_LABELS[x.feel] : '—';
+        lines.push('  · ' + (x.text || '—') + ' | how it felt: ' + fl + (x.feelNote ? ' — ' + x.feelNote : ''));
       });
     }
     lines.push('Mindful minutes: ' + (day.mindfulMinutes || 0));
@@ -6005,14 +6251,16 @@
     const e = escapeHtml;
     const parts = [];
 
-    const todayHas = day.intention || day.mood || day.energy || (day.moodNote && day.moodNote.trim()) ||
+    const todayHas = day.intention || day.mood || day.energy || (day.moodNote && day.moodNote.trim()) || (day.moodContext && day.moodContext.trim()) || (day.emotionalWeather && day.emotionalWeather.trim()) ||
       (day.symptoms && day.symptoms.length) || (day.rituals && day.rituals.length);
     if (todayHas) {
       parts.push(h('div', 'sum-head', 'Today'));
       if (day.intention) parts.push(h('p', 'sum-line', '✦ ' + e(day.intention)));
     if (day.mood) parts.push(h('p', 'sum-line', 'Mood: ' + e(MOOD_L[day.mood]) + ' (' + day.mood + '/5)'));
     if (day.energy) parts.push(h('p', 'sum-line', 'Energy: ' + e(ENERGY_L[day.energy]) + ' (' + day.energy + '/5)'));
+    if (day.moodContext && day.moodContext.trim()) parts.push(h('p', 'sum-line', 'Shaped by: ' + e(day.moodContext.trim())));
     if (day.moodNote) parts.push(h('p', 'sum-line', 'Mood note: ' + e(day.moodNote)));
+    if (day.emotionalWeather && day.emotionalWeather.trim()) parts.push(h('p', 'sum-line', 'Inner landscape: ' + e(day.emotionalWeather.trim())));
     if (day.symptoms && day.symptoms.length) {
       const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
       if (lbs.length) parts.push(h('p', 'sum-line', 'Body weather: ' + e(lbs.join(', '))));
@@ -6085,12 +6333,15 @@
     if (day.gratitude) parts.push(h('p', 'sum-line', 'Gratitude: ' + e(day.gratitude)));
     if (day.reflection) parts.push(h('p', 'sum-line', 'Reflection: ' + e(day.reflection)));
 
-    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
+    if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim())) {
       parts.push(h('div', 'sum-head', 'Evening'));
       if (day.eveningWin) parts.push(h('p', 'sum-line', 'Smallest win: ' + e(day.eveningWin)));
       if (day.eveningNote) parts.push(h('p', 'sum-line', 'Carrying: ' + e(day.eveningNote)));
       if (day.eveningObstacle) parts.push(h('p', 'sum-line', 'In the way: ' + e(day.eveningObstacle)));
       if (day.eveningTomorrow) parts.push(h('p', 'sum-line', 'Tomorrow: ' + e(day.eveningTomorrow)));
+      if (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) parts.push(h('p', 'sum-line', 'Strongest feeling: ' + e(day.eveningStrongestEmotion.trim())));
+      if (day.eveningQuietPride && day.eveningQuietPride.trim()) parts.push(h('p', 'sum-line', 'Quiet pride: ' + e(day.eveningQuietPride.trim())));
+      if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) parts.push(h('p', 'sum-line', 'Needing more of tomorrow: ' + e(day.eveningNeedTomorrow.trim())));
     }
 
     if ((day.dbtSkills && day.dbtSkills.length) || (day.thoughtRecords && day.thoughtRecords.length)) {
@@ -6147,8 +6398,8 @@
   function dayMatchesQuery(d, q) {
     if (!q) return true;
     const parts = [
-      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams, d.exerciseNote, d.symptomsFreeText,
-      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow, d.strengthsNote, d.supportNote, d.stressCheckIn, d.allergies
+      d.date, d.intention, d.moodNote, d.moodContext, d.emotionalWeather, d.gratitude, d.reflection, d.dreams, d.exerciseNote, d.symptomsFreeText,
+      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow, d.eveningStrongestEmotion, d.eveningQuietPride, d.eveningNeedTomorrow, d.strengthsNote, d.supportNote, d.stressCheckIn, d.allergies
     ];
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
     if (d.symptoms && d.symptoms.length) d.symptoms.forEach(sid => { parts.push(sid, symLabel(sid)); });
@@ -6167,6 +6418,7 @@
     const fields = [
       { h: 'Intention', t: d.intention },
       { h: 'Mood note', t: d.moodNote },
+      { h: 'Context for mood', t: d.moodContext },
       { h: 'Gratitude', t: d.gratitude },
       { h: 'Reflection', t: d.reflection },
       { h: 'Dreams', t: d.dreams },
@@ -6178,7 +6430,10 @@
       { h: 'Win', t: d.eveningWin },
       { h: 'Carry', t: d.eveningNote },
       { h: 'Stuck', t: d.eveningObstacle },
-      { h: 'Tomorrow', t: d.eveningTomorrow }
+      { h: 'Tomorrow', t: d.eveningTomorrow },
+      { h: 'Strongest feeling', t: d.eveningStrongestEmotion },
+      { h: 'Quiet pride', t: d.eveningQuietPride },
+      { h: 'More of tomorrow', t: d.eveningNeedTomorrow }
     ];
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { fields.push({ h: 'Ritual', t: (RITUAL_LABELS[r] || r) + '' }); });
     if (d.symptoms && d.symptoms.length) d.symptoms.forEach(sid => { const lb = symLabel(sid); if (lb) fields.push({ h: 'Body', t: lb + ' ' + sid }); else fields.push({ h: 'Body', t: String(sid) }); });
@@ -6419,6 +6674,10 @@
   document.getElementById('moodNote').addEventListener('input', e => {
     day.moodNote = e.target.value; saveDay();
   });
+  const moodCtx = document.getElementById('moodContextInput');
+  if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDay(); renderTodayProgress(); });
+  const emoW = document.getElementById('emotionalWeatherInput');
+  if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDay(); renderTodayProgress(); });
   document.getElementById('moodNoteSave').addEventListener('click', () => {
     saveDayNow();
     setSaveBarText('Mood note saved', 'saved');
@@ -6590,7 +6849,7 @@
   });
   document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
 
-  const fieldSavedIds = { win: 'fieldSavedWin', note: 'fieldSavedNote', obstacle: 'fieldSavedObstacle', tomorrow: 'fieldSavedTomorrow' };
+  const fieldSavedIds = { win: 'fieldSavedWin', note: 'fieldSavedNote', obstacle: 'fieldSavedObstacle', tomorrow: 'fieldSavedTomorrow', strongEmotion: 'fieldSavedStrongEmotion', quietPride: 'fieldSavedQuietPride', needTomorrow: 'fieldSavedNeedTomorrow' };
   function flashFieldSaved(key) {
     const id = fieldSavedIds[key];
     if (!id) return;
@@ -6603,8 +6862,15 @@
   document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDay(); });
   document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDay(); });
   document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDay(); });
-  ['eveningWinInput', 'eveningNoteInput', 'eveningObstacleInput', 'eveningTomorrowInput'].forEach(fieldId => {
+  const evSE = document.getElementById('eveningStrongestEmotion');
+  if (evSE) evSE.addEventListener('input', e => { day.eveningStrongestEmotion = e.target.value; saveDay(); });
+  const evQP = document.getElementById('eveningQuietPride');
+  if (evQP) evQP.addEventListener('input', e => { day.eveningQuietPride = evQP.value; saveDay(); });
+  const evNT = document.getElementById('eveningNeedTomorrow');
+  if (evNT) evNT.addEventListener('input', e => { day.eveningNeedTomorrow = evNT.value; saveDay(); });
+  ['eveningWinInput', 'eveningNoteInput', 'eveningObstacleInput', 'eveningTomorrowInput', 'eveningStrongestEmotion', 'eveningQuietPride', 'eveningNeedTomorrow'].forEach(fieldId => {
     const el = document.getElementById(fieldId);
+    if (!el) return;
     el.addEventListener('blur', () => saveDayNow());
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
@@ -7233,6 +7499,53 @@
       wrap.innerHTML = '<div class="history-empty" style="padding:18px 8px;font-size:1rem;">Nothing here yet. Add one small thing.</div>';
       return;
     }
+    if (type === 'experiment') {
+      items.forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'path-item' + (item.done ? ' done' : '');
+        const feel = item.feel && PATH_EXPERIMENT_FEEL_LABELS[item.feel] ? item.feel : 'unmarked';
+        el.innerHTML = `
+        <button type="button" class="path-check" aria-label="${item.done ? 'Mark unfinished' : 'Mark complete'}">${item.done ? '✓' : ''}</button>
+        <div class="path-item-body" style="flex:1;min-width:0">
+          <span class="desc">${escapeHtml(item.text || '')}</span>
+          <div class="path-experiment-block">
+            <label class="sub" for="pathExpFeel${idx}">How did this experiment feel?</label>
+            <select class="retention-select path-exp-feel-select" id="pathExpFeel${idx}" data-path-exp-idx="${idx}" title="Subjective sense after trying">
+              <option value="unmarked" ${feel === 'unmarked' ? 'selected' : ''}>${PATH_EXPERIMENT_FEEL_LABELS.unmarked}</option>
+              <option value="softer" ${feel === 'softer' ? 'selected' : ''}>${PATH_EXPERIMENT_FEEL_LABELS.softer}</option>
+              <option value="same" ${feel === 'same' ? 'selected' : ''}>${PATH_EXPERIMENT_FEEL_LABELS.same}</option>
+              <option value="heavy" ${feel === 'heavy' ? 'selected' : ''}>${PATH_EXPERIMENT_FEEL_LABELS.heavy}</option>
+              <option value="good" ${feel === 'good' ? 'selected' : ''}>${PATH_EXPERIMENT_FEEL_LABELS.good}</option>
+            </select>
+            <label class="sub" for="pathExpNote${idx}">A few words (optional)</label>
+            <textarea class="mood-note" id="pathExpNote${idx}" data-path-exp-note-idx="${idx}" rows="2" maxlength="400" placeholder="Body, heart, or mind — a sentence is enough."></textarea>
+          </div>
+        </div>
+        <button type="button" class="del" aria-label="Remove">×</button>
+      `;
+        el.querySelector('.path-check').addEventListener('click', () => {
+          item.done = !item.done;
+          savePath();
+          renderPath();
+          pushActivity('Path experiment' + (item.done ? ' completed.' : ' reopened.'));
+        });
+        const sel = el.querySelector('.path-exp-feel-select');
+        if (sel) sel.addEventListener('change', () => {
+          item.feel = sel.value;
+          savePath();
+        });
+        const ta = el.querySelector('textarea[data-path-exp-note-idx]');
+        if (ta) { ta.value = item.feelNote || ''; ta.addEventListener('input', () => { item.feelNote = ta.value; savePath(); }); }
+        el.querySelector('.del').addEventListener('click', () => {
+          items.splice(idx, 1);
+          savePath();
+          renderPath();
+          pushActivity('Removed a path experiment.');
+        });
+        wrap.appendChild(el);
+      });
+      return;
+    }
     items.forEach((item, idx) => {
       const el = document.createElement('div');
       el.className = 'path-item' + (item.done ? ' done' : '');
@@ -7293,7 +7606,7 @@
     const input = document.getElementById('pathExperimentInput');
     const val = (text || (input && input.value) || '').trim();
     if (!val) return;
-    pathData.experiments.unshift({ text: val, done: false, createdAt: new Date().toISOString() });
+    pathData.experiments.unshift({ text: val, done: false, feel: 'unmarked', feelNote: '', createdAt: new Date().toISOString() });
     pathData.experiments = pathData.experiments.slice(0, 12);
     if (input) input.value = '';
     savePath();
@@ -7547,7 +7860,71 @@
       }
     }
 
-    const sleepy = days.filter(d => d.sleepHours > 0 && d.mood);
+    const withMood = days.filter(d => d.mood > 0);
+    if (withMood.length >= 5) {
+      const sorted = withMood.slice().sort((a, b) => a.date.localeCompare(b.date));
+      let maxStreak = 0, cur = 0;
+      sorted.forEach(d => {
+        const low = d.mood <= 2;
+        if (low) { cur++; maxStreak = Math.max(maxStreak, cur); } else { cur = 0; }
+      });
+      if (maxStreak >= 4) {
+        insights.push({
+          tag: 'Gentle signal', cls: 'warm',
+          text: `There have been stretches of <strong>4+ days in a row</strong> with a heavy or flat mood. That pattern is worth sharing with someone you trust — a therapist, doctor, or crisis line if you feel unsafe.`
+        });
+      }
+    }
+
+    if (withMood.length >= 7) {
+      const mean = withMood.reduce((s, d) => s + d.mood, 0) / withMood.length;
+      const varc = withMood.reduce((s, d) => s + Math.pow(d.mood - mean, 2), 0) / withMood.length;
+      if (varc >= 0.55) {
+        insights.push({
+          tag: 'Rhythm', cls: '',
+          text: `Mood has been <strong>moving a lot</strong> day to day (ups and downs). That can be exhausting — even naming it is a form of care.`
+        });
+      } else if (varc <= 0.2 && mean < 3.2) {
+        insights.push({
+          tag: 'Steady weight', cls: 'warm',
+          text: `Mood has been <strong>low but fairly steady</strong> — a flat chapter rather than a storm. That still deserves gentle support.`
+        });
+      }
+    }
+
+    const phqComplete = days.filter(d => d.phq2 && d.phq2[0] != null && d.phq2[1] != null);
+    if (phqComplete.length >= 3) {
+      const sums = phqComplete.map(d => Number(d.phq2[0]) + Number(d.phq2[1]));
+      const high = sums.filter(s => s >= 4).length;
+      if (high >= 2) {
+        insights.push({
+          tag: 'Check-in', cls: 'warm',
+          text: `On <strong>${high}</strong> of your recent check-ins, the soft “interest &amp; energy” items added up to <strong>4+ (out of 6)</strong>. That is a gentle flag to consider talking with a clinician — not a label, just a conversation.`
+        });
+      }
+    }
+    const gadComplete = days.filter(d => d.gad2 && d.gad2[0] != null && d.gad2[1] != null);
+    if (gadComplete.length >= 3) {
+      const sumsG = gadComplete.map(d => Number(d.gad2[0]) + Number(d.gad2[1]));
+      const wobble = sumsG.filter(s => s >= 3).length;
+      if (wobble >= 2) {
+        insights.push({
+          tag: 'Nervous system', cls: '',
+          text: `A few of your “worry &amp; edge” check-ins scored <strong>3+ (out of 6)</strong>. Worth mentioning if you see a therapist or doctor.`
+        });
+      }
+    }
+
+    const en = days.filter(d => d.mood > 0 && d.energy > 0);
+    if (en.length >= 4) {
+      const gap = en.filter(d => d.energy - d.mood >= 2).length;
+      if (gap / en.length >= 0.35) {
+        insights.push({
+          tag: 'Energy vs mood', cls: 'gold',
+          text: `On many days, <strong>energy reads higher than mood</strong> — a familiar “running on empty” or “on autopilot” feel. Rest counts as work too.`
+        });
+      }
+    }
     if (sleepy.length >= 4) {
       const wellSlept = sleepy.filter(d => d.sleepHours >= 7);
       const poorlySlept = sleepy.filter(d => d.sleepHours < 7);
@@ -7721,9 +8098,31 @@
     if (day.mood || day.energy) {
       parts.push('Self-reported mood' + (day.mood ? ' ' + day.mood + '/5' : '') + (day.energy ? ' and energy ' + day.energy + '/5' : '') + '. ');
     }
+    if (day.moodContext && day.moodContext.trim()) {
+      parts.push('**Context for mood/energy:** ' + day.moodContext.trim() + ' ');
+    }
+    if (day.emotionalWeather && day.emotionalWeather.trim()) {
+      parts.push('**Inner landscape / named feelings:** ' + day.emotionalWeather.trim() + ' ');
+    }
     if (phq != null) parts.push('Optional PHQ-2–inspired total: **' + phq + '/6** (not a diagnosis). ');
     if (gad != null) parts.push('Optional GAD-2–inspired total: **' + gad + '/6**. ');
     if (day.functionalImpact > 0) parts.push('They noted symptom impact on the day as **' + day.functionalImpact + '/4**. ');
+    if (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) {
+      parts.push('Evening — **strongest feeling:** ' + day.eveningStrongestEmotion.trim() + '. ');
+    }
+    if (day.eveningQuietPride && day.eveningQuietPride.trim()) {
+      parts.push('Evening — **quiet pride:** ' + day.eveningQuietPride.trim() + '. ');
+    }
+    if (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) {
+      parts.push('Evening — **more of tomorrow:** ' + day.eveningNeedTomorrow.trim() + '. ');
+    }
+    if (pathData && (pathData.experiments || []).length) {
+      const lines = (pathData.experiments || []).map(x => {
+        const f = (x.feel && PATH_EXPERIMENT_FEEL_LABELS[x.feel]) ? PATH_EXPERIMENT_FEEL_LABELS[x.feel] : 'unmarked';
+        return '- ' + (x.text || '') + ' → felt: ' + f + (x.feelNote ? ' — ' + x.feelNote : '');
+      });
+      if (lines.length) parts.push('**Path experiments (subjective follow-up):** ' + lines.join(' '));
+    }
     parts.push('Sleep about **' + (day.sleepHours != null ? day.sleepHours.toFixed(1) : '7') + ' h**' + (day.sleepQuality ? ' with quality ' + (SLEEP_Q[day.sleepQuality] || '') : '') + '. ');
     parts.push('Data is **local-only** unless the user copies or prints it. ');
     parts.push('Do not infer a medical diagnosis; treat as user-reported context for support.');
@@ -7745,7 +8144,12 @@
       ['Night awakenings (count)', String(day.sleepAwakenings | 0)],
       ['Rested feeling (0-4)', String(day.sleepRested | 0 || '—')],
       ['Steps', day.steps ? Number(day.steps).toLocaleString() : '—'],
-      ['Mindful minutes', String(day.mindfulMinutes | 0)]
+      ['Mindful minutes', String(day.mindfulMinutes | 0)],
+      ['Mood & energy context', (day.moodContext && day.moodContext.trim()) ? day.moodContext.trim() : '—'],
+      ['Inner landscape / emotional weather', (day.emotionalWeather && day.emotionalWeather.trim()) ? day.emotionalWeather.trim() : '—'],
+      ['Evening: strongest feeling', (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) ? day.eveningStrongestEmotion.trim() : '—'],
+      ['Evening: quiet pride', (day.eveningQuietPride && day.eveningQuietPride.trim()) ? day.eveningQuietPride.trim() : '—'],
+      ['Evening: more needed tomorrow', (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim()) ? day.eveningNeedTomorrow.trim() : '—']
     ];
     let t = '<table class="clin-table" style="width:100%;border-collapse:collapse;font-size:11pt"><thead><tr><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Field</th><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Value</th></tr></thead><tbody>';
     rows.forEach(r => { t += '<tr><td style="padding:6px;border-bottom:1px solid #ddd">' + r[0] + '</td><td style="padding:6px;border-bottom:1px solid #ddd">' + escapeHtml(String(r[1])) + '</td></tr>'; });
@@ -7827,6 +8231,8 @@
   const tsLg = document.getElementById('textSizeLarge');
   if (tsDef) tsDef.addEventListener('click', () => { config.textSize = 'default'; applyTextSize(); saveConfig(); });
   if (tsLg) tsLg.addEventListener('click', () => { config.textSize = 'large'; applyTextSize(); saveConfig(); });
+  const restBtn = document.getElementById('restModeBtn');
+  if (restBtn) restBtn.addEventListener('click', () => { config.restMode = !config.restMode; applyRestMode(); saveConfig(); pushActivity(config.restMode ? 'Rest mode on.' : 'Rest mode off.'); });
   const stickyBtn = document.getElementById('stickySaveBtn');
   if (stickyBtn) stickyBtn.addEventListener('click', () => { saveDayNow(); flashSaveNow(); try { if (window.navigator && navigator.vibrate) navigator.vibrate(12); } catch (e) {} renderTodayProgress(); updateStickySaveBar(); });
   let logSearchTimer = null;
@@ -8449,6 +8855,7 @@
   loadConfig();
   applyTheme(config.theme || 'parchment');
   applyTextSize();
+  applyRestMode();
   syncBreatheSoundSelects();
   updateBreatheCueToggle();
   setRetentionSelect();
