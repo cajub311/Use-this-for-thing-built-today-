@@ -1,0 +1,413 @@
+/* polish-v2.css — additive refinement layer.
+   Loads after calm-redesign.css. Pure CSS, no markup or JS dependencies.
+   Goals: tighter typographic rhythm, gentler motion, accessible focus,
+   refined nav active state, calmer scrollbars, polished overlays. */
+
+/* ---------- Type & rhythm ---------- */
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+body {
+  letter-spacing: 0.005em;
+}
+
+h1, h2, h3, .leaf-title, .greeting, .day-moment-label {
+  font-feature-settings: "kern" 1, "liga" 1, "dlig" 1;
+  text-wrap: balance;
+}
+
+p, .leaf-sub, .today-progress-caption, .quote-frame {
+  text-wrap: pretty;
+}
+
+/* Selection */
+::selection {
+  background: color-mix(in srgb, var(--moss) 28%, transparent);
+  color: var(--ink);
+}
+
+/* ---------- Focus ring ---------- */
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--moss) 70%, transparent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+  transition: outline-offset 0.12s var(--ease-slow, ease-out);
+}
+
+button:focus-visible,
+.nav-btn:focus-visible,
+.picker-btn:focus-visible,
+.chip:focus-visible,
+.quick-action:focus-visible,
+.sum-btn:focus-visible,
+.data-btn:focus-visible {
+  outline-offset: 4px;
+}
+
+/* ---------- Scrollbars ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--moss) 35%, transparent) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--moss) 32%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--moss) 55%, transparent);
+  background-clip: padding-box;
+}
+
+/* ---------- Buttons / press feedback ---------- */
+button,
+[role="button"],
+.nav-btn,
+.picker-btn,
+.chip,
+.quick-action,
+.sum-btn,
+.data-btn,
+.pill,
+.mini-btn,
+.sev-btn,
+.likert-btn,
+.moon-btn,
+.meal-type {
+  transition:
+    transform 0.18s var(--ease-slow, cubic-bezier(0.4, 0, 0.2, 1)),
+    background-color 0.2s var(--ease-slow, ease-out),
+    border-color 0.2s var(--ease-slow, ease-out),
+    box-shadow 0.2s var(--ease-slow, ease-out),
+    color 0.2s var(--ease-slow, ease-out);
+}
+
+button:active:not(:disabled),
+[role="button"]:active,
+.picker-btn:active,
+.chip:active,
+.quick-action:active,
+.sum-btn:active,
+.data-btn:active,
+.pill:active,
+.mini-btn:active,
+.sev-btn:active,
+.likert-btn:active,
+.moon-btn:active,
+.meal-type:active {
+  transform: scale(0.97);
+}
+
+.nav-btn:active { transform: scale(0.94); }
+
+/* Subtle hover lift on cards (pointer devices only) */
+@media (hover: hover) and (pointer: fine) {
+  .quick-action:hover,
+  .sum-btn:hover,
+  .data-btn:hover,
+  .picker-btn:hover {
+    box-shadow: 0 6px 18px var(--shadow-warm);
+    border-color: color-mix(in srgb, var(--moss) 35%, var(--line));
+  }
+
+  .leaf:hover,
+  .day-moment:hover,
+  .quote-frame:hover {
+    box-shadow: 0 22px 52px var(--shadow-warm);
+  }
+}
+
+/* Pressed / selected chips & picker buttons get a clearer ring */
+.picker-btn[aria-pressed="true"],
+.picker-btn.active,
+.chip[aria-pressed="true"],
+.chip.active,
+.sev-btn.active,
+.moon-btn.active,
+.meal-type.active,
+.likert-btn.active {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--moss) 60%, transparent),
+    0 4px 14px color-mix(in srgb, var(--moss) 18%, transparent);
+}
+
+/* ---------- Nav refinement ---------- */
+.nav {
+  border-radius: 22px;
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  background: color-mix(in srgb, var(--nav-bg) 92%, transparent);
+  border: 1px solid var(--nav-border);
+  box-shadow:
+    0 -2px 0 rgba(255,255,255,0.04) inset,
+    0 18px 48px rgba(35, 48, 42, 0.16);
+  transition: transform 0.28s var(--ease-slow, ease-out), opacity 0.2s ease-out;
+}
+
+.nav-btn {
+  position: relative;
+  color: var(--ink-soft);
+  transition:
+    color 0.2s ease-out,
+    background-color 0.2s ease-out,
+    transform 0.2s var(--ease-slow, ease-out);
+}
+
+.nav-btn .nav-icon {
+  transition: transform 0.24s var(--ease-slow, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+
+.nav-btn:hover { color: var(--ink); }
+
+.nav-btn.active {
+  color: var(--moss-deep);
+}
+
+.nav-btn.active .nav-icon {
+  transform: translateY(-1px) scale(1.08);
+}
+
+.nav-btn.active::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--moss) 16%, transparent);
+  z-index: -1;
+  animation: pv2-pop 0.32s var(--ease-slow, ease-out);
+}
+
+.nav-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--moss) 75%, transparent);
+  opacity: 0.8;
+}
+
+@keyframes pv2-pop {
+  from { transform: translateX(-50%) scale(0.6); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* ---------- Cards / depth ---------- */
+.plate,
+.day-moment,
+.leaf,
+.quote-frame,
+.support-panel,
+.recommend-panel,
+.quick-start,
+.streak-card,
+.heatmap-wrap {
+  position: relative;
+  transition:
+    box-shadow 0.28s var(--ease-slow, ease-out),
+    transform 0.28s var(--ease-slow, ease-out),
+    border-color 0.28s ease-out;
+}
+
+/* Hairline highlight at top of cards (light catcher) */
+.leaf::after,
+.day-moment::after,
+.plate::after {
+  pointer-events: none;
+}
+
+[data-theme="parchment"] .leaf,
+[data-theme="parchment"] .day-moment,
+[data-theme="parchment"] .quote-frame,
+[data-theme="parchment"] .quick-start,
+[data-theme="parchment"] .recommend-panel,
+[data-theme="parchment"] .support-panel {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 16px 40px var(--shadow-warm);
+}
+
+/* ---------- Inputs ---------- */
+input, select, textarea, .text-in, .deep-input, .intention-input, .mood-note, .grounding-input {
+  transition:
+    border-color 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    background-color 0.2s ease-out;
+}
+
+input:focus, select:focus, textarea:focus,
+.text-in:focus, .deep-input:focus, .intention-input:focus,
+.mood-note:focus, .grounding-input:focus {
+  border-color: color-mix(in srgb, var(--moss) 55%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--moss) 14%, transparent);
+  outline: none;
+}
+
+/* ---------- Overlays ---------- */
+.overlay {
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+}
+
+.overlay.open {
+  animation: pv2-fade-in 0.24s ease-out;
+}
+
+@keyframes pv2-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.overlay.open > .leaf,
+.overlay.open > .export-modal-panel,
+.overlay.open > .breathe-panel,
+.overlay.open > .grounding-panel {
+  animation: pv2-rise 0.32s var(--ease-slow, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+@keyframes pv2-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.overlay-close {
+  background: color-mix(in srgb, var(--paper-3) 85%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px !important;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px var(--shadow-warm);
+}
+
+.overlay-close:hover {
+  background: var(--paper-3);
+  transform: scale(1.04);
+}
+
+/* ---------- Sticky save bar ---------- */
+.sticky-save-bar {
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border: 1px solid var(--nav-border);
+  background: color-mix(in srgb, var(--paper-3) 88%, transparent);
+  box-shadow: 0 14px 38px var(--shadow-deep);
+  animation: pv2-rise 0.32s var(--ease-slow, ease-out);
+}
+
+.sticky-save-btn {
+  transition:
+    transform 0.18s var(--ease-slow, ease-out),
+    box-shadow 0.2s ease-out,
+    background-color 0.2s ease-out;
+}
+
+.sticky-save-btn:hover {
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--moss) 28%, transparent);
+}
+
+.sticky-save-btn:active { transform: scale(0.97); }
+
+/* ---------- Toast / saved confirmation ---------- */
+.day-saved-toast {
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--moss-deep) 92%, transparent);
+  color: var(--paper-3);
+  box-shadow: 0 18px 44px rgba(35, 48, 42, 0.32);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Quote frame ---------- */
+.quote-frame {
+  position: relative;
+}
+
+.quote-frame::before {
+  content: "“";
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--moss) 28%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---------- Empty states / dividers ---------- */
+hr, .plate-rule {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--line) 90%, transparent) 18%,
+    color-mix(in srgb, var(--line) 90%, transparent) 82%,
+    transparent);
+}
+
+/* ---------- Theme transitions ---------- */
+html, body, .plate, .leaf, .day-moment, .nav, .quick-start, .quote-frame {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .nav, .sticky-save-bar, .day-saved-toast,
+  .install-chip, .update-chip, .offline-chip { display: none !important; }
+  body { background: #fff !important; }
+  .plate, .leaf, .day-moment { box-shadow: none !important; border-color: #ccc !important; }
+}
+
+/* ---------- Tabular numerals for stats ---------- */
+.streak-num,
+.today-progress-caption strong,
+.heatmap-wrap,
+.mindful-minutes-strip,
+[data-num],
+.summary-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Today greeting subtle gradient text ---------- */
+#view-today .greeting {
+  background: linear-gradient(135deg, var(--ink) 0%, color-mix(in srgb, var(--moss-deep) 85%, var(--ink)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="forest"] #view-today .greeting,
+[data-theme="midnight"] #view-today .greeting {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--moss-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
