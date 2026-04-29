@@ -1734,11 +1734,12 @@
   .nav {
     position: fixed;
     bottom: max(16px, env(safe-area-inset-bottom, 0px) + 8px);
-    left: 50%;
-    transform: translateX(-50%);
+    left: max(10px, calc(50% - 360px));
+    right: max(10px, calc(50% - 360px));
+    transform: none;
     display: flex;
     flex-wrap: nowrap;
-    max-width: calc(100% - 20px);
+    max-width: none;
     gap: 3px;
     background: var(--nav-bg, rgba(237, 227, 210, 0.94));
     backdrop-filter: blur(16px) saturate(1.4);
@@ -1782,8 +1783,8 @@
   /* ── Views ──────────────────────────────────────────────── */
   .view { display: none; }
   .view.active { display: block; animation: viewEnter .38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: min(720px, calc(100% - 20px)); }
-  .nav-btn { min-height: 48px; padding: 8px 8px; }
+  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: auto; }
+  .nav-btn { min-height: 48px; min-width: 0; padding: 8px 8px; overflow: hidden; text-overflow: ellipsis; }
   .quick-start, .visual-banner, .support-panel {
     background: var(--paper-3);
     border: 1px solid rgba(201, 187, 164, 0.48);
@@ -2062,7 +2063,14 @@
     .practices-row { grid-template-columns: 1fr; }
     .pain-input { grid-template-columns: 1fr; }
     .picker-btn .lbl { font-size: 0.66rem; }
-    .nav-btn { padding: 8px 11px; font-size: 0.9rem; }
+    .nav {
+      left: 10px;
+      right: 10px;
+      transform: none;
+      width: auto;
+      max-width: none;
+    }
+    .nav-btn { padding: 8px 3px; font-size: 0.82rem; }
     .leaf { padding: 22px 20px 20px; }
   }
 
@@ -2106,6 +2114,70 @@
   .save-bar.error { color: var(--clay); }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
   .app { padding-top: 44px; }
+
+  .data-corner {
+    position: fixed;
+    top: 44px;
+    left: 12px;
+    z-index: 48;
+    min-height: 44px;
+    max-width: min(260px, calc(100vw - 24px));
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(201, 187, 164, 0.62);
+    background: rgba(244, 236, 218, 0.94);
+    color: var(--moss-deep);
+    box-shadow: 0 8px 24px var(--shadow-warm);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.64rem;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform .22s ease, border-color .22s ease, background .22s ease;
+  }
+  .data-corner:hover { transform: translateY(-1px); border-color: var(--moss); background: var(--paper-3); }
+  .data-corner-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--moss);
+    box-shadow: 0 0 0 4px rgba(74, 107, 79, 0.12);
+    flex: 0 0 auto;
+  }
+  #dataCornerText {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .data-corner.session-only { color: var(--clay); border-color: rgba(181, 101, 74, 0.5); }
+  .data-corner.session-only .data-corner-dot { background: var(--clay); box-shadow: 0 0 0 4px rgba(181, 101, 74, 0.14); }
+  .data-corner.needs-backup { color: var(--gold); border-color: rgba(201, 169, 97, 0.7); }
+  .data-corner.needs-backup .data-corner-dot { background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.18); }
+  .backup-reminder {
+    background: linear-gradient(135deg, var(--gold-soft), var(--paper-3));
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 16px 18px;
+    margin: 0 0 14px;
+  }
+  .backup-reminder[hidden] { display: none; }
+  .backup-reminder .data-hint { color: var(--ink-soft); }
+  @media (max-width: 520px) {
+    .data-corner {
+      top: 42px;
+      left: 10px;
+      max-width: 172px;
+      padding: 8px 10px;
+      font-size: 0.58rem;
+    }
+  }
 
   .data-btn {
     display: inline-block;
@@ -2380,7 +2452,11 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
-<div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved in this browser</span></div>
+<div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved on this device</span></div>
+<button type="button" class="data-corner no-print" id="dataCorner" aria-label="Open saved data and backup">
+  <span class="data-corner-dot" id="dataCornerDot" aria-hidden="true"></span>
+  <span id="dataCornerText">Saved data</span>
+</button>
 <!-- Reusable SVG icons (defined once, used everywhere) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -3107,19 +3183,19 @@
       <div class="leaf-head">
         <h2 class="leaf-title">Your <em>archive</em></h2>
       </div>
-      <p class="leaf-sub">Day pages save automatically. Older days roll off after the window below to keep the journal light.</p>
+      <p class="leaf-sub">Day pages save automatically on this exact browser/app install. Nothing is deleted automatically unless you choose a rolling window below.</p>
       <div class="data-row no-print" style="margin-bottom:14px">
         <button type="button" class="data-btn data-btn-ghost" id="memoryOpenLog">Open saved log</button>
         <button type="button" class="data-btn data-btn-ghost" id="memoryOpenTrack">Open body tracking</button>
       </div>
       <p class="picker-label">How long to keep</p>
       <select class="retention-select" id="retentionSelect" title="Keep journal days for this many days">
-        <option value="30">30 days (default)</option>
+        <option value="0">Forever (recommended)</option>
+        <option value="30">30 days</option>
         <option value="60">60 days</option>
         <option value="90">90 days</option>
         <option value="180">6 months</option>
         <option value="365">1 year</option>
-        <option value="0">Forever (no auto-delete)</option>
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
       <p class="picker-label" style="margin-top:20px">Appearance</p>
@@ -3154,7 +3230,15 @@
       <div class="leaf-head">
         <h2 class="leaf-title">Backup &amp; <em>restore</em></h2>
       </div>
-      <p class="leaf-sub">Deployments do not move your data. Download a file you can re-import on this or another device.</p>
+      <p class="leaf-sub">Deployments, preview links, browsers, and phones can each have separate local storage. Download a backup file monthly, before switching links, and before clearing browser data.</p>
+      <div class="backup-reminder no-print" id="backupReminder" hidden>
+        <div class="leaf-head" style="margin-bottom:2px">
+          <h3 class="leaf-title" style="font-size:1.08rem">Backup <em>reminder</em></h3>
+          <span class="leaf-num">monthly</span>
+        </div>
+        <p class="data-hint" id="backupReminderText" style="margin-bottom:10px">Download a backup so your saved days have a copy outside this browser.</p>
+        <button type="button" class="data-btn" id="backupReminderExport">Download backup now</button>
+      </div>
       <div class="data-row">
         <button type="button" class="data-btn" id="exportBtn">Download backup</button>
         <input type="file" id="importFile" class="sr-only" accept="application/json,.json" />
@@ -3705,6 +3789,7 @@
     try {
       Storage.set(getStorageKey(), JSON.stringify(day));
       setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+      renderDataCorner();
     } catch (e) {
       setSaveBarText('Could not save — storage may be full or blocked', 'error');
       pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -3718,6 +3803,7 @@
         Storage.set(getStorageKey(), JSON.stringify(day));
         setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
+        renderDataCorner();
       } catch (e) {
         setSaveBarText('Could not save — storage may be full or blocked', 'error');
         pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -3833,21 +3919,29 @@
   }
   function savePath() {
     Storage.set(PATH_KEY, JSON.stringify(pathData));
-    setSaveBarText('Saved in this browser', 'saved');
+    setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+    renderDataCorner();
   }
 
-  let config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true };
+  const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
+  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, lastBackupAt: 0 };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
       try {
         const j = JSON.parse(raw);
         if (j && typeof j === 'object') {
-          if (j.retentionDays != null) config.retentionDays = Math.max(0, Math.min(2000, Number(j.retentionDays) || 30));
+          if (j.retentionDays != null) {
+            const n = Number(j.retentionDays);
+            const legacyDefault = n === 30 && !j.retentionUserSet;
+            config.retentionDays = legacyDefault ? 0 : (Number.isFinite(n) ? Math.max(0, Math.min(2000, n)) : 0);
+          }
+          if (typeof j.retentionUserSet === 'boolean') config.retentionUserSet = j.retentionUserSet;
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
           if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
+          if (j.lastBackupAt != null) config.lastBackupAt = Math.max(0, Number(j.lastBackupAt) || 0);
         }
       } catch {}
     }
@@ -3856,10 +3950,12 @@
   function saveConfig() {
     Storage.set(CONFIG_KEY, JSON.stringify({
       retentionDays: config.retentionDays,
+      retentionUserSet: !!config.retentionUserSet,
       activityCap: config.activityCap,
       theme: config.theme,
       breatheSound: config.breatheSound,
-      breatheCues: config.breatheCues
+      breatheCues: config.breatheCues,
+      lastBackupAt: config.lastBackupAt || 0
     }));
   }
 
@@ -4375,6 +4471,53 @@
            d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow;
   }
 
+  function savedDayCount() {
+    return getAllDayRecords().filter(d => hasAnyData(d)).length;
+  }
+
+  function isBackupDue(count) {
+    if (!count) return false;
+    if (!storageDurable) return true;
+    if (!config.lastBackupAt) return true;
+    return Date.now() - config.lastBackupAt > BACKUP_REMINDER_MS;
+  }
+
+  function lastBackupLabel() {
+    if (!config.lastBackupAt) return 'No backup downloaded yet.';
+    const d = new Date(config.lastBackupAt);
+    return 'Last backup: ' + d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + '.';
+  }
+
+  function renderDataCorner() {
+    const btn = document.getElementById('dataCorner');
+    const text = document.getElementById('dataCornerText');
+    if (!btn || !text) return;
+    const count = savedDayCount();
+    const due = isBackupDue(count);
+    const label = count === 1 ? '1 saved day' : `${count} saved days`;
+    btn.classList.toggle('session-only', !storageDurable);
+    btn.classList.toggle('needs-backup', due && storageDurable);
+    if (!storageDurable) {
+      text.textContent = count ? `Session · ${label}` : 'Session only';
+      btn.title = 'This browser blocked durable storage. Download a backup before closing.';
+    } else if (due) {
+      text.textContent = count ? `Backup · ${label}` : 'Saved data';
+      btn.title = 'Download a monthly backup so your entries survive browser resets, preview links, and device changes.';
+    } else {
+      text.textContent = count ? `Saved · ${label}` : 'No saved days';
+      btn.title = 'Entries are saved on this browser/app install. Tap to open Memory and backup.';
+    }
+
+    const reminder = document.getElementById('backupReminder');
+    const reminderText = document.getElementById('backupReminderText');
+    if (reminder) reminder.hidden = !due;
+    if (reminderText) {
+      reminderText.textContent = !storageDurable
+        ? 'Storage is session-only right now. Download a backup before closing this tab.'
+        : `${lastBackupLabel()} A monthly backup keeps a copy outside this browser.`;
+    }
+  }
+
   /* ────────────────────────────────────────────────────────
      Renders
   ──────────────────────────────────────────────────────── */
@@ -4713,6 +4856,7 @@
     }
     const mdl = document.getElementById('memoryDateLine');
     if (mdl) mdl.textContent = formatDateLine();
+    renderDataCorner();
   }
   function setRetentionSelect() {
     const sel = document.getElementById('retentionSelect');
@@ -4844,6 +4988,7 @@
     renderLowMoodSupport();
     setRetentionSelect();
     renderRetentionStatus();
+    renderDataCorner();
   }
 
   /* ────────────────────────────────────────────────────────
@@ -4982,7 +5127,7 @@
         e.preventDefault();
         saveDayNow();
         pushActivity('Evening check-in saved (Ctrl/⌘ + Enter).');
-        setSaveBarText('Saved in this browser', 'saved');
+        setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
       }
     });
   });
@@ -5026,6 +5171,13 @@
   document.getElementById('goToJournal').addEventListener('click', () => switchView('journal'));
   document.getElementById('memoryOpenLog')?.addEventListener('click', () => switchView('log'));
   document.getElementById('memoryOpenTrack')?.addEventListener('click', () => switchView('track'));
+  document.getElementById('dataCorner')?.addEventListener('click', () => {
+    switchView('memory');
+    setTimeout(() => document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+  });
+  document.getElementById('backupReminderExport')?.addEventListener('click', () => {
+    document.getElementById('exportBtn')?.click();
+  });
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -5945,7 +6097,8 @@
 
   document.getElementById('retentionSelect').addEventListener('change', (e) => {
     const v = Number(e.target.value);
-    config.retentionDays = isNaN(v) ? 30 : v;
+    config.retentionDays = isNaN(v) ? 0 : v;
+    config.retentionUserSet = true;
     saveConfig();
     pruneOldDays();
     pushActivity(`Keep days: ${config.retentionDays || 'forever'}.`);
@@ -6025,8 +6178,12 @@
     a.download = 'stillness-backup-' + dateKey() + '.json';
     a.click();
     URL.revokeObjectURL(a.href);
+    config.lastBackupAt = Date.now();
+    saveConfig();
+    renderDataCorner();
+    renderRetentionStatus();
     pushActivity('Downloaded backup file.');
-    document.getElementById('importMessage').textContent = '';
+    document.getElementById('importMessage').textContent = 'Backup downloaded. Keep that file somewhere safe.';
   });
 
   document.getElementById('importFile').addEventListener('change', (e) => {
@@ -6069,6 +6226,7 @@
         renderPath();
         renderHistory();
         renderLogView();
+        renderDataCorner();
         msg.textContent = count ? `Restored ${count} day record(s).` : 'No day records found in file.';
         pushActivity('Restored backup (' + count + ' day record(s)).');
       } catch (err) {
@@ -6082,7 +6240,7 @@
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
     if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 30, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true };
+    config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, lastBackupAt: 0 };
     applyTheme('parchment');
     saveConfig();
     currentDateKey = dateKey();
@@ -6092,7 +6250,8 @@
     renderPath();
     renderHistory();
     renderLogView();
-    setSaveBarText('Saved in this browser', 'saved');
+    renderDataCorner();
+    setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
     document.getElementById('importMessage').textContent = 'All local data cleared.';
     pushActivity('All data erased in this browser.');
   });
