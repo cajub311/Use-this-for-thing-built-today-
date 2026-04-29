@@ -154,6 +154,14 @@
   body[data-rest-mode="on"] .rest-mode-soft {
     display: none !important;
   }
+  /* Gentle full-page dim in rest mode (non-destructive; rest-mode-soft still removes chrome) */
+  body[data-rest-mode="on"] #main {
+    filter: brightness(0.94) saturate(0.96);
+    transition: filter 0.6s var(--ease-slow);
+  }
+  body[data-rest-mode="on"] .nav {
+    filter: none;
+  }
   /* Mobile / Android: force normal horizontal text (prevents any stray vertical-rl bugs) */
   :where(h1, h2, h3, .greeting, .leaf-title, .date-line) {
     writing-mode: horizontal-tb;
@@ -251,7 +259,7 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     line-height: 1.62;
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
     position: relative;
     overflow-x: hidden;
     overscroll-behavior: none;
@@ -2037,7 +2045,10 @@
     transition: transform .28s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .nav-btn:hover { color: var(--ink); background: var(--nav-hover, rgba(74, 107, 79, 0.09)); }
-  .nav-btn.active { color: var(--moss); }
+  .nav-btn.active {
+    color: var(--moss);
+    background: linear-gradient(180deg, rgba(74, 107, 79, 0.12) 0%, rgba(74, 107, 79, 0.04) 100%);
+  }
   .nav-btn.active .nav-icon { transform: scale(1.12) translateY(-1px); }
   .nav-btn.active::after { transform: scaleX(1); }
 
@@ -2106,11 +2117,14 @@
   }
   .day-moment--evening .leaf { background: rgba(255, 255, 255, 0.2); }
   @media (max-width: 600px) {
-    .day-moment { padding: 16px 14px; margin-bottom: 22px; }
+    .day-moment { padding: 20px 16px; margin-bottom: 32px; }
+    .day-moment .leaf:last-child { margin-bottom: 0; }
+    .today-progress-ring { width: 80px; height: 80px; }
+    .tpr-fg, .tpr-bg { stroke-width: 7; }
   }
   .day-saved-toast {
     position: fixed;
-    bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(150px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%) translateY(12px);
     z-index: 60;
@@ -2144,7 +2158,7 @@
   .journal-redirect { text-align: center; padding: 8px 0 28px; color: var(--ink-soft); line-height: 1.55; max-width: 32rem; margin-left: auto; margin-right: auto; }
   .sticky-save-bar {
     position: fixed;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     left: 50%;
     transform: translateX(-50%) translateY(120%);
     z-index: 55;
@@ -3543,7 +3557,7 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <div class="today-progress-wrap no-print rest-mode-soft" aria-label="This day, gently filled in">
+    <div class="today-progress-wrap no-print" aria-label="This day, gently filled in">
       <div class="today-progress-ring" id="todayProgressRing" role="img" aria-label="Check-in progress">
         <svg viewBox="0 0 100 100" class="tpr-svg" aria-hidden="true">
           <circle class="tpr-bg" cx="50" cy="50" r="40" pathLength="100" />
@@ -3580,9 +3594,9 @@
       </summary>
       <p class="leaf-sub">A gentle order for your day — you can still scroll to anything. Tap the heading to open or close.</p>
       <ol class="start-list">
-        <li><strong>Morning</strong> — quiet image, anchor, quote, a line of gratitude, soft ambience (optional).</li>
-        <li><strong>Midday</strong> — mood, energy, inner weather, body (show more if you like).</li>
-        <li><strong>Rest &amp; evening</strong> — sleep, reflection, evening close, session sheet at the end.</li>
+        <li><strong>Morning</strong> — quiet image, anchor, quote, a line of gratitude.</li>
+        <li><strong>Midday</strong> — mood, energy, “what helped shape this?”, then optional depth (body in show more).</li>
+        <li><strong>Rest &amp; evening</strong> — sleep, a few closing lines, session sheet. Sound &amp; practices: <strong>Practice</strong> tab.</li>
         <li><strong>Need more room?</strong> — the Journal tab is a long overflow page; deep practices live under Practice.</li>
       </ol>
     </details>
@@ -3625,29 +3639,10 @@
       <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
     </section>
 
-    <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft" id="ambienceDetails" aria-label="Peaceful soundscapes">
-      <summary class="leaf-head">
-        <h2 class="leaf-title">Soft <em>ambience</em></h2>
-        <span class="leaf-num">offline</span>
-      </summary>
-      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as “Take a breath.” Tap the heading to open.</p>
-      <div class="soundscape-grid" id="soundscapeGrid">
-        <button type="button" class="soundscape-btn" data-soundscape="rain">Soft rain</button>
-        <button type="button" class="soundscape-btn" data-soundscape="forest">Forest air</button>
-        <button type="button" class="soundscape-btn" data-soundscape="steam">Warm steam</button>
-        <button type="button" class="soundscape-btn" data-soundscape="bowl">Singing bowl</button>
-        <button type="button" class="soundscape-btn" data-soundscape="bali">Gamelan hush</button>
-      </div>
-      <div class="soundscape-controls">
-        <span class="soundscape-status" id="soundscapeStatus">silent</span>
-        <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
-        <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
-      </div>
-    </details>
     </div>
 
     <div class="day-moment" data-moment="midday" role="region" aria-label="Midday check-in">
-      <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; body</span>
+      <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; what shaped this</span>
     <!-- Mood + Energy -->
     <section class="leaf">
       <div class="leaf-head">
@@ -3792,6 +3787,7 @@
       <div class="recommend-actions" id="recommendActions"></div>
       <button type="button" class="mini-btn" id="recommendDismiss" style="margin-top:14px">Not now</button>
     </section>
+    </div>
     <div class="day-moment day-moment--evening" data-moment="evening" role="region" aria-label="Rest and evening">
       <span class="day-moment-label" id="eveningMomentLabel">Rest &amp; evening · sleep, story, and close</span>
 
@@ -3876,26 +3872,26 @@
       <textarea class="deep-input" id="stressCheckIn" rows="3" maxlength="1000" placeholder="Stress, old hurts, or hard things on your mind — a sentence or a list, whatever feels safe today…"></textarea>
     </details>
 
-    <section class="leaf">
+    <section class="leaf" id="reflectionBlock">
       <div class="leaf-head">
-        <h2 class="leaf-title">A <em>reflection</em></h2>
-        <span class="leaf-num">№ 02</span>
+        <h2 class="leaf-title">One <em>line</em> about the day</h2>
+        <span class="leaf-num">soft</span>
       </div>
-      <p class="leaf-sub">No pressure. One line about the day is enough, if you want a shape for it.</p>
+      <p class="leaf-sub">A single sentence is enough. Or leave it open — there is no minimum.</p>
       <div class="prompt-pill" id="promptPill"><em>Today&apos;s prompt</em> <button type="button" class="prompt-shuffle">shuffle</button></div>
-      <textarea class="deep-input" id="reflectionInput" rows="4" placeholder="What shifted today? A line for your future self…"></textarea>
+      <textarea class="deep-input" id="reflectionInput" rows="3" placeholder="One sentence, if you want. What would you want to remember?"></textarea>
     </section>
 
-    <p class="leaf-sub" style="margin: 0 0 6px; text-align:center">Deeper CBT/DBT tools live in the <strong>Practice</strong> tab.</p>
+    <p class="leaf-sub" style="margin: 0 0 6px; text-align:center">Deeper CBT/DBT tools &amp; sound live in the <strong>Practice</strong> tab.</p>
 
     <section class="leaf" id="eveningSection" aria-label="Evening check-in">
       <div class="leaf-head">
         <h2 class="leaf-title"><em>Evening</em> check-in</h2>
         <span class="leaf-num">№ 03</span>
       </div>
-      <p class="leaf-sub">A small close to the day. Everything here saves as you go — use the floating <strong>Save to journal</strong> when you want an extra, gentle commit.</p>
+      <p class="leaf-sub">A small close to the day. Nothing saves to a server — it stays in this browser. Use the bar at the bottom when you want to commit the day in one tap.</p>
 
-      <p class="picker-label">Something quiet to be proud of (optional)</p>
+      <p class="picker-label">What I&apos;m a little proud of (optional)</p>
       <p class="feeling-context-hint" style="margin-bottom:10px">Even a tiny thing counts — you showed up, you noticed, you stayed.</p>
       <textarea class="deep-input" id="eveningQuietPride" rows="2" maxlength="2000" placeholder="A small thing that was actually brave…"></textarea>
 
@@ -3981,6 +3977,26 @@
         <strong>Choose one calming practice without scrolling the whole journal.</strong>
       </div>
     </section>
+
+    <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft flow-section" id="ambienceDetails" aria-label="Peaceful soundscapes">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Soft <em>ambience</em></h2>
+        <span class="leaf-num">offline</span>
+      </summary>
+      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as &ldquo;Take a breath.&rdquo; Tap the heading to open.</p>
+      <div class="soundscape-grid" id="soundscapeGrid">
+        <button type="button" class="soundscape-btn" data-soundscape="rain">Soft rain</button>
+        <button type="button" class="soundscape-btn" data-soundscape="forest">Forest air</button>
+        <button type="button" class="soundscape-btn" data-soundscape="steam">Warm steam</button>
+        <button type="button" class="soundscape-btn" data-soundscape="bowl">Singing bowl</button>
+        <button type="button" class="soundscape-btn" data-soundscape="bali">Gamelan hush</button>
+      </div>
+      <div class="soundscape-controls">
+        <span class="soundscape-status" id="soundscapeStatus">silent</span>
+        <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
+        <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
+      </div>
+    </details>
 
     <section class="leaf flow-section">
       <div class="leaf-head">
@@ -6124,7 +6140,7 @@
     if (!bar) return;
     const active = document.querySelector('.view.active');
     const id = active && active.id;
-    const on = (id === 'view-today' || id === 'view-track' || id === 'view-journal') && (computeProgressPct() < 100 || (day.mindfulMinutes > 0));
+    const on = id === 'view-today';
     bar.classList.toggle('visible', !!on);
     bar.setAttribute('aria-hidden', on ? 'false' : 'true');
   }
@@ -6206,7 +6222,7 @@
     const d = document.getElementById('middayMomentLabel');
     const e = document.getElementById('eveningMomentLabel');
     if (m) m.textContent = h < 5 ? 'Deep night · anchor & gentle start' : h < 12 ? 'Morning · anchor & gentle start' : h < 17 ? 'So far today · morning fields' : 'Start of the page · morning fields';
-    if (d) d.textContent = h < 11 ? 'Midday (or when you can) · mood & body' : h < 16 ? 'This afternoon · mood & body' : h < 21 ? 'Check-in · mood & body' : 'Today · mood & body';
+    if (d) d.textContent = h < 11 ? 'Midday (or when you can) · mood & what shaped this' : h < 16 ? 'This afternoon · mood & what shaped this' : h < 21 ? 'Check-in · mood & what shaped this' : 'Today · mood & what shaped this';
     if (e) e.textContent = h < 15 ? 'Later today · rest & evening' : h < 19 ? 'Evening · rest & close' : 'Night · rest & close';
   }
   function renderDailyPeaceImage() {
@@ -7269,9 +7285,12 @@
       if (action === 'winddown') switchView('practice');
       if (action === 'journal') { switchView('today'); setTimeout(() => document.getElementById('eveningSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120); }
       if (action === 'timer') {
-        const amb = document.getElementById('ambienceDetails');
-        if (amb) amb.open = true;
-        amb?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        switchView('practice');
+        setTimeout(() => {
+          const amb = document.getElementById('ambienceDetails');
+          if (amb) amb.open = true;
+          amb?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 120);
       }
     });
   });
@@ -7787,7 +7806,7 @@
     if (!wrap) return;
     wrap.innerHTML = '';
     if (!items.length) {
-      wrap.innerHTML = '<div class="path-empty-hint">Nothing here yet — one small line is enough to begin. This space is for you, not a checklist.</div>';
+      wrap.innerHTML = '<div class="path-empty-hint">Nothing on your path yet. Add a tiny experiment in <strong>Memory</strong> → <strong>Path &amp; therapy</strong>, or open Path from the More menu — one sentence is enough.</div>';
       return;
     }
     if (type === 'experiment') {
@@ -8066,7 +8085,7 @@
     // List
     const list = document.getElementById('historyList');
     if (days.length === 0) {
-      list.innerHTML = '<div class="history-empty">No days yet — every journey begins here. ✦</div>';
+      list.innerHTML = '<div class="history-empty">No days saved yet — your first line on <strong>Today</strong> will start the Garden. There is no rush. ✦</div>';
       return;
     }
     list.innerHTML = '';
