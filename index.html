@@ -18,7 +18,7 @@
     vercel.json (headers / cache). Deploy the repo root as a static site (e.g. Vercel, main).
 -->
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Stillness" />
 <meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
@@ -1783,8 +1783,8 @@
   /* ── Views ──────────────────────────────────────────────── */
   .view { display: none; }
   .view.active { display: block; animation: viewEnter .38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: auto; }
-  .nav-btn { min-height: 48px; min-width: 0; padding: 8px 8px; overflow: hidden; text-overflow: ellipsis; }
+  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: auto; justify-items: stretch; }
+  .nav-btn { min-height: 48px; min-width: 0; width: 100%; padding: 8px 8px; overflow: hidden; text-overflow: ellipsis; }
   .quick-start, .visual-banner, .support-panel {
     background: var(--paper-3);
     border: 1px solid rgba(201, 187, 164, 0.48);
@@ -1827,7 +1827,7 @@
     .quick-action-grid .quick-action:last-child { grid-column: 1 / -1; }
     .support-panel, .visual-banner { grid-template-columns: 96px 1fr; }
     .wind-grid { grid-template-columns: 1fr 1fr; }
-    .nav-btn { font-size: 0.86rem; padding-left: 4px; padding-right: 4px; }
+    .nav-btn { font-size: 0.8rem; padding-left: 2px; padding-right: 2px; }
   }
 
   /* ── History view ───────────────────────────────────────── */
@@ -2070,7 +2070,7 @@
       width: auto;
       max-width: none;
     }
-    .nav-btn { padding: 8px 3px; font-size: 0.82rem; }
+    .nav-btn { padding: 8px 2px; font-size: 0.76rem; }
     .leaf { padding: 22px 20px 20px; }
   }
 
@@ -2449,6 +2449,7 @@
     .history-day:hover { transform: none; }
   }
 </style>
+<link rel="stylesheet" href="visual-polish.css" />
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
@@ -2830,7 +2831,7 @@
     </header>
 
     <section class="visual-banner no-print">
-      <img src="assets/peaceful/evening-tea-lamp.jpg" alt="Evening tea and a warm lamp for a quiet wind-down" />
+      <img src="assets/peaceful/rain-window-winddown.jpg" alt="Evening wind-down scene with tea, lamp, blanket, and rain-speckled window" />
       <div>
         <small>Low-light support</small>
         <strong>Choose one calming practice without scrolling the whole journal.</strong>
@@ -3698,7 +3699,12 @@
     { title: 'Evening tea lamp', src: 'assets/peaceful/evening-tea-lamp.jpg', alt: 'Evening tea beside a warm lamp for wind-down' },
     { title: 'Stone path garden gate', src: 'assets/peaceful/stone-path-garden-gate.jpg', alt: 'A stone garden path leading to a simple gate' },
     { title: 'Quiet desk insights', src: 'assets/peaceful/quiet-desk-insights.jpg', alt: 'A quiet desk with notebook and smooth stone for reflection' },
-    { title: 'Wildflower memory cards', src: 'assets/peaceful/wildflower-memory-cards.jpg', alt: 'Wildflower memory cards on natural linen' }
+    { title: 'Wildflower memory cards', src: 'assets/peaceful/wildflower-memory-cards.jpg', alt: 'Wildflower memory cards on natural linen' },
+    { title: 'Meditation room morning', src: 'assets/peaceful/meditation-room-morning.jpg', alt: 'A peaceful meditation room with cushion, plants, and soft morning curtains' },
+    { title: 'Forest cairn mist', src: 'assets/peaceful/forest-cairn-mist.jpg', alt: 'A mossy forest meditation clearing with stone cairn and morning mist' },
+    { title: 'Lotus stones sunrise', src: 'assets/peaceful/lotus-stones-sunrise.jpg', alt: 'Quiet rippling water with lotus leaves, smooth stones, and sunrise reflection' },
+    { title: 'Buddhist garden altar', src: 'assets/peaceful/buddhist-garden-altar.jpg', alt: 'A simple Buddhist-inspired garden altar with moss, bamboo, stone lantern, and candle' },
+    { title: 'Rain window wind-down', src: 'assets/peaceful/rain-window-winddown.jpg', alt: 'An evening wind-down bedside scene with tea, warm lamp, blanket, and rain-speckled window' }
   ];
 
   const PATH_SUGGESTIONS = [

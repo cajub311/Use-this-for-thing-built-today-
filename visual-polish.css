@@ -1,0 +1,63 @@
+/* Low-conflict visual layer: image blending only. Core app logic stays in index.html. */
+.view > .plate {
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  padding: 18px 16px 22px;
+}
+
+.view > .plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--plate-image, none) center / cover no-repeat;
+  opacity: 0.2;
+  filter: saturate(0.9) contrast(0.96);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.8) 52%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.8) 52%, transparent 100%);
+}
+
+#view-today > .plate { --plate-image: url("assets/peaceful/meditation-room-morning.jpg"); }
+#view-practice > .plate { --plate-image: url("assets/peaceful/buddhist-garden-altar.jpg"); }
+#view-journal > .plate { --plate-image: url("assets/peaceful/rain-window-winddown.jpg"); }
+#view-history > .plate { --plate-image: url("assets/peaceful/forest-cairn-mist.jpg"); }
+#view-memory > .plate { --plate-image: url("assets/peaceful/lotus-stones-sunrise.jpg"); }
+#view-log > .plate { --plate-image: url("assets/peaceful/wildflower-memory-cards.jpg"); }
+#view-insights > .plate { --plate-image: url("assets/peaceful/quiet-desk-insights.jpg"); }
+#view-path > .plate { --plate-image: url("assets/peaceful/stone-path-garden-gate.jpg"); }
+#view-quotes > .plate { --plate-image: url("assets/peaceful/lotus-water.jpg"); }
+
+#supportPanel .support-image {
+  background-image: linear-gradient(rgba(42,36,27,0.02), rgba(42,36,27,0.1)), url("assets/peaceful/forest-cairn-mist.jpg");
+}
+
+.peace-visual img,
+.visual-banner img,
+.peace-card img {
+  filter: saturate(0.94) contrast(0.98);
+}
+
+.visual-banner,
+.peace-visual {
+  position: relative;
+}
+
+.visual-banner::after,
+.peace-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(237,227,210,0.16), transparent 44%, rgba(74,107,79,0.08));
+  border-radius: inherit;
+}
+
+@media (max-width: 520px) {
+  .view > .plate {
+    padding-top: 16px;
+  }
+  .view > .plate::before {
+    opacity: 0.16;
+  }
+}
