@@ -1,6 +1,6 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v32-calm-desktop';
+const CACHE = 'stillness-shell-v33-real-ambience';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
@@ -31,7 +31,10 @@ const SHELL = [
   '/assets/peaceful/forest-cairn-mist.jpg',
   '/assets/peaceful/lotus-stones-sunrise.jpg',
   '/assets/peaceful/buddhist-garden-altar.jpg',
-  '/assets/peaceful/rain-window-winddown.jpg'
+  '/assets/peaceful/rain-window-winddown.jpg',
+  '/assets/sounds/rain.ogg',
+  '/assets/sounds/forest-ambience.ogg',
+  '/assets/sounds/singing-bowl.ogg'
 ];
 
 self.addEventListener('install', (e) => {

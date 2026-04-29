@@ -3987,12 +3987,12 @@
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
         <span class="leaf-num">offline</span>
       </summary>
-      <p class="leaf-sub">Gentle loops (pink &amp; brown noise, not harsh static) — same engine as &ldquo;Take a breath.&rdquo; Tap the heading to open.</p>
+      <p class="leaf-sub audio-real-note">Real public-domain recordings for rain, forest, and singing bowl, with generated fallback only when a browser cannot play the file. Tap the heading to open.</p>
       <div class="soundscape-grid" id="soundscapeGrid">
-        <button type="button" class="soundscape-btn" data-soundscape="rain">Soft rain</button>
-        <button type="button" class="soundscape-btn" data-soundscape="forest">Forest air</button>
+        <button type="button" class="soundscape-btn" data-soundscape="rain">Real rain</button>
+        <button type="button" class="soundscape-btn" data-soundscape="forest">Forest birds</button>
         <button type="button" class="soundscape-btn" data-soundscape="steam">Warm steam</button>
-        <button type="button" class="soundscape-btn" data-soundscape="bowl">Singing bowl</button>
+        <button type="button" class="soundscape-btn" data-soundscape="bowl">Real singing bowl</button>
         <button type="button" class="soundscape-btn" data-soundscape="bali">Gamelan hush</button>
       </div>
       <div class="soundscape-controls">
@@ -4000,6 +4000,10 @@
         <input type="range" min="0" max="100" value="38" class="slider" id="soundscapeVolume" aria-label="Soundscape volume" />
         <button type="button" class="mini-stop" id="soundscapeStop">stop</button>
       </div>
+      <details class="audio-credit-note">
+        <summary>Sound credits</summary>
+        <p>Rain, forest ambience, and singing bowl recordings are public-domain files from Wikimedia Commons, stored locally for the PWA.</p>
+      </details>
     </details>
 
     <section class="leaf flow-section">
@@ -4403,13 +4407,13 @@
       </div>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
       <p class="picker-label" style="margin-top:20px">Breathing sound</p>
-      <p class="leaf-sub" style="margin-bottom:8px">Soft loops for guided breathing (built in the browser so they work offline). Open <em>Take a breath</em> to hear the bed and cues.</p>
+      <p class="leaf-sub" style="margin-bottom:8px">Real ambience for rain, forest, and bowl, plus simple generated cues for the breathing phases. Open <em>Take a breath</em> to hear the bed and cues.</p>
       <label class="data-hint" for="breatheSoundSelect" style="display:block;margin-bottom:6px">Ambient &amp; cue style</label>
       <select class="retention-select" id="breatheSoundSelect" title="Breathing meditation sound">
-        <option value="rain">Soft rain</option>
-        <option value="forest">Forest air</option>
+        <option value="rain">Real rain</option>
+        <option value="forest">Forest birds</option>
         <option value="steam">Warm steam</option>
-        <option value="bowl">Singing bowl</option>
+        <option value="bowl">Real singing bowl</option>
         <option value="bali">Gamelan hush</option>
         <option value="silent">Silent</option>
       </select>
@@ -4690,10 +4694,10 @@
 <div class="overlay" id="breatheOverlay" role="dialog" aria-modal="true" aria-label="Guided breathing" aria-hidden="true">
   <div class="breathe-soundbar" id="breatheSoundbar">
     <select id="breatheSoundFromOverlay" class="form-select" aria-label="Meditation sound" title="Meditation sound for this session">
-      <option value="rain">Soft rain</option>
-      <option value="forest">Forest air</option>
+      <option value="rain">Real rain</option>
+      <option value="forest">Forest birds</option>
       <option value="steam">Warm steam</option>
-      <option value="bowl">Singing bowl</option>
+      <option value="bowl">Real singing bowl</option>
       <option value="bali">Gamelan hush</option>
       <option value="silent">Mute</option>
     </select>
@@ -5504,6 +5508,12 @@
   let audioCtx = null;
   let ambientNodes = [];
   let ambientMasterGain = null;
+  let ambientAudio = null;
+  const RECORDED_AMBIENCE = {
+    rain: 'assets/sounds/rain.ogg',
+    forest: 'assets/sounds/forest-ambience.ogg',
+    bowl: 'assets/sounds/singing-bowl.ogg'
+  };
 
   function getAudioCtxSync() {
     if (!audioCtx) {
@@ -5523,6 +5533,11 @@
   function getBreatheAudioCtx() { return getAudioCtxSync(); }
 
   function disconnectAmbientNodes() {
+    if (ambientAudio) {
+      try { ambientAudio.pause(); } catch {}
+      try { ambientAudio.src = ''; ambientAudio.load(); } catch {}
+      ambientAudio = null;
+    }
     ambientNodes.forEach(n => {
       try { if (n && n.stop) n.stop(0); } catch {}
       try { if (n && n.disconnect) n.disconnect(); } catch {}
@@ -5572,6 +5587,21 @@
     normalizeBreatheSound();
     if (typeof volMul !== 'number' || volMul <= 0) volMul = 1;
     if (sound === 'silent' || !BREATHE_SOUNDS.filter(s => s !== 'silent').includes(sound)) return;
+    const recorded = RECORDED_AMBIENCE[sound];
+    if (recorded) {
+      const audio = new Audio(recorded);
+      audio.loop = true;
+      audio.preload = 'auto';
+      audio.volume = Math.min(0.72, Math.max(0.02, 0.36 * volMul));
+      ambientAudio = audio;
+      ambientMasterGain = null;
+      try {
+        await audio.play();
+        return;
+      } catch (e) {
+        ambientAudio = null;
+      }
+    }
     const ctx = await ensureAudioRunning();
     if (!ctx) return;
     const now = ctx.currentTime;
@@ -7387,7 +7417,7 @@
     });
     const status = document.getElementById('soundscapeStatus');
     if (status) status.textContent = activeSoundscape
-      ? ({ rain: 'soft rain', forest: 'forest air', steam: 'warm steam', bowl: 'singing bowl', bali: 'gamelan hush' }[activeSoundscape] || activeSoundscape)
+      ? ({ rain: 'real rain', forest: 'forest birds', steam: 'warm steam', bowl: 'real singing bowl', bali: 'gamelan hush' }[activeSoundscape] || activeSoundscape)
       : 'silent';
   }
   function updateAudioToggle() {
@@ -7415,6 +7445,7 @@
   document.getElementById('soundscapeStop').addEventListener('click', stopSoundscape);
   document.getElementById('soundscapeVolume').addEventListener('input', e => {
     const v = (Number(e.target.value) / 100) * 0.32;
+    if (ambientAudio) ambientAudio.volume = Math.min(0.72, Math.max(0, (Number(e.target.value) / 100) * 0.42));
     if (ambientMasterGain) ambientMasterGain.gain.value = v;
   });
 

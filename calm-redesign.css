@@ -384,6 +384,25 @@ body::after { opacity: 0.16; }
   text-transform: none;
 }
 
+.audio-credit-note {
+  margin-top: 14px;
+  color: var(--ink-faint);
+  font-size: 0.82rem;
+}
+
+.audio-credit-note > summary {
+  cursor: pointer;
+  color: var(--moss-deep);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.audio-credit-note p {
+  margin: 8px 0 0;
+}
+
 .view.active:not(#view-today) {
   width: min(100%, 1040px);
   margin-left: auto;
