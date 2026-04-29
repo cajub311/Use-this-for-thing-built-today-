@@ -78,7 +78,7 @@
     --paper-3: #313B33;
     --ink: #E8E0CF;
     --ink-soft: #B8B09F;
-    --ink-faint: #7E7867;
+    --ink-faint: #9E8E7C;
     --moss: #94B488;
     --moss-deep: #B8D4AC;
     --moss-soft: #4A6B4F;
@@ -104,7 +104,7 @@
     --paper-3: #232940;
     --ink: #E5E5F0;
     --ink-soft: #B0B5C9;
-    --ink-faint: #757A92;
+    --ink-faint: #9098B2;
     --moss: #8AA0C8;
     --moss-deep: #B0BFE0;
     --moss-soft: #5A6A88;
@@ -154,9 +154,10 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     line-height: 1.55;
-    padding-bottom: max(110px, env(safe-area-inset-bottom, 0px) + 90px);
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     position: relative;
     overflow-x: hidden;
+    overscroll-behavior: none;
   }
 
   /* Paper grain noise overlay */
@@ -1730,61 +1731,69 @@
     .path-suggest-grid { grid-template-columns: 1fr; }
   }
 
-  /* ── Bottom navigation ──────────────────────────────────── */
+  /* ── Bottom navigation — full-width bar (icons + labels) ── */
   .nav {
     position: fixed;
-    bottom: max(16px, env(safe-area-inset-bottom, 0px) + 8px);
-    left: max(10px, calc(50% - 360px));
-    right: max(10px, calc(50% - 360px));
-    transform: none;
+    bottom: 0; left: 0; right: 0; width: 100%;
     display: flex;
-    flex-wrap: nowrap;
-    max-width: none;
-    gap: 3px;
-    background: var(--nav-bg, rgba(237, 227, 210, 0.94));
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    padding: 5px;
-    border-radius: 999px;
-    box-shadow: 0 8px 32px var(--shadow-deep), 0 1px 0 rgba(255,255,255,0.14) inset;
+    background: var(--nav-bg, rgba(237, 227, 210, 0.96));
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid var(--nav-border, rgba(201, 187, 164, 0.5));
+    box-shadow: 0 -2px 18px var(--shadow-warm, rgba(101, 80, 50, 0.08));
     z-index: 50;
-    border: 1px solid var(--nav-border, rgba(201, 187, 164, 0.5));
-    pointer-events: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    border-radius: 0;
+    gap: 0;
+    pointer-events: auto;
     transition: background .45s ease, border-color .45s ease;
   }
-  .nav::-webkit-scrollbar { display: none; }
   .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 2px 8px;
+    min-height: 58px;
     background: transparent;
     border: none;
-    padding: 9px 16px;
-    border-radius: 999px;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 0.97rem;
-    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint, rgba(62,47,28,0.45));
     cursor: pointer;
-    transition: background .2s, color .2s, box-shadow .2s;
-    letter-spacing: 0.01em;
-    pointer-events: auto;
     touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
+    transition: color .2s;
+    flex-shrink: 1;
     white-space: nowrap;
-    flex-shrink: 0;
   }
-  .nav-btn:hover { color: var(--ink); background: var(--nav-hover, rgba(74, 107, 79, 0.09)); }
-  .nav-btn.active {
+  .nav-icon {
+    width: 22px; height: 22px;
+    transition: transform .28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .nav-label { line-height: 1; }
+  .nav-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 25%; right: 25%;
+    height: 2.5px;
+    border-radius: 0 0 3px 3px;
     background: var(--moss);
-    color: var(--paper-3);
-    box-shadow: 0 2px 10px rgba(74, 107, 79, 0.3);
+    transform: scaleX(0);
+    transition: transform .28s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+  .nav-btn:hover { color: var(--ink); }
+  .nav-btn.active { color: var(--moss); }
+  .nav-btn.active .nav-icon { transform: scale(1.12) translateY(-1px); }
+  .nav-btn.active::after { transform: scaleX(1); }
 
   /* ── Views ──────────────────────────────────────────────── */
   .view { display: none; }
   .view.active { display: block; animation: viewEnter .38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: auto; justify-items: stretch; }
-  .nav-btn { min-height: 48px; min-width: 0; width: 100%; padding: 8px 8px; overflow: hidden; text-overflow: ellipsis; }
   .quick-start, .visual-banner, .support-panel {
     background: var(--paper-3);
     border: 1px solid rgba(201, 187, 164, 0.48);
@@ -2440,6 +2449,58 @@
     outline-offset: 2px;
   }
 
+  /* ── Android: swipe direction animations ─────────────────── */
+  html.swipe-next .view.active { animation: viewFromRight .3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  html.swipe-prev .view.active { animation: viewFromLeft  .3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  @keyframes viewFromRight { from { opacity:0; transform:translateX(28px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes viewFromLeft  { from { opacity:0; transform:translateX(-28px); } to { opacity:1; transform:translateX(0); } }
+
+  /* ── Tap ripple ─────────────────────────────────────────── */
+  .ripple-host { position: relative; overflow: hidden; }
+  .ripple-wave {
+    position: absolute; border-radius: 50%;
+    background: currentColor; opacity: 0.18;
+    transform: scale(0);
+    animation: rippleExpand .5s ease-out forwards;
+    pointer-events: none; z-index: 0;
+  }
+  @keyframes rippleExpand { to { transform: scale(4); opacity: 0; } }
+
+  /* ── Mobile compact plate headers ───────────────────────── */
+  @media (max-width: 600px) {
+    .plate { margin-bottom: 16px; }
+    .greeting { font-size: clamp(1.55rem, 6.5vw, 2rem); }
+    .botanical-deco { display: none; }
+    body::after { display: none; }
+  }
+
+  /* ── Android tap targets ≥44px ────────────────────────── */
+  @media (max-width: 768px) {
+    .chip { padding: 11px 16px; }
+    .pill { padding: 12px 0; }
+    .pill.minus { min-height: 44px; }
+    .sev-btn { padding: 11px 0; }
+    .meal-type { padding: 12px 4px; }
+    .moon-btn { min-height: 56px; }
+  }
+
+  /* ── Meal types 2-column on small phones ─────────────── */
+  @media (max-width: 400px) {
+    .meal-types { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Prevent Chrome auto-zoom on inputs (Android/iOS) ──── */
+  @media (max-width: 768px) {
+    input[type="text"], input[type="number"], input[type="email"],
+    input[type="search"], textarea, select { font-size: 16px; }
+  }
+
+  /* ── Small phone nav label reduction ────────────────────── */
+  @media (max-width: 380px) {
+    .nav-btn { font-size: 0.52rem; }
+    .nav-icon { width: 20px; height: 20px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .plate, .leaf, .quote-frame, .view.active, .log-item { animation: none !important; }
     .water-fill::before, body::before { animation: none !important; }
@@ -2827,6 +2888,37 @@
       <circle cx="45" cy="8" r="2"/>
       <path d="M40 8 L 42 8 M48 8 L 50 8"/>
       <path d="M30 5 Q 33 3 36 5 M59 11 Q 62 13 65 11"/>
+    </symbol>
+    <!-- Nav tab icons -->
+    <symbol id="nav-today" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+      <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+      <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+    </symbol>
+    <symbol id="nav-practice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9" opacity="0.35"/>
+      <circle cx="12" cy="12" r="4"/>
+    </symbol>
+    <symbol id="nav-track" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2,12 5,7 8,14 11,10 14,16 17,6 20,12 22,12"/>
+    </symbol>
+    <symbol id="nav-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4 H 20 V 20 H 4 Z"/><line x1="12" y1="4" x2="12" y2="20"/>
+      <line x1="8" y1="8" x2="10" y2="8"/><line x1="8" y1="12" x2="10" y2="12"/><line x1="8" y1="16" x2="10" y2="16"/>
+    </symbol>
+    <symbol id="nav-garden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22 V 10"/><path d="M12 10 C 12 10 7 9 6 4 C 9 4 12 7 12 10"/>
+      <path d="M12 14 C 12 14 17 13 18 8 C 15 8 12 11 12 14"/>
+    </symbol>
+    <symbol id="nav-log" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+      <circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/>
+    </symbol>
+    <symbol id="nav-memory" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+      <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
     </symbol>
   </defs>
 </svg>
@@ -3504,6 +3596,16 @@
       <p class="leaf-sub">Removes all saved days, activity, and local settings in this browser. This cannot be undone. Export a backup first if you might need it.</p>
       <button type="button" class="data-btn data-btn-danger" id="wipeAllBtn">Erase all Stillness data</button>
     </section>
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">More <em>spaces</em></h2>
+      </div>
+      <p class="leaf-sub">Extra sections for deeper reflection and quiet reading.</p>
+      <div class="data-row" style="flex-wrap:wrap;gap:8px">
+        <button type="button" class="data-btn" id="goToPath">Path — values &amp; steps</button>
+        <button type="button" class="data-btn" id="goToLibrary">The Library — words &amp; images</button>
+      </div>
+    </section>
   </div>
 
   <!-- LOG VIEW — activity + rolling feed -->
@@ -3528,19 +3630,6 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       INSIGHTS VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-insights">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Patterns</span></div>
-      <h1 class="greeting">What your days suggest.</h1>
-      <div class="date-line">Gentle observations from saved days</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div class="history-empty">Keep showing up. Patterns reveal themselves with time. ✦</div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
        PATH VIEW
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-path">
@@ -3550,6 +3639,7 @@
       <div class="date-line">Values, experiments, and next small steps</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="pathBackBtn">← Memory</button></div>
 
     <section class="leaf intention">
       <div class="leaf-head">
@@ -3626,6 +3716,7 @@
       <div class="date-line">25 quiet teachings</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="quotesBackBtn">← Memory</button></div>
     <section class="leaf">
       <div class="leaf-head">
         <h2 class="leaf-title">Peaceful <em>images</em></h2>
@@ -3682,11 +3773,26 @@
 
 <!-- Bottom navigation -->
 <nav class="nav" aria-label="Main">
-  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
-  <button type="button" class="nav-btn" data-view="practice" aria-pressed="false" aria-label="Practice tools">Practice</button>
-  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">Journal</button>
-  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
-  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="More — backup, log, and settings">More</button>
+  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-today"/></svg>
+    <span class="nav-label">Today</span>
+  </button>
+  <button type="button" class="nav-btn" data-view="practice" aria-pressed="false" aria-label="Practice — breath, DBT, body">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
+    <span class="nav-label">Practice</span>
+  </button>
+  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-journal"/></svg>
+    <span class="nav-label">Journal</span>
+  </button>
+  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
+    <span class="nav-label">Garden</span>
+  </button>
+  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="More — backup, log, and settings">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-memory"/></svg>
+    <span class="nav-label">More</span>
+  </button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -5591,6 +5697,10 @@
   document.getElementById('backupReminderExport')?.addEventListener('click', () => {
     document.getElementById('exportBtn')?.click();
   });
+  document.getElementById('goToPath')?.addEventListener('click', () => switchView('path'));
+  document.getElementById('goToLibrary')?.addEventListener('click', () => switchView('quotes'));
+  document.getElementById('pathBackBtn')?.addEventListener('click', () => switchView('memory'));
+  document.getElementById('quotesBackBtn')?.addEventListener('click', () => switchView('memory'));
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -6227,6 +6337,69 @@
       switchView(target);
     });
   });
+
+  /* ── Android: swipe between tabs ─────────────────────────── */
+  const SWIPE_VIEWS = ['today', 'track', 'journal', 'history', 'log', 'memory'];
+  let _swX = 0, _swY = 0;
+  document.addEventListener('touchstart', e => {
+    _swX = e.touches[0].clientX;
+    _swY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (document.querySelector('.overlay.open')) return;
+    if (document.activeElement && ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    const dx = e.changedTouches[0].clientX - _swX;
+    const dy = e.changedTouches[0].clientY - _swY;
+    if (Math.abs(dx) < 55 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+    const cur = document.querySelector('.nav-btn.active')?.dataset.view;
+    const idx = SWIPE_VIEWS.indexOf(cur);
+    if (dx < 0 && idx < SWIPE_VIEWS.length - 1) {
+      document.documentElement.classList.add('swipe-next');
+      switchView(SWIPE_VIEWS[idx + 1]);
+      setTimeout(() => document.documentElement.classList.remove('swipe-next'), 350);
+    } else if (dx > 0 && idx > 0) {
+      document.documentElement.classList.add('swipe-prev');
+      switchView(SWIPE_VIEWS[idx - 1]);
+      setTimeout(() => document.documentElement.classList.remove('swipe-prev'), 350);
+    }
+  }, { passive: true });
+
+  /* ── Ripple effect on interactive elements ─────────────── */
+  function spawnRipple(e) {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    const cx = touch.clientX - rect.left;
+    const cy = touch.clientY - rect.top;
+    const size = Math.max(rect.width, rect.height) * 1.6;
+    const r = document.createElement('span');
+    r.className = 'ripple-wave';
+    r.style.cssText = `width:${size}px;height:${size}px;left:${cx-size/2}px;top:${cy-size/2}px`;
+    el.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+  document.querySelectorAll('.picker-btn,.practice-btn,.moon-btn,.nav-btn,.pill,.soundscape-btn,.add-btn').forEach(el => {
+    el.classList.add('ripple-host');
+    el.addEventListener('touchstart', spawnRipple, { passive: true });
+  });
+
+  /* ── Hardware back button closes overlays ─────────────── */
+  document.querySelectorAll('.practice-btn, #breatheBtn, #groundBtn, #kindnessBtn, #scanBtn, #worryBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setTimeout(() => { if (document.querySelector('.overlay.open')) history.pushState({ ov: 1 }, ''); }, 80);
+    });
+  });
+  window.addEventListener('popstate', () => {
+    const ov = document.querySelector('.overlay.open');
+    if (ov) { ov.querySelector('.overlay-close')?.click(); }
+  });
+
+  /* ── Haptic feedback ─────────────────────────────────── */
+  const hap = (ms = 8) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch {} };
+  document.querySelectorAll('.picker-btn').forEach(b => b.addEventListener('click', () => hap(6)));
+  document.querySelectorAll('.practice-btn').forEach(b => b.addEventListener('click', () => hap(10)));
+  document.querySelectorAll('.moon-btn').forEach(b => b.addEventListener('click', () => hap(6)));
+  document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => hap(4)));
 
   /* ────────────────────────────────────────────────────────
      History view
