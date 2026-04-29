@@ -26,7 +26,22 @@
 <meta property="og:site_name" content="Stillness" />
 <meta property="og:title" content="Stillness — a botanical journal for your days" />
 <meta property="og:description" content="Stillness — a gentle botanical daily journal. Saved on your device, with a log, backup, and optional install as an app." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:image" content="/assets/peaceful/still-lake-dawn.jpg" />
+<meta property="og:image:alt" content="A still misty lake at dawn — calm botanical image for the Stillness journal" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/assets/peaceful/still-lake-dawn.jpg" />
+<script>
+(function () {
+  try {
+    var o = document.querySelector('meta[property="og:image"]');
+    var t = document.querySelector('meta[name="twitter:image"]');
+    if (!o && !t) return;
+    var u = (window.location && window.location.origin ? window.location.origin : '') + '/assets/peaceful/still-lake-dawn.jpg';
+    if (o) o.setAttribute('content', u);
+    if (t) t.setAttribute('content', u);
+  } catch (e) { /* no-op */ }
+})();
+</script>
 <meta name="twitter:title" content="Stillness — a botanical journal for your days" />
 <meta name="twitter:description" content="A gentle daily journal in the browser. Mood, rest, intention, evening check-in, and small practices—stored locally on this device." />
 <meta name="theme-color" content="#EDE3D2" />
@@ -4494,6 +4509,8 @@
     document.documentElement.setAttribute('data-theme', t);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
+    const schemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (schemeMeta) schemeMeta.setAttribute('content', t === 'parchment' ? 'light' : 'dark');
     document.querySelectorAll('.theme-swatch').forEach(btn => {
       const on = btn.dataset.setTheme === t;
       btn.classList.toggle('on', on);
