@@ -6439,8 +6439,10 @@
     });
   });
 
-  /* ── Android: swipe between tabs ─────────────────────────── */
+  /* ── Android: swipe between tabs (requires deliberate horizontal swipe) ─ */
   const SWIPE_VIEWS = ['today', 'practice', 'track', 'journal', 'history', 'memory', 'log'];
+  const SWIPE_MIN_PX = 108;
+  const SWIPE_MAX_VERT_RATIO = 0.48;
   let _swX = 0, _swY = 0;
   document.addEventListener('touchstart', e => {
     _swX = e.touches[0].clientX;
@@ -6451,7 +6453,7 @@
     if (document.activeElement && ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
     const dx = e.changedTouches[0].clientX - _swX;
     const dy = e.changedTouches[0].clientY - _swY;
-    if (Math.abs(dx) < 55 || Math.abs(dy) > Math.abs(dx) * 0.7) return;
+    if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dy) > Math.abs(dx) * SWIPE_MAX_VERT_RATIO) return;
     const cur = document.querySelector('.nav-btn.active')?.dataset.view;
     const idx = SWIPE_VIEWS.indexOf(cur);
     if (dx < 0 && idx < SWIPE_VIEWS.length - 1) {
