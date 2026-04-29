@@ -12,8 +12,8 @@
     users keep a copy via Memory → Download backup (JSON import/export in the same area).
   - Themes: document.documentElement has data-theme — parchment (default), forest, midnight.
     Theme tokens live under :root / [data-theme="…"] in the <style> block; see setTheme().
-  - Main view roots (search by id when editing): #view-today, #view-practice, #view-track,
-    #view-journal, #view-history (log + insights), #view-memory, #view-log, #view-path, #view-quotes.
+  - Main view roots: #view-today, #view-practice, #view-track, #view-journal, #view-history (Garden + log),
+    #view-settings (Memory, Path, Library, backup), plus legacy hash aliases in JS.
   - Repo siblings (not inlined here): manifest.json, icon.svg, sw.js (offline shell),
     vercel.json (headers / cache). Deploy the repo root as a static site (e.g. Vercel, main).
 -->
@@ -44,7 +44,7 @@
 </script>
 <meta name="twitter:title" content="Stillness — a botanical journal for your days" />
 <meta name="twitter:description" content="A gentle daily journal in the browser. Mood, rest, intention, evening check-in, and small practices—stored locally on this device." />
-<meta name="theme-color" content="#EDE3D2" />
+<meta name="theme-color" content="#F8F4ED" />
 <meta name="color-scheme" content="light" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -54,34 +54,35 @@
 <title>Stillness — a botanical journal for your days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root, [data-theme="parchment"] {
-    /* Botanical journal palette */
-    --paper: #EDE3D2;
-    --paper-2: #E5DAC5;
-    --paper-3: #F4ECDA;
-    --ink: #2A241B;
-    --ink-soft: #5A4F3F;
-    --ink-faint: #8C7F6E;
-    --moss: #4A6B4F;
-    --moss-deep: #2F4A35;
-    --moss-soft: #B8C5B2;
-    --moss-mist: #D6DCC9;
-    --clay: #B5654A;
-    --clay-soft: #E8C5B2;
-    --gold: #C9A961;
-    --gold-soft: #E5D5AA;
-    --shadow-warm: rgba(74, 64, 49, 0.12);
-    --shadow-deep: rgba(74, 64, 49, 0.18);
-    --line: #C9BBA4;
-    --noise-opacity: 0.35;
-    --bg-grad-1: rgba(184, 197, 178, 0.30);
-    --bg-grad-2: rgba(232, 197, 178, 0.22);
-    --bg-grad-3: rgba(201, 169, 97, 0.18);
-    --nav-bg: rgba(237, 227, 210, 0.94);
-    --nav-border: rgba(201, 187, 164, 0.55);
-    --nav-hover: rgba(74, 107, 79, 0.1);
+    /* Quiet garden — default */
+    --paper: #F8F4ED;
+    --paper-2: #F0ECE4;
+    --paper-3: #FCF9F4;
+    --ink: #2C3E2D;
+    --ink-soft: #4A5D4B;
+    --ink-faint: #7A8A7B;
+    --moss: #5A7A5C;
+    --moss-deep: #2C3E2D;
+    --moss-soft: #8FAE8B;
+    --moss-mist: #D8E3D4;
+    --clay: #9B6B5C;
+    --clay-soft: #E5D0C8;
+    --gold: #A6906E;
+    --gold-soft: #E8DCC8;
+    --shadow-warm: rgba(44, 62, 45, 0.08);
+    --shadow-deep: rgba(44, 62, 45, 0.14);
+    --line: #D4D4C8;
+    --noise-opacity: 0.25;
+    --bg-grad-1: rgba(143, 174, 139, 0.18);
+    --bg-grad-2: rgba(232, 220, 200, 0.2);
+    --bg-grad-3: rgba(200, 210, 195, 0.12);
+    --nav-bg: rgba(248, 244, 237, 0.96);
+    --nav-border: rgba(212, 212, 200, 0.8);
+    --nav-hover: rgba(90, 122, 92, 0.08);
     --r-sm: 8px;
     --r: 14px;
     --r-lg: 22px;
@@ -143,6 +144,28 @@
     --nav-border: rgba(58, 64, 96, 0.65);
     --nav-hover: rgba(255, 255, 255, 0.1);
   }
+  [data-theme="sage"] {
+    --paper: #EEF3EB;
+    --paper-2: #E3EBE0;
+    --paper-3: #F5F8F4;
+    --ink: #1E2B1F;
+    --ink-soft: #3D4F3E;
+    --ink-faint: #6B7D6C;
+    --moss: #4F6B51;
+    --moss-deep: #2A3D2C;
+    --moss-soft: #8FAE8B;
+    --moss-mist: #C5D4C0;
+    --clay: #8B5E4A;
+    --clay-soft: #DCC8BC;
+    --gold: #9A8B6A;
+    --gold-soft: #E0D4B8;
+    --shadow-warm: rgba(30, 43, 31, 0.1);
+    --shadow-deep: rgba(30, 43, 31, 0.16);
+    --line: #C4D0C0;
+    --nav-bg: rgba(238, 243, 235, 0.95);
+    --nav-border: rgba(196, 208, 192, 0.9);
+    --nav-hover: rgba(79, 107, 81, 0.1);
+  }
 
   html { font-size: 16px; }
   html[data-text-size="large"] { font-size: 19px; }
@@ -159,7 +182,7 @@
     filter: brightness(0.94) saturate(0.96);
     transition: filter 0.6s var(--ease-slow);
   }
-  body[data-rest-mode="on"] .nav {
+  body[data-rest-mode="on"] .nav, body[data-rest-mode="on"] .top-nav {
     filter: none;
   }
   /* Mobile / Android: force normal horizontal text (prevents any stray vertical-rl bugs) */
@@ -2150,15 +2173,25 @@
     border-color: rgba(140, 150, 135, 0.28);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
   }
+  #view-today .day-moment:not(.is-open) > *:not(.day-moment-label) { display: none !important; }
   .day-moment-label {
+    all: unset;
     display: block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 10px;
+    color: var(--moss-deep);
+    margin: 0 0 12px;
+    padding: 6px 0 10px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    list-style: none;
   }
+  .day-moment-label:focus-visible { outline: 2px solid var(--moss-soft); outline-offset: 2px; }
   .day-moment--evening .leaf { background: rgba(255, 255, 255, 0.2); }
   @media (max-width: 600px) {
     .day-moment { padding: 20px 16px; margin-bottom: 32px; }
@@ -3472,14 +3505,80 @@
     50% { transform: scale(1.06); opacity: 0.15; }
   }
   .recommend-panel .sum-btn { font-size: 0.92rem; }
-  @media (max-width: 600px) {
-    .recommend-panel { padding: 18px; }
-    .weekly-grid { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 901px) {
+    .top-nav { display: flex; }
+    .nav { display: none; }
+    .app {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-top: calc(52px + env(safe-area-inset-top, 0px) + 8px);
+      padding-bottom: 2rem;
+    }
   }
-</style>
+  @media (max-width: 900px) {
+    .top-nav { display: none; }
+    .nav { display: flex; }
+  }
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 55;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px max(20px, env(safe-area-inset-left)) 10px max(20px, env(safe-area-inset-right));
+    padding-top: max(10px, env(safe-area-inset-top, 0px) + 4px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  }
+  .top-nav__brand {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--moss-deep);
+  }
+  .top-nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .top-nav__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 4.5rem;
+    padding: 8px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+  }
+  .top-nav__btn .nav-icon { width: 20px; height: 20px; }
+  .top-nav__btn:hover, .top-nav__btn:focus-visible { color: var(--ink); background: var(--nav-hover); }
+  .top-nav__btn.active { color: var(--moss-deep); background: rgba(90, 122, 92, 0.1); }
+  .shell-v2 .leaf { font-family: 'Lora', Georgia, serif; }
+  .shell-v2 .picker-label, .shell-v2 .data-hint, .shell-v2 .mini-hint { font-family: 'Inter', system-ui, sans-serif; }
+  .shell-v2 h1.greeting, .shell-v2 .leaf-title { font-family: 'Inter', system-ui, sans-serif; font-weight: 500; font-style: normal; letter-spacing: -0.02em; }
+  .shell-v2 h1.greeting { font-size: clamp(1.5rem, 4vw, 1.85rem); }
+  #view-today .day-moment { border: none; background: rgba(255,255,255,0.45); }
+  [data-theme="forest"] #view-today .day-moment, [data-theme="midnight"] #view-today .day-moment { background: rgba(0,0,0,0.12); }
+  #view-today details.leaf:not([open]) { margin-bottom: 0.75rem; }
+  #view-today details.leaf[open] { margin-bottom: var(--space-section); }
 <link rel="stylesheet" href="visual-polish.css" />
 </head>
-<body>
+<body class="shell-v2">
 <a class="skip-link" href="#main">Skip to journal</a>
 <div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved locally</span></div>
 <button type="button" class="data-corner no-print" id="dataCorner" aria-label="Open saved data and backup">
@@ -3681,6 +3780,31 @@
   </defs>
 </svg>
 
+<div class="top-nav no-print" role="navigation" aria-label="Main">
+  <span class="top-nav__brand">Stillness</span>
+  <div class="top-nav__inner">
+    <button type="button" class="top-nav__btn active" data-nav="today" aria-pressed="true" aria-label="Today">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-today"/></svg>
+      <span>Today</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="practice" aria-pressed="false" aria-label="Practice">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
+      <span>Practice</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="track" aria-pressed="false" aria-label="Track body">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-track"/></svg>
+      <span>Track</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="history" aria-pressed="false" aria-label="Garden — review and log">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
+      <span>Garden</span>
+    </button>
+    <button type="button" class="top-nav__btn" data-nav="settings" aria-pressed="false" aria-label="Settings">
+      <svg class="nav-icon" aria-hidden="true"><use href="#nav-memory"/></svg>
+      <span>Settings</span>
+    </button>
+  </div>
+</div>
 <div class="app" id="main" tabindex="-1">
 
   <!-- ═══════════════════════════════════════════════════════
@@ -3747,8 +3871,8 @@
       </ol>
     </details>
 
-    <div class="day-moment" data-moment="morning" role="region" aria-label="Morning check-in">
-      <span class="day-moment-label" id="morningMomentLabel">Morning &middot; anchor &amp; gentle start</span>
+    <div class="day-moment" data-moment="morning" data-day-step="morning" role="region" aria-label="Morning check-in">
+      <button type="button" class="day-moment-label" id="morningMomentLabel" aria-expanded="false">1 · Morning</button>
     <section class="peace-visual no-print rest-hide-focus" aria-label="Peaceful image for today">
       <img id="dailyPeaceImg" src="assets/peaceful/still-lake-dawn.jpg" alt="A still lake at dawn with mist and warm sunlight" />
       <div class="peace-visual-caption">
@@ -3787,8 +3911,8 @@
 
     </div>
 
-    <div class="day-moment" data-moment="midday" role="region" aria-label="Midday check-in">
-      <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; what shaped this</span>
+    <div class="day-moment" data-moment="midday" data-day-step="midday" role="region" aria-label="Midday check-in">
+      <button type="button" class="day-moment-label" id="middayMomentLabel" aria-expanded="false">2 · Midday</button>
     <!-- Mood + Energy -->
     <section class="leaf">
       <div class="leaf-head">
@@ -3934,8 +4058,8 @@
       <button type="button" class="mini-btn" id="recommendDismiss" style="margin-top:14px">Not now</button>
     </section>
     </div>
-    <div class="day-moment day-moment--evening" data-moment="evening" role="region" aria-label="Rest and evening">
-      <span class="day-moment-label" id="eveningMomentLabel">Rest &amp; evening · sleep, story, and close</span>
+    <div class="day-moment day-moment--evening" data-moment="evening" data-day-step="evening" role="region" aria-label="Rest and evening">
+      <button type="button" class="day-moment-label" id="eveningMomentLabel" aria-expanded="false">3 · Rest &amp; evening</button>
 
     <section class="leaf">
       <div class="leaf-head">
@@ -4407,36 +4531,6 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       JOURNAL VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-journal">
-
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Journal</span></div>
-      <h1 class="greeting">Extra room to write.</h1>
-      <div class="date-line" id="journalDate">—</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-
-    <p class="journal-redirect" id="journalFreeWriteHint">The heart of the day is on <strong>Today</strong> — morning, midday, and evening in order. This tab is a calm overflow when you need more space than the boxes allow.</p>
-
-    <section class="leaf" id="journalFreeWrite">
-      <div class="leaf-head">
-        <h2 class="leaf-title">Long-form <em>space</em></h2>
-        <span class="leaf-num">write</span>
-      </div>
-      <p class="leaf-sub">Letters, lists, a longer story — same day, same local save. Nothing has to be tidy.</p>
-      <label for="journalLongInput" class="picker-label">Write freely (optional)</label>
-      <textarea class="deep-input" id="journalLongInput" rows="14" maxlength="12000" placeholder="When you need more than a line…"></textarea>
-    </section>
-
-    <div class="data-row" style="justify-content:center; margin: 8px 0 28px">
-      <button type="button" class="data-btn" id="goToTodayFromJournal">Back to Today</button>
-    </div>
-
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
        HISTORY VIEW
 
   ═══════════════════════════════════════════════════════ -->
@@ -4522,14 +4616,35 @@
       </div>
     </div>
 
+    <section class="leaf garden-log-embed" id="gardenLogSection" aria-label="Activity and search">
+      <div class="leaf-head">
+        <h2 class="leaf-title">The <em>log</em></h2>
+        <span class="leaf-num">trail</span>
+      </div>
+      <p class="leaf-sub">Search and a gentle trail of saves — same as before, now gathered with the garden.</p>
+      <p class="log-refresh-hint" id="logRefreshHint" role="status" aria-live="polite"></p>
+      <div class="leaf" style="padding-bottom:12px">
+        <p class="picker-label">Search everything you’ve written</p>
+        <div class="log-search-wrap">
+          <input type="search" class="log-search" id="logSearch" enterkeyhint="search" placeholder="Search days, Path, Library — any word you saved…" autocomplete="off" />
+        </div>
+      </div>
+      <div id="logSearchExtras" class="log-search-extras" hidden aria-live="polite"></div>
+      <div class="leaf" style="padding-bottom:18px">
+        <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
+        <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
+      </div>
+      <div id="logEntryList"></div>
+    </section>
+
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       MEMORY VIEW
+       SETTINGS (Memory + Path + Library)
   ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-memory">
+  <div class="view" id="view-settings">
     <header class="plate">
-      <div class="plate-rule"><span class="ornament">Memory</span></div>
+      <div class="plate-rule"><span class="ornament">Settings</span></div>
       <h1 class="greeting">Kept close, on your device.</h1>
       <div class="date-line" id="memoryDateLine">—</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
@@ -4576,11 +4691,10 @@
           <span class="sw" style="background:#2A332B;border-color:#4A5448"></span>
           <span class="sw-name">Forest</span>
         </button>
-        <button type="button" class="theme-swatch" data-set-theme="midnight" title="Midnight">
-          <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
-          <span class="sw-name">Midnight</span>
+        <button type="button" class="theme-swatch" data-set-theme="sage" title="Sage">
+          <span class="sw" style="background:#EEF3EB;border-color:#B8C9B2"></span>
+          <span class="sw-name">Sage</span>
         </button>
-      </div>
       <p class="data-hint" style="margin-top:10px">Match your system or use the toggle if animations feel like too much.</p>
       <div class="data-row" style="margin-top:8px">
         <button type="button" class="data-btn data-btn-ghost" id="reduceMotionToggle" aria-pressed="false" aria-label="Use calmer motion">Motion: full</button>
@@ -4626,53 +4740,12 @@
       <p class="leaf-sub">Removes all saved days, activity, and local settings in this browser. This cannot be undone. Export a backup first if you might need it.</p>
       <button type="button" class="data-btn data-btn-danger" id="wipeAllBtn">Erase all Stillness data</button>
     </section>
-    <section class="leaf">
+    <section class="leaf" id="settingsPath">
       <div class="leaf-head">
-        <h2 class="leaf-title">More <em>spaces</em></h2>
+        <h2 class="leaf-title">Path — <em>values &amp; steps</em></h2>
+        <span class="leaf-num">long view</span>
       </div>
-      <p class="leaf-sub">Extra sections for deeper reflection and quiet reading.</p>
-      <div class="data-row" style="flex-wrap:wrap;gap:8px">
-        <button type="button" class="data-btn" id="goToPath">Path — values &amp; steps</button>
-        <button type="button" class="data-btn" id="goToLibrary">The Library — words &amp; images</button>
-      </div>
-    </section>
-  </div>
-
-  <!-- LOG VIEW — activity + rolling feed -->
-  <div class="view" id="view-log">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">The log</span></div>
-      <h1 class="greeting">What changed.</h1>
-      <div class="date-line">A gentle trail of your check-ins</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <p class="log-refresh-hint" id="logRefreshHint" role="status" aria-live="polite"></p>
-    <div class="leaf" style="padding-bottom:12px">
-      <p class="picker-label">Search everything you’ve written</p>
-      <div class="log-search-wrap">
-        <input type="search" class="log-search" id="logSearch" enterkeyhint="search" placeholder="Search days, Path, Library — any word you saved…" autocomplete="off" />
-      </div>
-    </div>
-    <div id="logSearchExtras" class="log-search-extras" hidden aria-live="polite"></div>
-    <div class="leaf" style="padding-bottom:18px">
-      <p class="leaf-sub" style="margin-bottom:10px" id="logCountLine">—</p>
-      <div class="activity-list" id="logActivity" role="log" aria-relevant="additions"></div>
-    </div>
-    <div id="logEntryList"></div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════
-       PATH VIEW
-  ═══════════════════════════════════════════════════════ -->
-  <div class="view" id="view-path">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">Path</span></div>
-      <h1 class="greeting">The life you are tending.</h1>
-      <div class="date-line">Values, experiments, and next small steps</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="pathBackBtn">← Memory</button></div>
-
+      <p class="leaf-sub">The same path tools as before — now living beside settings.</p>
     <div class="path-cluster">
     <section class="leaf intention">
       <div class="leaf-head">
@@ -4758,21 +4831,12 @@
       <textarea class="deep-input" id="pathLetter" rows="6" placeholder="Dear future me..."></textarea>
     </section>
     </div>
-  </div>
+    </section>
 
-  <!-- QUOTES VIEW -->
-  <div class="view" id="view-quotes">
-    <header class="plate">
-      <div class="plate-rule"><span class="ornament">The Library</span></div>
-      <h1 class="greeting">Words to return to.</h1>
-      <div class="date-line">25 quiet teachings</div>
-      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
-    </header>
-    <div style="margin-bottom:16px"><button type="button" class="mini-btn" id="quotesBackBtn">← Memory</button></div>
-    <section class="leaf">
+    <section class="leaf" id="settingsLibrary">
       <div class="leaf-head">
-        <h2 class="leaf-title">Peaceful <em>images</em></h2>
-        <span class="leaf-num">10 scenes</span>
+        <h2 class="leaf-title">The <em>Library</em></h2>
+        <span class="leaf-num">images</span>
       </div>
       <p class="leaf-sub">A small visual library for breathing, reflection, and softer starts.</p>
       <div class="peace-gallery">
@@ -4817,33 +4881,62 @@
           <figcaption>Sunrise bamboo</figcaption>
         </figure>
       </div>
-    </section>
     <div class="quotes-list" id="quotesList"></div>
+    </section>
+
+  </div>
+
+  <!-- (Journal overflow — #journal) -->
+  <div class="view" id="view-journal">
+
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Journal</span></div>
+      <h1 class="greeting">Extra room to write.</h1>
+      <div class="date-line" id="journalDate">—</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <p class="journal-redirect" id="journalFreeWriteHint">The heart of the day is on <strong>Today</strong> — morning, midday, and evening in order. This tab is a calm overflow when you need more space than the boxes allow.</p>
+
+    <section class="leaf" id="journalFreeWrite">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Long-form <em>space</em></h2>
+        <span class="leaf-num">write</span>
+      </div>
+      <p class="leaf-sub">Letters, lists, a longer story — same day, same local save. Nothing has to be tidy.</p>
+      <label for="journalLongInput" class="picker-label">Write freely (optional)</label>
+      <textarea class="deep-input" id="journalLongInput" rows="14" maxlength="12000" placeholder="When you need more than a line…"></textarea>
+    </section>
+
+    <div class="data-row" style="justify-content:center; margin: 8px 0 28px">
+      <button type="button" class="data-btn" id="goToTodayFromJournal">Back to Today</button>
+    </div>
+
   </div>
 
 </div>
 
-<!-- Bottom navigation -->
+<!-- Bottom navigation (mobile) -->
 <nav class="nav" aria-label="Main">
-  <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">
+  <button type="button" class="nav-btn active" data-view="today" data-nav="today" aria-pressed="true" aria-label="Today">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-today"/></svg>
     <span class="nav-label">Today</span>
   </button>
-  <button type="button" class="nav-btn" data-view="practice" aria-pressed="false" aria-label="Practice — breath, DBT, body">
+  <button type="button" class="nav-btn" data-view="practice" data-nav="practice" aria-pressed="false" aria-label="Practice">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
     <span class="nav-label">Practice</span>
   </button>
-  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">
-    <svg class="nav-icon" aria-hidden="true"><use href="#nav-journal"/></svg>
-    <span class="nav-label">Journal</span>
+  <button type="button" class="nav-btn" data-view="track" data-nav="track" aria-pressed="false" aria-label="Track body">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-track"/></svg>
+    <span class="nav-label">Track</span>
   </button>
-  <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">
+  <button type="button" class="nav-btn" data-view="history" data-nav="history" aria-pressed="false" aria-label="Garden — review and log">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
     <span class="nav-label">Garden</span>
   </button>
-  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="More — backup, log, and settings">
+  <button type="button" class="nav-btn" data-view="settings" data-nav="settings" aria-pressed="false" aria-label="Settings">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-memory"/></svg>
-    <span class="nav-label">More</span>
+    <span class="nav-label">Settings</span>
   </button>
 </nav>
 
@@ -5636,7 +5729,7 @@
     Storage.set(PATH_KEY, JSON.stringify(pathData));
     setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     renderDataCorner();
-    if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
+    if (document.getElementById('view-history') && document.getElementById('view-history').classList.contains('active')) {
       try { renderLogView(); } catch (e) {}
     }
   }
@@ -5656,7 +5749,7 @@
           }
           if (typeof j.retentionUserSet === 'boolean') config.retentionUserSet = j.retentionUserSet;
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
-          if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
+          if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight' || j.theme === 'sage') config.theme = j.theme;
           if (j.textSize === 'large' || j.textSize === 'default') config.textSize = j.textSize;
           if (typeof j.restMode === 'boolean') config.restMode = j.restMode;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
@@ -5687,18 +5780,17 @@
     }));
   }
 
-  const THEME_COLORS = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
+  const THEME_COLORS = { parchment: '#F8F4ED', forest: '#2A332B', midnight: '#1B1F2E', sage: '#EEF3EB' };
   function applyTheme(name) {
-    const t = (name === 'forest' || name === 'midnight' || name === 'parchment') ? name : 'parchment';
+    const t = (name === 'forest' || name === 'midnight' || name === 'parchment' || name === 'sage') ? name : 'parchment';
     config.theme = t;
     Storage.set(THEME_KEY, t);
     document.documentElement.setAttribute('data-theme', t);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
     const schemeMeta = document.querySelector('meta[name="color-scheme"]');
-    if (schemeMeta) schemeMeta.setAttribute('content', t === 'parchment' ? 'light' : 'dark');
-    const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleStatus) appleStatus.setAttribute('content', t === 'parchment' ? 'default' : 'black-translucent');
+    if (schemeMeta) schemeMeta.setAttribute('content', (t === 'parchment' || t === 'sage') ? 'light' : 'dark');
+    if (appleStatus) appleStatus.setAttribute('content', (t === 'parchment' || t === 'sage') ? 'default' : 'black-translucent');
     document.querySelectorAll('.theme-swatch').forEach(btn => {
       const on = btn.dataset.setTheme === t;
       btn.classList.toggle('on', on);
@@ -6712,9 +6804,9 @@
     const m = document.getElementById('morningMomentLabel');
     const d = document.getElementById('middayMomentLabel');
     const e = document.getElementById('eveningMomentLabel');
-    if (m) m.textContent = h < 5 ? 'Deep night · anchor & gentle start' : h < 12 ? 'Morning · anchor & gentle start' : h < 17 ? 'So far today · morning fields' : 'Start of the page · morning fields';
-    if (d) d.textContent = h < 11 ? 'Midday (or when you can) · mood & what shaped this' : h < 16 ? 'This afternoon · mood & what shaped this' : h < 21 ? 'Check-in · mood & what shaped this' : 'Today · mood & what shaped this';
-    if (e) e.textContent = h < 15 ? 'Later today · rest & evening' : h < 19 ? 'Evening · rest & close' : 'Night · rest & close';
+    if (m) m.textContent = '1 · Morning';
+    if (d) d.textContent = '2 · Midday';
+    if (e) e.textContent = '3 · Rest & evening';
   }
   function renderDailyPeaceImage() {
     const img = PEACE_IMAGES[seedFromDate(new Date()) % PEACE_IMAGES.length];
@@ -7697,14 +7789,39 @@
       }
     });
   });
-  const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'memory', 'log', 'path', 'quotes']);
+  const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'settings', 'garden', 'log', 'memory', 'path', 'quotes', 'export']);
   function isValidViewId(v) { return v && document.getElementById('view-' + v); }
+  function mapRouteToView(seg) {
+    if (!seg) return 'today';
+    const s = String(seg).toLowerCase();
+    if (s === 'garden' || s === 'log') return 'history';
+    if (s === 'settings' || s === 'memory' || s === 'export' || s === 'path' || s === 'quotes' || s === 'library') return 'settings';
+    if (s === 'history' || s === 'insights') return 'history';
+    return s;
+  }
   function getRouteView() {
     if (!location.hash) return 'today';
-    const seg = (location.hash.replace(/^#\/?/, '').split(/[/?#]/)[0] || '');
-    if (!seg || seg === 'today') return 'today';
-    if (ROUTE_VIEWS.has(seg) && isValidViewId(seg)) return seg;
+    const raw = (location.hash.replace(/^#\/?/, '').split(/[/?#]/)[0] || '');
+    const m = mapRouteToView(raw);
+    if (m === 'today' && !raw) return 'today';
+    if (isValidViewId(m)) return m;
     return null;
+  }
+  function applyRouteHashScroll() {
+    const h = (location.hash || '').replace(/^#\/?/, '');
+    if (!h) return;
+    setTimeout(() => {
+      const low = h.toLowerCase();
+      if (low === 'log' || low.startsWith('log/') || low.indexOf('log') === 0) {
+        document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'path' || low.indexOf('path') >= 0) {
+        document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'quotes' || low === 'library' || low.indexOf('library') >= 0) {
+        document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (low === 'backup' || low === 'data' || low === 'export') {
+        document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 60);
   }
   function syncUrlToView(target) {
     const p = location.pathname + location.search;
@@ -7712,7 +7829,9 @@
       if (location.hash) history.replaceState({ stillness: 1 }, '', p);
       return;
     }
-    const want = '#' + target;
+    const hmap = { practice: 'practice', track: 'track', journal: 'journal', history: 'garden', settings: 'settings' };
+    const h = hmap[target] != null ? hmap[target] : target;
+    const want = '#' + h;
     if (location.hash !== want) history.replaceState({ stillness: 1 }, '', p + want);
   }
   function switchView(target, opts) {
@@ -7720,23 +7839,23 @@
     const viewEl = document.getElementById('view-' + target);
     if (!viewEl) return;
     if (!opts || !opts.fromHash) syncUrlToView(target);
-    document.querySelectorAll('.nav-btn').forEach(x => {
-      const isOn = x.dataset.view === target;
+    document.querySelectorAll('.nav-btn, .top-nav__btn').forEach(x => {
+      const d = x.getAttribute('data-nav') || (x.dataset && x.dataset.view);
+      if (!d) return;
+      const isOn = d === target;
       x.classList.toggle('active', isOn);
       x.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     });
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     viewEl.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (target === 'history') { renderHistory(); renderInsights(); }
-    if (target === 'quotes') renderQuotes();
-    if (target === 'log') renderLogView();
-    if (target === 'path') renderPath();
+    if (target === 'history') { renderHistory(); renderInsights(); renderLogView(); }
+    if (target === 'settings') { setRetentionSelect(); renderRetentionStatus(); try { renderPath(); renderQuotes(); } catch (e) {} }
     if (target === 'practice') renderDbtTodayLog();
-    if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); try { renderHistory(); } catch (e) {} }
     if (target === 'today') renderTodaySummary();
     if (target === 'journal') renderTodaySummary();
     updateStickySaveBar();
+    if (opts && opts.fromHash) applyRouteHashScroll();
   }
   window.addEventListener('hashchange', () => {
     const v = getRouteView();
@@ -7756,25 +7875,23 @@
     e.preventDefault();
     renderQuoteAndAffirmation(true);
   });
-  document.getElementById('goToLogFromToday').addEventListener('click', () => switchView('log'));
+  document.getElementById('goToLogFromToday')?.addEventListener('click', () => { switchView('history'); setTimeout(() => document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('goToTrack').addEventListener('click', () => switchView('track'));
-  document.getElementById('goToJournal').addEventListener('click', () => switchView('journal'));
-  document.getElementById('memoryOpenLog')?.addEventListener('click', () => switchView('log'));
+  document.getElementById('goToJournal')?.addEventListener('click', () => switchView('journal'));
+  document.getElementById('memoryOpenLog')?.addEventListener('click', () => { switchView('history'); setTimeout(() => document.getElementById('gardenLogSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('memoryOpenTrack')?.addEventListener('click', () => switchView('track'));
   document.getElementById('memoryOpenInsights')?.addEventListener('click', () => switchView('history'));
-  document.getElementById('memoryOpenPath')?.addEventListener('click', () => switchView('path'));
-  document.getElementById('memoryOpenLibrary')?.addEventListener('click', () => switchView('quotes'));
+  document.getElementById('memoryOpenPath')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
+  document.getElementById('memoryOpenLibrary')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
   document.getElementById('dataCorner')?.addEventListener('click', () => {
-    switchView('memory');
+    switchView('settings');
     setTimeout(() => document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
   });
   document.getElementById('backupReminderExport')?.addEventListener('click', () => {
     document.getElementById('exportBtn')?.click();
   });
-  document.getElementById('goToPath')?.addEventListener('click', () => switchView('path'));
-  document.getElementById('goToLibrary')?.addEventListener('click', () => switchView('quotes'));
-  document.getElementById('pathBackBtn')?.addEventListener('click', () => switchView('memory'));
-  document.getElementById('quotesBackBtn')?.addEventListener('click', () => switchView('memory'));
+  document.getElementById('goToPath')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsPath')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
+  document.getElementById('goToLibrary')?.addEventListener('click', () => { switchView('settings'); setTimeout(() => document.getElementById('settingsLibrary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); });
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -8485,15 +8602,15 @@
   const pathGoalInput = document.getElementById('pathGoalInput');
   if (pathGoalInput) pathGoalInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathGoal(); });
 
-  document.querySelectorAll('.nav-btn').forEach(b => {
+  document.querySelectorAll('.nav-btn, .top-nav__btn').forEach(b => {
     b.addEventListener('click', () => {
-      const target = b.dataset.view;
-      switchView(target);
+      const target = b.getAttribute('data-nav') || b.dataset.view;
+      if (target) switchView(target);
     });
   });
 
   /* ── Android: swipe between tabs (requires deliberate horizontal swipe) ─ */
-  const SWIPE_VIEWS = ['today', 'practice', 'track', 'journal', 'history', 'memory', 'log'];
+  const SWIPE_VIEWS = ['today', 'practice', 'track', 'history', 'settings'];
   const SWIPE_MIN_PX = 108;
   const SWIPE_MAX_VERT_RATIO = 0.48;
   let _swX = 0, _swY = 0;
@@ -9191,14 +9308,16 @@
       const active = document.querySelector('.view.active');
       if (!active) return;
       const v = active.id;
-      if (v === 'view-log') {
+      if (v === 'view-history') {
+        try { renderHistory(); renderInsights(); renderLogView(); } catch (err) {}
+        const h = document.getElementById('gardenRefreshHint');
+        if (h) { h.textContent = 'Refreshed your garden. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
+        const hl = document.getElementById('logRefreshHint');
+        if (hl) { hl.textContent = 'Refreshed. ·✦·'; hl.classList.add('on'); setTimeout(() => { hl.textContent = ''; hl.classList.remove('on'); }, 1400); }
+      } else if (v === 'view-settings') {
         try { renderLogView(); } catch (err) {}
         const h = document.getElementById('logRefreshHint');
         if (h) { h.textContent = 'Refreshed. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
-      } else if (v === 'view-history') {
-        try { renderHistory(); renderInsights(); } catch (err) {}
-        const h = document.getElementById('gardenRefreshHint');
-        if (h) { h.textContent = 'Refreshed your garden. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
       }
     }, { passive: true });
   })();
@@ -9920,7 +10039,7 @@
   if (!config.onboardingSeen) {
     const ob = document.getElementById('onboardingToast');
     if (ob) {
-      ob.textContent = 'Welcome. Nothing here is urgent — your words stay in this browser until you choose to back them up in Memory.';
+      ob.textContent = 'Welcome. Nothing here is urgent — your words stay in this browser until you back them up in Settings.';
       ob.classList.add('on');
       setTimeout(() => { ob.classList.remove('on'); }, 6000);
     }
@@ -9937,6 +10056,31 @@
     if (bwd) bwd.open = false;
     if (emd) emd.open = false;
   } catch (e) {}
+  (function initDayStepAccordions() {
+    const root = document.getElementById('view-today');
+    if (!root) return;
+    const steps = root.querySelectorAll('[data-day-step]');
+    const setOpen = (el) => {
+      steps.forEach(x => {
+        const on = el && x === el;
+        x.classList.toggle('is-open', on);
+        const lab = x.querySelector('.day-moment-label');
+        if (lab) lab.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+    };
+    steps.forEach(s => {
+      const lab = s.querySelector('.day-moment-label');
+      if (!lab) return;
+      lab.addEventListener('click', () => {
+        if (s.classList.contains('is-open')) setOpen(null);
+        else setOpen(s);
+      });
+    });
+    const hr = new Date().getHours();
+    const pick = hr < 12 ? 'morning' : hr < 18 ? 'midday' : 'evening';
+    const el = root.querySelector('[data-day-step="' + pick + '"]');
+    if (el) setOpen(el);
+  })();
   (function initRoute() {
     const v = getRouteView();
     if (v == null) {
