@@ -2206,15 +2206,6 @@
   .data-corner.session-only .data-corner-dot { background: var(--clay); box-shadow: 0 0 0 4px rgba(181, 101, 74, 0.14); }
   .data-corner.needs-backup { color: var(--gold); border-color: rgba(201, 169, 97, 0.7); }
   .data-corner.needs-backup .data-corner-dot { background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.18); }
-  .data-corner.subtle-save:not(:hover):not(:focus-visible) {
-    opacity: 0.42;
-    background: rgba(244, 236, 218, 0.5);
-    border-color: rgba(201, 187, 164, 0.38);
-    box-shadow: 0 4px 14px rgba(74, 64, 49, 0.06);
-  }
-  .data-corner.subtle-save:not(:hover):not(:focus-visible) .data-corner-dot {
-    opacity: 0.75;
-  }
   .backup-reminder {
     background: linear-gradient(135deg, var(--gold-soft), var(--paper-3));
     border: 1px solid rgba(201, 187, 164, 0.5);
@@ -4928,7 +4919,8 @@
     const label = count === 1 ? '1 saved day' : `${count} saved days`;
     btn.classList.toggle('session-only', !storageDurable);
     btn.classList.toggle('needs-backup', due && storageDurable);
-    btn.classList.toggle('subtle-save', storageDurable && !due);
+    /* Hide corner when all is well — backup & Memory stay under More in the nav */
+    btn.hidden = storageDurable && !due;
     if (!storageDurable) {
       text.textContent = count ? `Session · ${label}` : 'Session only';
       btn.title = 'This browser blocked durable storage. Download a backup before closing.';
