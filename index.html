@@ -1808,8 +1808,20 @@
   .quick-action, .wind-step, .more-menu button { min-height: 48px; border: 1px solid rgba(201, 187, 164, 0.55); background: var(--paper); color: var(--ink); border-radius: 14px; padding: 10px; cursor: pointer; text-align: left; font-family: 'Lora', serif; }
   .quick-action span { display: block; font-weight: 600; overflow-wrap: anywhere; }
   .quick-action small, .wind-step small { display: block; color: var(--ink-faint); font-size: 0.72rem; line-height: 1.25; margin-top: 2px; }
-  .storage-truth { margin: 12px 0 0; color: var(--moss-deep); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
-  .storage-truth.session-only { color: var(--clay); }
+  .storage-truth { margin: 10px 0 0; color: var(--ink-faint); font-family: 'Lora', Georgia, serif; font-size: 0.72rem; letter-spacing: 0.02em; text-transform: none; font-style: italic; line-height: 1.4; opacity: 0.72; max-width: 28em; margin-left: auto; margin-right: auto; text-align: center; }
+  .storage-truth.session-only { color: var(--clay); opacity: 0.9; font-style: normal; }
+  .sync-hint {
+    margin-top: 8px;
+    font-size: 0.68rem;
+    max-width: 26em;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.45;
+    color: var(--ink-faint);
+    opacity: 0.62;
+  }
+  .sync-hint strong { font-weight: 500; color: var(--ink-soft); }
+  .storage-truth-default { opacity: 0.55; font-size: 0.68rem; }
   .support-panel { display: grid; grid-template-columns: 120px 1fr; }
   .support-panel[hidden] { display: none; }
   .support-image { min-height: 100%; background-image: url('assets/peaceful/misty-forest-path.jpg'); background-size: cover; background-position: center; }
@@ -2094,39 +2106,73 @@
 
   .save-bar {
     position: fixed;
-    top: 0; left: 0; right: 0;
     z-index: 40;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: 6px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--moss-deep);
-    background: rgba(214, 220, 201, 0.92);
-    border-bottom: 1px solid rgba(201, 187, 164, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: opacity .3s, transform .3s;
+    transition: opacity .35s ease, transform .35s ease, top .25s ease, bottom .25s ease, background .25s ease;
   }
-  .save-bar.saving { opacity: 0.95; }
-  .save-bar.saved { color: var(--moss); }
+  /* Quiet “saved” strip — tucked above the bottom nav, low contrast */
+  .save-bar.saved {
+    bottom: max(78px, calc(env(safe-area-inset-bottom, 0px) + 68px));
+    top: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 45;
+    padding: 4px 12px;
+    max-width: min(420px, calc(100vw - 24px));
+    font-size: 0.58rem;
+    color: var(--ink-faint);
+    background: rgba(237, 227, 210, 0.42);
+    border: 1px solid rgba(201, 187, 164, 0.28);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0.55;
+    box-shadow: none;
+  }
+  .save-bar.saved .dot {
+    width: 5px; height: 5px;
+    background: var(--moss-soft);
+    opacity: 0.75;
+  }
+  /* Saving / errors stay at the top where you’ll notice them */
+  .save-bar.saving,
+  .save-bar.error {
+    top: 0; left: 0; right: 0; bottom: auto;
+    transform: none;
+    padding: 7px 12px;
+    font-size: 0.65rem;
+    border-radius: 0;
+    max-width: none;
+    opacity: 0.96;
+    color: var(--moss-deep);
+    background: rgba(214, 220, 201, 0.88);
+    border-bottom: 1px solid rgba(201, 187, 164, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .save-bar.error { color: var(--clay); background: rgba(232, 197, 178, 0.9); border-bottom-color: rgba(181, 101, 74, 0.35); }
   .save-bar .dot {
     width: 6px; height: 6px;
     border-radius: 50%;
     background: var(--moss-soft);
+    flex-shrink: 0;
   }
   .save-bar.saving .dot { background: var(--gold); animation: pulse 1s ease infinite; }
-  .save-bar.error { color: var(--clay); }
+  .save-bar.error .dot { background: var(--clay); animation: none; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-  .app { padding-top: 44px; }
+  .app { padding-top: 32px; }
+  body.save-bar-top .app { padding-top: 44px; }
 
   .data-corner {
     position: fixed;
-    top: 44px;
+    top: 12px;
     left: 12px;
     z-index: 48;
     min-height: 44px;
@@ -2180,7 +2226,7 @@
   .backup-reminder .data-hint { color: var(--ink-soft); }
   @media (max-width: 520px) {
     .data-corner {
-      top: 42px;
+      top: 10px;
       left: 10px;
       max-width: 172px;
       padding: 8px 10px;
@@ -2723,7 +2769,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
-<div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved on this device</span></div>
+<div class="save-bar saved" id="saveBar" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="saveBarText">Saved locally</span></div>
 <button type="button" class="data-corner no-print" id="dataCorner" aria-label="Open saved data and backup">
   <span class="data-corner-dot" id="dataCornerDot" aria-hidden="true"></span>
   <span id="dataCornerText">Saved data</span>
@@ -2935,7 +2981,7 @@
       <div class="plate-rule"><span class="ornament">Stillness</span></div>
       <h1 class="greeting" id="greeting">Good morning.</h1>
       <div class="date-line" id="date">—</div>
-      <p class="date-line" id="syncNote" style="margin-top:6px;font-size:0.7rem;max-width:28em;margin-left:auto;margin-right:auto;line-height:1.45">Your journal is kept on <strong>this device</strong> in the browser. It does not sync to the server when you deploy—use Memory → backup file to keep a copy.</p>
+      <p class="sync-hint" id="syncNote">Stored in this browser only — not on a server. For a portable copy, use <strong>Memory</strong> → backup.</p>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
@@ -2951,7 +2997,7 @@
         <button type="button" class="quick-action" data-quick-go="journal"><span>Journal</span><small>one sentence</small></button>
         <button type="button" class="quick-action" data-quick-go="timer"><span>Timer</span><small>quiet sound</small></button>
       </div>
-      <p class="storage-truth" id="storageTruth">Saved on this device.</p>
+      <p class="storage-truth storage-truth-default" id="storageTruth">Entries stay on this device.</p>
     </section>
 
     <details class="leaf start-here collapsible-section no-print" id="startHereDetails" aria-label="How to use today">
@@ -4000,14 +4046,14 @@
     storageDurable = !!isDurable;
     const truth = document.getElementById('storageTruth');
     if (truth) {
-      truth.textContent = storageDurable ? 'Saved on this device.' : 'Saved for this session only. Download a backup.';
+      truth.textContent = storageDurable ? 'Entries stay on this device.' : 'Saved for this session only — download a backup before closing.';
       truth.classList.toggle('session-only', !storageDurable);
     }
     const sync = document.getElementById('syncNote');
     if (sync) {
       sync.innerHTML = storageDurable
-        ? 'Saved on <strong>this device</strong>. It does not sync to Vercel or the server; use Memory -> backup file to keep a copy.'
-        : '<strong>Session-only storage.</strong> Your browser blocked durable storage. Download a backup before closing.';
+        ? 'Stored in this browser only — not on a server. For a portable copy, use <strong>Memory</strong> → backup.'
+        : '<strong>Session-only storage.</strong> This browser blocked durable storage — download a backup before closing.';
     }
   }
   const Storage = {
@@ -4266,7 +4312,7 @@
     clearTimeout(saveTimer);
     try {
       Storage.set(getStorageKey(), JSON.stringify(day));
-      setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+      setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       renderDataCorner();
     } catch (e) {
       setSaveBarText('Could not save — storage may be full or blocked', 'error');
@@ -4279,7 +4325,7 @@
     saveTimer = setTimeout(() => {
       try {
         Storage.set(getStorageKey(), JSON.stringify(day));
-        setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+        setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
         renderDataCorner();
       } catch (e) {
@@ -4398,7 +4444,7 @@
   }
   function savePath() {
     Storage.set(PATH_KEY, JSON.stringify(pathData));
-    setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+    setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     renderDataCorner();
   }
 
@@ -4940,6 +4986,7 @@
     el.textContent = text;
     bar.classList.remove('saving', 'saved', 'error');
     if (className) bar.classList.add(className);
+    document.body.classList.toggle('save-bar-top', className === 'saving' || className === 'error');
   }
 
   function hasAnyData(d) {
@@ -4978,6 +5025,8 @@
     const label = count === 1 ? '1 saved day' : `${count} saved days`;
     btn.classList.toggle('session-only', !storageDurable);
     btn.classList.toggle('needs-backup', due && storageDurable);
+    /* Hide corner when all is well — backup & Memory stay under More in the nav */
+    btn.hidden = storageDurable && !due;
     if (!storageDurable) {
       text.textContent = count ? `Session · ${label}` : 'Session only';
       btn.title = 'This browser blocked durable storage. Download a backup before closing.';
@@ -5643,7 +5692,7 @@
         e.preventDefault();
         saveDayNow();
         pushActivity('Evening check-in saved (Ctrl/⌘ + Enter).');
-        setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+        setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       }
     });
   });
@@ -6858,7 +6907,7 @@
     renderHistory();
     renderLogView();
     renderDataCorner();
-    setSaveBarText(storageDurable ? 'Saved on this device' : 'Saved for this session only', storageDurable ? 'saved' : 'error');
+    setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     document.getElementById('importMessage').textContent = 'All local data cleared.';
     pushActivity('All data erased in this browser.');
   });
