@@ -41,8 +41,8 @@ body::before { opacity: 0.12; }
 body::after { opacity: 0.16; }
 
 .app {
-  width: min(100%, 1040px);
-  max-width: 1040px;
+  width: min(100%, 1140px);
+  max-width: 1140px;
   padding: 28px clamp(16px, 3vw, 34px) 0;
 }
 
@@ -63,11 +63,12 @@ body::after { opacity: 0.16; }
 #view-today > .day-moment[data-moment="morning"] { order: 4; }
 #view-today > .day-moment[data-moment="evening"] { order: 5; }
 #view-today > #summaryCard { order: 6; }
-#view-today > .rest-mode-pill { order: 7; }
-#view-today > #startHereDetails { order: 8; }
-#view-today > .flourish { order: 9; }
+#view-today > .mindful-minutes-strip { order: 7; }
+#view-today > .rest-mode-pill { order: 8; }
+#view-today > #startHereDetails { order: 9; }
+#view-today > .flourish { order: 10; }
 #view-today > .today-quick-links,
-#view-today > .data-row { order: 10; }
+#view-today > .data-row { order: 11; }
 
 .plate,
 .quick-start,
@@ -329,6 +330,17 @@ body::after { opacity: 0.16; }
   background: linear-gradient(155deg, #fffdf7, rgba(227, 236, 229, 0.66));
 }
 
+.mindful-minutes-strip {
+  width: min(100%, 760px);
+  margin: -6px auto 0;
+  padding: 10px 0;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
 #startHereDetails {
   width: min(100%, 760px);
   margin-left: auto;
@@ -372,6 +384,12 @@ body::after { opacity: 0.16; }
   text-transform: none;
 }
 
+.view.active:not(#view-today) {
+  width: min(100%, 1040px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .practice-launch-ghost {
   display: none !important;
 }
@@ -407,21 +425,94 @@ body::after { opacity: 0.16; }
 }
 
 @media (min-width: 980px) {
+  body {
+    padding-top: 82px;
+    padding-bottom: 44px;
+  }
+
+  .app {
+    padding-top: 18px;
+  }
+
   #view-today.active {
     align-items: center;
+    gap: 20px;
   }
 
   #view-today > .day-moment[data-moment="midday"],
   #view-today > .day-moment[data-moment="evening"] {
-    width: min(100%, 920px);
+    width: min(100%, 1040px);
   }
 
   #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type {
     padding: 30px;
   }
 
+  #view-today > .plate,
+  .today-progress-wrap,
+  .rest-mode-pill,
+  #startHereDetails {
+    width: min(100%, 900px);
+  }
+
+  .quick-start {
+    width: min(100%, 1040px);
+    display: grid;
+    grid-template-columns: minmax(220px, 0.78fr) minmax(0, 1.5fr);
+    align-items: end;
+    gap: clamp(18px, 3vw, 34px);
+    padding: 26px clamp(24px, 4vw, 38px);
+    background:
+      linear-gradient(90deg, rgba(255, 253, 247, 0.97) 0%, rgba(255, 253, 247, 0.92) 42%, rgba(227, 236, 229, 0.76) 100%),
+      url("assets/peaceful/rain-leaves.jpg") right center / 34% auto no-repeat;
+  }
+
+  .quick-start-copy {
+    max-width: none;
+  }
+
+  .quick-start h2 {
+    max-width: 11ch;
+  }
+
+  .quick-start .quick-action-grid {
+    align-self: stretch;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .day-moment-label,
+  #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type,
+  #view-today > .day-moment[data-moment="midday"] > .support-panel,
+  #view-today > .day-moment[data-moment="midday"] > .recommend-panel {
+    grid-column: 1 / -1;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .collapsible-section {
+    min-height: 0;
+    margin: 0;
+    padding: 18px;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .collapsible-section .leaf-head {
+    gap: 10px;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .collapsible-section .leaf-title {
+    font-size: 1.08rem;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .collapsible-section .leaf-sub {
+    font-size: 0.9rem;
+  }
+
   #view-today > .day-moment[data-moment="morning"] {
-    width: min(100%, 920px);
+    width: min(100%, 1040px);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 16px;
@@ -434,9 +525,66 @@ body::after { opacity: 0.16; }
   #view-today > .day-moment[data-moment="morning"] .leaf {
     margin-bottom: 0;
   }
+
+  #view-today #summaryCard {
+    width: min(100%, 1040px);
+  }
+
+  .sticky-save-bar {
+    bottom: 26px;
+    width: min(92vw, 560px);
+  }
+
+  .nav {
+    top: max(14px, env(safe-area-inset-top, 0px));
+    bottom: auto;
+    width: min(92vw, 760px);
+    padding: 7px;
+    border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(35, 48, 42, 0.13);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .nav-btn {
+    min-height: 42px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .nav-label {
+    font-size: 0.72rem;
+  }
+
+  .data-corner {
+    left: auto;
+    right: max(16px, calc((100vw - 1140px) / 2 + 16px));
+  }
+
+  .grid-trackers,
+  .insight-grid,
+  .memory-grid,
+  .practice-grid,
+  .library-grid {
+    max-width: 1040px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (max-width: 700px) {
+  .data-corner {
+    display: none;
+  }
+
   body {
     padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px));
   }
