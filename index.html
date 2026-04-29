@@ -7340,10 +7340,14 @@
   });
   document.querySelectorAll('[data-practice-launch]').forEach(btn => {
     btn.addEventListener('click', () => {
+      const direct = ['tipp', 'stop', 'radacc', 'thought'];
+      if (direct.includes(btn.dataset.practiceLaunch)) {
+        openSkillByName(btn.dataset.practiceLaunch);
+        return;
+      }
       const map = {
         breathe: 'breatheBtn', ground: 'groundBtn', kindness: 'kindnessBtn',
-        scan: 'scanBtn', worry: 'worryBtn',
-        tipp: 'tippLaunch', stop: 'stopLaunch', radacc: 'radAccLaunch', thought: 'thoughtLaunch'
+        scan: 'scanBtn', worry: 'worryBtn'
       };
       const target = document.getElementById(map[btn.dataset.practiceLaunch]);
       if (target) target.click();
@@ -8061,7 +8065,7 @@
   });
 
   /* ── Hardware back button closes overlays ─────────────── */
-  document.querySelectorAll('.practice-btn, #breatheBtn, #groundBtn, #kindnessBtn, #scanBtn, #worryBtn').forEach(btn => {
+  document.querySelectorAll('.practice-btn, #breatheBtn, #groundBtn, #kindnessBtn, #scanBtn, #worryBtn, [data-practice-launch]').forEach(btn => {
     btn.addEventListener('click', () => {
       setTimeout(() => { if (document.querySelector('.overlay.open')) history.pushState({ ov: 1 }, ''); }, 80);
     });
