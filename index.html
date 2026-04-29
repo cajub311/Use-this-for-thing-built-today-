@@ -3338,6 +3338,7 @@
   }
 </style>
 <link rel="stylesheet" href="visual-polish.css" />
+<link rel="stylesheet" href="calm-redesign.css" />
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
@@ -3679,6 +3680,8 @@
         </div>
       </div>
 
+      <details class="calm-more-note no-print">
+        <summary>Add a few words (optional)</summary>
       <p class="picker-label" style="margin-top:20px">What helped shape this? (optional)</p>
       <p class="feeling-context-hint">People, places, sleep, food, news, weather, a hard moment, a kind one — no need to be complete.</p>
       <textarea class="mood-note" id="moodContextInput" rows="2" maxlength="800" placeholder="A few words about what was in the story of today — if you want."></textarea>
@@ -3689,6 +3692,7 @@
       <div class="mood-text-actions no-print">
         <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
       </div>
+      </details>
     </section>
 
     <details class="leaf collapsible-section" id="innerLandscapeDetails" aria-label="Emotional weather">
@@ -4349,8 +4353,8 @@
   ═══════════════════════════════════════════════════════ -->
   <div class="view" id="view-memory">
     <header class="plate">
-      <div class="plate-rule"><span class="ornament">Memory</span></div>
-      <h1 class="greeting">Kept close, on your device.</h1>
+      <div class="plate-rule"><span class="ornament">More</span></div>
+      <h1 class="greeting">Backup, settings, and saved spaces.</h1>
       <div class="date-line" id="memoryDateLine">—</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
@@ -4644,9 +4648,9 @@
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-practice"/></svg>
     <span class="nav-label">Practice</span>
   </button>
-  <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">
-    <svg class="nav-icon" aria-hidden="true"><use href="#nav-journal"/></svg>
-    <span class="nav-label">Journal</span>
+  <button type="button" class="nav-btn" data-view="track" aria-pressed="false" aria-label="Track body">
+    <svg class="nav-icon" aria-hidden="true"><use href="#nav-track"/></svg>
+    <span class="nav-label">Track</span>
   </button>
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">
     <svg class="nav-icon" aria-hidden="true"><use href="#nav-garden"/></svg>
@@ -6140,7 +6144,7 @@
     if (!bar) return;
     const active = document.querySelector('.view.active');
     const id = active && active.id;
-    const on = id === 'view-today';
+    const on = id === 'view-today' && hasAnyData(day);
     bar.classList.toggle('visible', !!on);
     bar.setAttribute('aria-hidden', on ? 'false' : 'true');
   }
@@ -7979,7 +7983,7 @@
   });
 
   /* ── Android: swipe between tabs (requires deliberate horizontal swipe) ─ */
-  const SWIPE_VIEWS = ['today', 'practice', 'track', 'journal', 'history', 'memory', 'log'];
+  const SWIPE_VIEWS = ['today', 'practice', 'track', 'history', 'memory'];
   const SWIPE_MIN_PX = 108;
   const SWIPE_MAX_VERT_RATIO = 0.48;
   let _swX = 0, _swY = 0;
@@ -8606,6 +8610,13 @@
   if (restBtn) restBtn.addEventListener('click', () => { config.restMode = !config.restMode; applyRestMode(); saveConfig(); pushActivity(config.restMode ? 'Rest mode on.' : 'Rest mode off.'); });
   const stickyBtn = document.getElementById('stickySaveBtn');
   if (stickyBtn) stickyBtn.addEventListener('click', () => { saveDayNow(); flashSaveNow(); try { if (window.navigator && navigator.vibrate) navigator.vibrate(12); } catch (e) {} renderTodayProgress(); updateStickySaveBar(); });
+  document.addEventListener('input', () => { setTimeout(updateStickySaveBar, 0); }, true);
+  document.addEventListener('change', () => { setTimeout(updateStickySaveBar, 0); }, true);
+  document.addEventListener('click', (e) => {
+    if (e.target && e.target.closest && e.target.closest('#view-today button, #view-track button, #view-today [role="button"], #view-track [role="button"]')) {
+      setTimeout(updateStickySaveBar, 0);
+    }
+  }, true);
   let logSearchTimer = null;
   document.getElementById('logSearch').addEventListener('input', () => {
     clearTimeout(logSearchTimer);

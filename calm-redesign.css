@@ -1,0 +1,615 @@
+/* Calm app redesign layer.
+   Keeps the single-file app/data model intact while making the live shell feel
+   like one polished wellness product instead of stacked journal fragments. */
+
+:root,
+[data-theme="parchment"] {
+  --paper: #f7f5ef;
+  --paper-2: #eef2ea;
+  --paper-3: #fffdf7;
+  --ink: #24302a;
+  --ink-soft: #5d6a62;
+  --ink-faint: #8b958d;
+  --moss: #3f7257;
+  --moss-deep: #244d3a;
+  --moss-soft: #b9cdbf;
+  --moss-mist: #e3ece5;
+  --clay: #a96c55;
+  --gold: #b39148;
+  --line: rgba(102, 121, 109, 0.22);
+  --shadow-warm: rgba(35, 48, 42, 0.08);
+  --shadow-deep: rgba(35, 48, 42, 0.14);
+  --nav-bg: rgba(255, 253, 247, 0.88);
+  --nav-border: rgba(87, 111, 96, 0.18);
+  --nav-hover: rgba(63, 114, 87, 0.08);
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+}
+
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(180deg, rgba(227, 236, 229, 0.82), rgba(247, 245, 239, 0.18) 32%, rgba(235, 240, 245, 0.34) 100%),
+    radial-gradient(760px 360px at 82% 0%, rgba(112, 145, 166, 0.16), transparent 72%),
+    radial-gradient(640px 360px at 0% 14%, rgba(177, 145, 72, 0.10), transparent 68%);
+  padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+}
+
+body::before { opacity: 0.12; }
+body::after { opacity: 0.16; }
+
+.app {
+  width: min(100%, 1040px);
+  max-width: 1040px;
+  padding: 28px clamp(16px, 3vw, 34px) 0;
+}
+
+.view.active {
+  animation-duration: 0.24s;
+}
+
+#view-today.active {
+  display: flex !important;
+  flex-direction: column;
+  gap: 18px;
+}
+
+#view-today > .plate { order: 0; }
+#view-today > .day-moment[data-moment="midday"] { order: 1; }
+#view-today > .quick-start { order: 2; }
+#view-today > .today-progress-wrap { order: 3; }
+#view-today > .day-moment[data-moment="morning"] { order: 4; }
+#view-today > .day-moment[data-moment="evening"] { order: 5; }
+#view-today > #summaryCard { order: 6; }
+#view-today > .rest-mode-pill { order: 7; }
+#view-today > #startHereDetails { order: 8; }
+#view-today > .flourish { order: 9; }
+#view-today > .today-quick-links,
+#view-today > .data-row { order: 10; }
+
+.plate,
+.quick-start,
+.today-progress-wrap,
+.rest-mode-pill,
+.day-moment,
+.leaf,
+.quote-frame,
+.support-panel,
+.recommend-panel,
+.visual-banner,
+.heatmap-wrap,
+.streak-card {
+  border-radius: var(--r-lg);
+  border-color: var(--line);
+  box-shadow: 0 16px 44px var(--shadow-warm);
+}
+
+#view-today > .plate {
+  min-height: 0;
+  margin: 0 auto 2px;
+  padding: 20px 18px 18px;
+  width: min(100%, 760px);
+  background: rgba(255, 253, 247, 0.72);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 34px rgba(35, 48, 42, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+#view-today > .plate::before { opacity: 0.10; }
+#view-today .plate-rule { margin-bottom: 8px; }
+#view-today .greeting {
+  margin: 2px 0 6px;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.02;
+}
+#view-today .botanical-deco { display: none; }
+#view-today .sync-hint {
+  max-width: 30rem;
+  margin: 10px auto 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.quick-start {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 28px);
+  background:
+    linear-gradient(135deg, rgba(255, 253, 247, 0.96), rgba(227, 236, 229, 0.82)),
+    url("assets/peaceful/rain-leaves.jpg") right center / 44% auto no-repeat;
+}
+
+.quick-start::after { display: none; }
+.quick-start-copy { max-width: 36rem; }
+.quick-start h2 {
+  max-width: 15ch;
+  font-size: clamp(1.55rem, 4vw, 2.15rem);
+  line-height: 1.06;
+}
+
+.quick-start .quick-action-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  max-width: none !important;
+  gap: 10px;
+}
+
+.quick-action,
+.sum-btn,
+.data-btn,
+.pill,
+.picker-btn,
+.moon-btn,
+.meal-type,
+.sev-btn,
+.likert-btn,
+.mini-btn {
+  border-radius: var(--r-sm) !important;
+}
+
+.quick-action {
+  min-height: 72px;
+  padding: 13px 12px;
+  background: rgba(255, 253, 247, 0.88);
+  border-color: rgba(63, 114, 87, 0.16);
+}
+
+.intention::before {
+  display: none;
+}
+
+.quick-action span {
+  font-size: 0.98rem;
+  line-height: 1.1;
+}
+
+.quick-action small {
+  margin-top: 5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+}
+
+.today-progress-wrap {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  min-height: 76px;
+  padding: 12px 16px;
+  background: rgba(255, 253, 247, 0.68);
+  box-shadow: none;
+}
+
+.today-progress-ring {
+  width: 58px;
+  height: 58px;
+}
+
+.today-progress-caption {
+  font-size: 0.9rem;
+  max-width: 32rem;
+}
+
+.rest-mode-pill {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 12px 14px;
+  box-shadow: none;
+  background: rgba(255, 253, 247, 0.54);
+}
+
+.day-moment {
+  width: min(100%, 820px);
+  margin: 0 auto 10px;
+  padding: clamp(16px, 3vw, 24px);
+  overflow: hidden;
+  border-top-width: 1px !important;
+  box-shadow: 0 18px 42px rgba(35, 48, 42, 0.07);
+}
+
+.day-moment::before,
+.day-moment::after {
+  display: none !important;
+}
+
+.day-moment-label {
+  white-space: normal;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  margin-bottom: 14px;
+}
+
+.day-moment .leaf {
+  box-shadow: none;
+  margin-bottom: 14px;
+  border-left-width: 0;
+}
+
+.day-moment .leaf:hover,
+.leaf:hover {
+  transform: none;
+}
+
+#view-today > .day-moment[data-moment="midday"] {
+  background: linear-gradient(155deg, rgba(255, 253, 247, 0.94), rgba(227, 236, 229, 0.74));
+}
+
+#view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type {
+  background:
+    linear-gradient(145deg, rgba(255, 253, 247, 0.98), rgba(248, 251, 247, 0.92)),
+    url("assets/peaceful/morning-window-plants.jpg") right top / 36% auto no-repeat;
+  border-color: rgba(63, 114, 87, 0.22);
+  box-shadow: 0 14px 36px rgba(35, 48, 42, 0.08);
+}
+
+#view-today .mood-scale-col,
+#view-today .energy-scale-col {
+  display: block;
+}
+
+#view-today .mood-intensity-track {
+  display: none;
+}
+
+#view-today .picker-row--vertical {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#view-today .picker-row--vertical .picker-btn {
+  display: flex;
+  min-height: 76px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+#view-today .picker-row--vertical .picker-btn .icon-wrap {
+  margin: 0 0 5px;
+}
+
+#view-today .picker-row--vertical .picker-btn .lbl {
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
+.calm-more-note {
+  margin-top: 18px;
+  border-top: 1px solid rgba(102, 121, 109, 0.16);
+  padding-top: 12px;
+}
+
+.calm-more-note > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  border: 1px solid rgba(63, 114, 87, 0.18);
+  border-radius: var(--r-sm);
+  padding: 0 14px;
+  background: rgba(255, 253, 247, 0.72);
+  color: var(--moss-deep);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calm-more-note > summary::-webkit-details-marker {
+  display: none;
+}
+
+.calm-more-note > summary::after {
+  content: '+';
+  margin-left: 10px;
+  font-size: 0.9rem;
+}
+
+.calm-more-note[open] > summary::after {
+  content: '-';
+}
+
+#view-today > .day-moment[data-moment="morning"] .peace-visual,
+#view-today > .day-moment[data-moment="morning"] .quote-frame {
+  display: none;
+}
+
+#view-today > .day-moment[data-moment="morning"] {
+  background: linear-gradient(155deg, rgba(255, 253, 247, 0.84), rgba(235, 240, 245, 0.62));
+}
+
+#view-today #summaryCard {
+  width: min(100%, 820px);
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(155deg, #fffdf7, rgba(227, 236, 229, 0.66));
+}
+
+#startHereDetails {
+  width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.save-bar.saved {
+  display: none;
+}
+
+.sticky-save-bar {
+  bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  width: min(92vw, 600px);
+  padding: 10px;
+  border-radius: var(--r);
+}
+
+.sticky-save-hint {
+  max-width: none;
+  flex: 1 1 auto;
+}
+
+.nav {
+  width: min(100%, 640px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -14px 38px rgba(35, 48, 42, 0.12);
+}
+
+.nav-btn {
+  min-width: 0;
+  border-radius: var(--r-sm);
+}
+
+.nav-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.practice-launch-ghost {
+  display: none !important;
+}
+
+.grid-trackers {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.water-vessel,
+.water-fill,
+.coffee-fill {
+  max-width: 100%;
+}
+
+.water-fill::before {
+  left: 0;
+  width: 100%;
+  animation: none;
+}
+
+.pain-add-row,
+.scale-likert,
+.picker-row,
+.moon-row,
+.meal-types {
+  min-width: 0;
+}
+
+.sev-btn,
+.likert-btn,
+.meal-type {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 980px) {
+  #view-today.active {
+    align-items: center;
+  }
+
+  #view-today > .day-moment[data-moment="midday"],
+  #view-today > .day-moment[data-moment="evening"] {
+    width: min(100%, 920px);
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type {
+    padding: 30px;
+  }
+
+  #view-today > .day-moment[data-moment="morning"] {
+    width: min(100%, 920px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  #view-today > .day-moment[data-moment="morning"] .day-moment-label {
+    grid-column: 1 / -1;
+  }
+
+  #view-today > .day-moment[data-moment="morning"] .leaf {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    padding-bottom: calc(124px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app {
+    padding: max(18px, env(safe-area-inset-top, 0px) + 8px) 14px 0;
+  }
+
+  #view-today.active {
+    gap: 14px;
+  }
+
+  #view-today > .plate {
+    width: 100%;
+    padding: 16px 14px 14px;
+    text-align: left;
+  }
+
+  #view-today .plate-rule {
+    justify-content: flex-start;
+  }
+
+  #view-today .plate-rule::before,
+  #view-today .plate-rule::after {
+    display: none;
+  }
+
+  #view-today .greeting {
+    font-size: 2rem;
+  }
+
+  #view-today .date-line,
+  #view-today .sync-hint {
+    text-align: left;
+  }
+
+  .quick-start {
+    width: 100%;
+    padding: 16px;
+    background-image: linear-gradient(135deg, rgba(255, 253, 247, 0.98), rgba(227, 236, 229, 0.84));
+  }
+
+  .quick-start h2 {
+    max-width: none;
+    font-size: 1.44rem;
+  }
+
+  .quick-start .quick-action-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .quick-start .quick-action-grid .quick-action:first-child,
+  .quick-start .quick-action-grid .quick-action:last-child {
+    grid-column: auto !important;
+  }
+
+  .quick-action {
+    min-height: 58px;
+    padding: 10px 9px;
+  }
+
+  .quick-action span {
+    font-size: 0.9rem;
+  }
+
+  .quick-action small {
+    font-size: 0.58rem;
+  }
+
+  .today-progress-wrap {
+    width: 100%;
+    min-height: 64px;
+    padding: 10px 12px;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] {
+    padding-top: 12px;
+  }
+
+  #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type {
+    background-image: linear-gradient(145deg, rgba(255, 253, 247, 0.98), rgba(248, 251, 247, 0.92));
+  }
+
+  .today-progress-ring {
+    width: 52px;
+    height: 52px;
+  }
+
+  .rest-mode-pill {
+    display: none;
+  }
+
+  .day-moment,
+  #view-today #summaryCard,
+  #startHereDetails {
+    width: 100%;
+  }
+
+  .day-moment {
+    padding: 14px;
+    margin-bottom: 0;
+  }
+
+  .intention::before {
+    display: none;
+  }
+
+  .day-moment .leaf,
+  .leaf {
+    padding: 20px 16px;
+  }
+
+  .picker-row--vertical .picker-btn {
+    min-height: 48px;
+    padding: 12px;
+  }
+
+  .sticky-save-bar {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    transform: translateY(120%);
+    bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .sticky-save-bar.visible {
+    transform: translateY(0);
+  }
+
+  .sticky-save-hint {
+    display: none;
+  }
+
+  .sticky-save-btn {
+    width: 100%;
+  }
+
+  .nav {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0;
+    width: 100% !important;
+    max-width: none;
+    transform: none;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .nav-btn {
+    min-height: 58px;
+    padding: 7px 2px;
+  }
+
+  .nav-label {
+    font-size: 0.58rem;
+  }
+
+  .grid-trackers {
+    grid-template-columns: 1fr;
+  }
+
+  .water-vessel {
+    width: 100%;
+  }
+
+  .pain-add-row,
+  .scale-likert {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-label {
+    font-size: 0.54rem;
+  }
+}

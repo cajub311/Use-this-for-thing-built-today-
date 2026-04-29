@@ -1,10 +1,11 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v30';
+const CACHE = 'stillness-shell-v31-calm';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
   '/visual-polish.css',
+  '/calm-redesign.css',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-192.png',
@@ -60,14 +61,10 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     fetch(request)
       .then((res) => {
-        if (res.ok) {
+        if (res.ok && u.pathname !== '/' && u.pathname !== '/index.html') {
           const c = res.clone();
           caches.open(CACHE).then((cache) => {
-            if (u.pathname === '/' || u.pathname === '/index.html') {
-              cache.put('/index.html', c.clone());
-            } else {
-              cache.put(request, c);
-            }
+            cache.put(request, c);
           });
         }
         return res;
