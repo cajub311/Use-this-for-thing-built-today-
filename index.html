@@ -5727,10 +5727,29 @@
       flashFieldSaved(key);
     });
   });
-  function switchView(target) {
+  const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'memory', 'log', 'path', 'quotes']);
+  function isValidViewId(v) { return v && document.getElementById('view-' + v); }
+  function getRouteView() {
+    if (!location.hash) return 'today';
+    const seg = (location.hash.replace(/^#\/?/, '').split(/[/?#]/)[0] || '');
+    if (!seg || seg === 'today') return 'today';
+    if (ROUTE_VIEWS.has(seg) && isValidViewId(seg)) return seg;
+    return null;
+  }
+  function syncUrlToView(target) {
+    const p = location.pathname + location.search;
+    if (target === 'today' || !ROUTE_VIEWS.has(target)) {
+      if (location.hash) history.replaceState({ stillness: 1 }, '', p);
+      return;
+    }
+    const want = '#' + target;
+    if (location.hash !== want) history.replaceState({ stillness: 1 }, '', p + want);
+  }
+  function switchView(target, opts) {
     if (!target) return;
     const viewEl = document.getElementById('view-' + target);
     if (!viewEl) return;
+    if (!opts || !opts.fromHash) syncUrlToView(target);
     document.querySelectorAll('.nav-btn').forEach(x => {
       const isOn = x.dataset.view === target;
       x.classList.toggle('active', isOn);
@@ -5746,6 +5765,16 @@
     if (target === 'today') renderTodaySummary();
     if (target === 'journal') renderTodaySummary();
   }
+  window.addEventListener('hashchange', () => {
+    const v = getRouteView();
+    const p = location.pathname + location.search;
+    if (v == null) {
+      if (location.hash) history.replaceState({ stillness: 1 }, '', p);
+      switchView('today', { fromHash: true });
+    } else {
+      switchView(v, { fromHash: true });
+    }
+  });
 
   const promptPillEl = document.getElementById('promptPill');
   if (promptPillEl) promptPillEl.addEventListener('click', (e) => {
@@ -6411,7 +6440,7 @@
   });
 
   /* ── Android: swipe between tabs ─────────────────────────── */
-  const SWIPE_VIEWS = ['today', 'track', 'journal', 'history', 'log', 'memory'];
+  const SWIPE_VIEWS = ['today', 'practice', 'track', 'journal', 'history', 'memory', 'log'];
   let _swX = 0, _swY = 0;
   document.addEventListener('touchstart', e => {
     _swX = e.touches[0].clientX;
@@ -7390,6 +7419,17 @@
   loadPath();
   renderAll();
   renderPath();
+  (function initRoute() {
+    const v = getRouteView();
+    if (v == null) {
+      history.replaceState({ stillness: 1 }, '', location.pathname + location.search);
+      switchView('today', { fromHash: true });
+    } else if (v === 'today' && location.hash) {
+      history.replaceState({ stillness: 1 }, '', location.pathname + location.search);
+    } else if (v !== 'today') {
+      switchView(v, { fromHash: true });
+    }
+  })();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then((reg) => { try { reg.update(); } catch (e) {} })
