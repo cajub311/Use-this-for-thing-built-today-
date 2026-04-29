@@ -35,7 +35,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-<link rel="apple-touch-icon" href="/icon.svg" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 <title>Stillness — a botanical journal for your days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1782,6 +1782,52 @@
   /* ── Views ──────────────────────────────────────────────── */
   .view { display: none; }
   .view.active { display: block; animation: viewEnter .38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  .nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); width: min(720px, calc(100% - 20px)); }
+  .nav-btn { min-height: 48px; padding: 8px 8px; }
+  .quick-start, .visual-banner, .support-panel {
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.48);
+    border-radius: var(--r-lg);
+    box-shadow: 0 6px 22px var(--shadow-warm);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .quick-start { padding: 18px; }
+  .quick-start h2, .support-panel h2 { margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight: 400; line-height: 1.15; }
+  .quick-action-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .quick-action, .wind-step, .more-menu button { min-height: 48px; border: 1px solid rgba(201, 187, 164, 0.55); background: var(--paper); color: var(--ink); border-radius: 14px; padding: 10px; cursor: pointer; text-align: left; font-family: 'Lora', serif; }
+  .quick-action span { display: block; font-weight: 600; overflow-wrap: anywhere; }
+  .quick-action small, .wind-step small { display: block; color: var(--ink-faint); font-size: 0.72rem; line-height: 1.25; margin-top: 2px; }
+  .storage-truth { margin: 12px 0 0; color: var(--moss-deep); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .storage-truth.session-only { color: var(--clay); }
+  .support-panel { display: grid; grid-template-columns: 120px 1fr; }
+  .support-panel[hidden] { display: none; }
+  .support-image { min-height: 100%; background-image: url('assets/peaceful/misty-forest-path.jpg'); background-size: cover; background-position: center; }
+  .support-body { padding: 18px; }
+  .support-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .support-note { margin: 0; color: var(--ink-soft); font-size: 0.86rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .support-link { text-decoration: none; display: inline-flex; align-items: center; }
+  .visual-banner { display: grid; grid-template-columns: 126px 1fr; min-height: 116px; }
+  .visual-banner img { width: 100%; height: 100%; min-height: 116px; object-fit: cover; }
+  .visual-banner div { padding: 18px; display: flex; flex-direction: column; justify-content: center; }
+  .visual-banner small { font-family: 'JetBrains Mono', monospace; color: var(--moss-deep); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 4px; }
+  .visual-banner strong { font-family: 'Cormorant Garamond', serif; font-size: 1.18rem; line-height: 1.25; font-weight: 500; }
+  .wind-down-panel { background: linear-gradient(135deg, rgba(27,31,46,0.94), rgba(52,64,90,0.92)), var(--paper-3); color: #EDE3D2; border-color: rgba(237,227,210,0.15); }
+  .wind-down-panel .leaf-title, .wind-down-panel .leaf-sub, .wind-down-panel .leaf-num { color: #EDE3D2; }
+  .wind-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .more-menu { position: fixed; right: 12px; bottom: max(78px, env(safe-area-inset-bottom, 0px) + 70px); width: min(280px, calc(100vw - 24px)); background: var(--paper-3); border: 1px solid rgba(201, 187, 164, 0.55); border-radius: 18px; box-shadow: 0 12px 40px var(--shadow-deep); z-index: 60; padding: 8px; }
+  .more-menu[hidden] { display: none; }
+  .more-menu button { width: 100%; border: none; background: transparent; border-radius: 12px; }
+  .more-menu button:hover, .more-menu button:focus-visible { background: var(--moss-mist); }
+  .history-day, .log-item .desc, .today-summary, .deep-input, .mood-note, .text-in { overflow-wrap: anywhere; }
+  :where(.chip, .picker-btn, .pill, .moon-btn, .sev-btn, .meal-type, .sum-btn, .data-btn, .file-label, .soundscape-btn) { min-height: 44px; }
+  @media (max-width: 560px) {
+    .quick-action-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .quick-action-grid .quick-action:last-child { grid-column: 1 / -1; }
+    .support-panel, .visual-banner { grid-template-columns: 96px 1fr; }
+    .wind-grid { grid-template-columns: 1fr 1fr; }
+    .nav-btn { font-size: 0.86rem; padding-left: 4px; padding-right: 4px; }
+  }
 
   /* ── History view ───────────────────────────────────────── */
   .streak-card {
@@ -2515,7 +2561,22 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <details class="leaf start-here collapsible-section" id="startHereDetails" aria-label="How to use today">
+    <section class="quick-start no-print" aria-label="What would help right now">
+      <div class="quick-start-copy">
+        <p class="picker-label">What would help right now?</p>
+        <h2>Start with one useful thing.</h2>
+      </div>
+      <div class="quick-action-grid">
+        <button type="button" class="quick-action" data-quick-go="checkin"><span>Check in</span><small>mood + body</small></button>
+        <button type="button" class="quick-action" data-quick-go="breathe"><span>Breathe</span><small>60 seconds</small></button>
+        <button type="button" class="quick-action" data-quick-go="winddown"><span>Wind down</span><small>sleep mode</small></button>
+        <button type="button" class="quick-action" data-quick-go="journal"><span>Journal</span><small>one sentence</small></button>
+        <button type="button" class="quick-action" data-quick-go="timer"><span>Timer</span><small>quiet sound</small></button>
+      </div>
+      <p class="storage-truth" id="storageTruth">Saved on this device.</p>
+    </section>
+
+    <details class="leaf start-here collapsible-section no-print" id="startHereDetails" aria-label="How to use today">
       <summary class="leaf-head">
         <h2 class="leaf-title">Start <em>here</em></h2>
         <span class="leaf-num">№ 00</span>
@@ -2605,6 +2666,21 @@
       <div class="mood-text-actions no-print">
         <button type="button" class="mini-btn" id="moodNoteSave">Add to journal (enter)</button>
         <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
+      </div>
+    </section>
+
+    <section class="support-panel no-print" id="supportPanel" hidden aria-live="polite">
+      <div class="support-image" aria-hidden="true"></div>
+      <div class="support-body">
+        <p class="picker-label">A steadier next minute</p>
+        <h2>Nothing to solve first. Pick one tiny support.</h2>
+        <div class="support-actions">
+          <button type="button" class="sum-btn" data-support-action="breathe">Breathe for 60 seconds</button>
+          <button type="button" class="sum-btn" data-support-action="ground">Ground with 5-4-3-2-1</button>
+          <button type="button" class="sum-btn" data-support-action="write">Write one sentence</button>
+          <a class="sum-btn support-link" href="tel:" data-support-action="contact">Contact someone</a>
+        </div>
+        <p class="support-note">If you might hurt yourself or someone else, or feel unable to stay safe, call or text <strong>988</strong> in the U.S. or use local emergency support. This app is not emergency care.</p>
       </div>
     </section>
 
@@ -3453,7 +3529,12 @@
     { title: 'River stones stream', src: 'assets/peaceful/river-stones-stream.jpg', alt: 'A clear stream moving around smooth river stones' },
     { title: 'Moonlit pine forest', src: 'assets/peaceful/moonlit-pine-forest.jpg', alt: 'A moonlit pine forest with misty blue hills' },
     { title: 'Tea and open journal', src: 'assets/peaceful/tea-open-journal.jpg', alt: 'A cup of tea beside an open journal and a small green branch' },
-    { title: 'Sunrise bamboo', src: 'assets/peaceful/sunrise-bamboo.jpg', alt: 'Golden sunrise shining through bamboo leaves' }
+    { title: 'Sunrise bamboo', src: 'assets/peaceful/sunrise-bamboo.jpg', alt: 'Golden sunrise shining through bamboo leaves' },
+    { title: 'Morning window plants', src: 'assets/peaceful/morning-window-plants.jpg', alt: 'Morning window plants with quiet journal and soft sunbeams' },
+    { title: 'Evening tea lamp', src: 'assets/peaceful/evening-tea-lamp.jpg', alt: 'Evening tea beside a warm lamp for wind-down' },
+    { title: 'Stone path garden gate', src: 'assets/peaceful/stone-path-garden-gate.jpg', alt: 'A stone garden path leading to a simple gate' },
+    { title: 'Quiet desk insights', src: 'assets/peaceful/quiet-desk-insights.jpg', alt: 'A quiet desk with notebook and smooth stone for reflection' },
+    { title: 'Wildflower memory cards', src: 'assets/peaceful/wildflower-memory-cards.jpg', alt: 'Wildflower memory cards on natural linen' }
   ];
 
   const PATH_SUGGESTIONS = [

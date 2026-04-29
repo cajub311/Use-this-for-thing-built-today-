@@ -4,6 +4,11 @@ const CACHE = 'stillness-shell-v11';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/maskable-192.png',
+  '/icons/maskable-512.png',
+  '/icons/apple-touch-icon.png',
   '/sw.js',
   '/assets/peaceful/buddha-moss-garden.jpg',
   '/assets/peaceful/misty-forest-path.jpg',
@@ -14,7 +19,12 @@ const SHELL = [
   '/assets/peaceful/river-stones-stream.jpg',
   '/assets/peaceful/moonlit-pine-forest.jpg',
   '/assets/peaceful/tea-open-journal.jpg',
-  '/assets/peaceful/sunrise-bamboo.jpg'
+  '/assets/peaceful/sunrise-bamboo.jpg',
+  '/assets/peaceful/morning-window-plants.jpg',
+  '/assets/peaceful/evening-tea-lamp.jpg',
+  '/assets/peaceful/stone-path-garden-gate.jpg',
+  '/assets/peaceful/quiet-desk-insights.jpg',
+  '/assets/peaceful/wildflower-memory-cards.jpg'
 ];
 
 self.addEventListener('install', (e) => {
