@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-text-size="default" data-refresh-hint="0">
 <head>
 <!--
   STILLNESS — read before editing this file
@@ -140,8 +140,9 @@
     --nav-hover: rgba(255, 255, 255, 0.1);
   }
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; padding: 0; }
+  html { font-size: 16px; }
+  html[data-text-size="large"] { font-size: 19px; }
+  html[data-text-size="large"] .app { line-height: 1.6; }
 
   :where(button, [role="button"], a, .picker-btn, .chip, .sev-btn, .moon-btn, .meal-type, .nav-btn, .practice-btn, .log-item .del, .path-item .del, .data-btn, .data-btn-danger, .file-label, .sum-btn, .theme-swatch, .mini-btn, .overlay-close, .tech-tab, .audio-toggle, .soundscape-btn, .mini-stop, .prompt-shuffle):focus {
     outline: none;
@@ -617,7 +618,51 @@
   }
   .pill:hover { background: var(--moss-mist); color: var(--moss-deep); border-color: var(--moss-soft); transform: translateY(-1px); }
   .pill:active { transform: scale(0.96); }
-  .pill.minus { font-size: 1.15rem; flex: 0 0 42px; }
+  .pill.minus { font-size: 1.15rem; flex: 0 0 48px; min-width: 48px; min-height: 48px; }
+  .sev-btn, .moon-btn { min-height: 48px; min-width: 44px; }
+
+  .scale-question { font-size: 0.9rem; color: var(--ink-soft); margin: 0 0 6px; line-height: 1.4; }
+  .scale-likert {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .likert-btn {
+    flex: 1 1 42%;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .likert-btn:hover { background: var(--moss-mist); border-color: var(--moss); }
+  .likert-btn.on { background: var(--moss-mist); border-color: var(--moss); color: var(--moss-deep); font-weight: 600; }
+  .scale-score { font-size: 0.82rem; color: var(--moss); margin: 8px 0 0; }
+  .functional-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--ink-faint); margin: 4px 0 0; }
+  .med-input-row { flex-wrap: wrap; }
+  .med-input-row .text-in { flex: 1 1 40%; }
+  .sleep-clinical-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  @media (min-width: 520px) {
+    .sleep-clinical-grid { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  .export-modal-panel { position: relative; padding: 20px; z-index: 2; }
+  #exportModal { display: none; }
+  #exportModal.open { display: flex; align-items: center; justify-content: center; }
+  .leaf.positive-bloom { animation: leafBloom 0.6s ease; }
+  @keyframes leafBloom {
+    0% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0); }
+    50% { box-shadow: 0 0 0 6px rgba(201, 169, 97, 0.2); }
+    100% { box-shadow: 0 6px 22px var(--shadow-warm); }
+  }
 
   /* Water visualization — wave fill */
   .water-vessel {
@@ -1656,6 +1701,9 @@
     color: var(--ink);
     font-size: 0.92rem;
   }
+  .path-item-goal { flex-direction: column; align-items: stretch; }
+  .path-item-goal .desc { margin-top: 4px; }
+  .path-goal-cb input { width: 18px; height: 18px; accent-color: var(--moss); }
   .path-item .del {
     flex: 0 0 auto;
     min-width: 2.1rem;
@@ -1817,6 +1865,78 @@
     margin-bottom: 18px;
     overflow: hidden;
   }
+  .today-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 20px;
+    padding: 14px 16px;
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.45);
+    border-radius: var(--r-lg);
+  }
+  .today-progress-ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+  }
+  .tpr-svg { width: 100%; height: 100%; }
+  .tpr-bg { fill: none; stroke: rgba(201, 187, 164, 0.4); stroke-width: 6; }
+  .tpr-fg { fill: none; stroke: var(--moss); stroke-width: 6; stroke-linecap: round; transition: stroke-dasharray 0.5s ease; }
+  .tpr-pct {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--moss-deep);
+  }
+  .today-progress-caption { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; }
+  .sticky-save-bar {
+    position: fixed;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 55;
+    max-width: 720px;
+    width: calc(100% - 32px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--paper-3);
+    border: 1px solid rgba(201, 187, 164, 0.55);
+    border-radius: var(--r-lg);
+    box-shadow: 0 -4px 24px var(--shadow-warm);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    pointer-events: none;
+    transition: transform 0.32s ease, opacity 0.2s;
+    opacity: 0;
+  }
+  .sticky-save-bar.visible { transform: translateX(-50%) translateY(0); pointer-events: auto; opacity: 1; }
+  .sticky-save-hint { font-size: 0.72rem; color: var(--ink-faint); max-width: 42%; line-height: 1.3; }
+  .sticky-save-btn {
+    min-height: 48px;
+    padding: 0 20px;
+    border-radius: 999px;
+    border: 1px solid var(--moss);
+    background: linear-gradient(135deg, var(--moss) 0%, #3d5a42 100%);
+    color: var(--paper-3);
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--shadow-warm);
+  }
+  .sticky-save-btn:focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
+  .log-refresh-hint, .garden-refresh-hint {
+    text-align: center; font-size: 0.72rem; color: var(--ink-faint); padding: 6px 0 0;
+    min-height: 1.2em; opacity: 0; transition: opacity 0.2s;
+  }
+  .log-refresh-hint.on, .garden-refresh-hint.on { opacity: 1; }
   .quick-start { padding: 18px; }
   .quick-start h2, .support-panel h2 { margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight: 400; line-height: 1.15; }
   .quick-action-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
@@ -2179,8 +2299,9 @@
     background: var(--moss-soft);
     flex-shrink: 0;
   }
-  .save-bar.saving .dot { background: var(--gold); animation: pulse 1s ease infinite; }
+  .save-bar.saving .dot { background: var(--gold); animation: saveBarPulse 0.8s ease infinite; }
   .save-bar.error .dot { background: var(--clay); animation: none; }
+  @keyframes saveBarPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
   .app { padding-top: 32px; }
   body.save-bar-top .app { padding-top: 44px; }
@@ -3049,6 +3170,17 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
+    <div class="today-progress-wrap no-print" aria-label="This day, gently filled in">
+      <div class="today-progress-ring" id="todayProgressRing" role="img" aria-label="Check-in progress">
+        <svg viewBox="0 0 100 100" class="tpr-svg" aria-hidden="true">
+          <circle class="tpr-bg" cx="50" cy="50" r="40" pathLength="100" />
+          <circle class="tpr-fg" id="todayProgressCircle" cx="50" cy="50" r="40" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 50 50)" />
+        </svg>
+        <span class="tpr-pct" id="todayProgressText">0%</span>
+      </div>
+      <p class="today-progress-caption" id="todayProgressCaption">A little at a time — there is no pass or fail.</p>
+    </div>
+
     <section class="quick-start no-print" aria-label="What would help right now">
       <div class="quick-start-copy">
         <p class="picker-label">What would help right now?</p>
@@ -3157,6 +3289,46 @@
       </div>
     </section>
 
+    <details class="leaf collapsible-section no-print" id="moodScalesDetails" aria-label="Optional gentle check-in scales">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">A little <em>deeper</em> (optional)</h2>
+        <span class="leaf-num">soft</span>
+      </summary>
+      <p class="leaf-sub">Inspired by what clinicians use — but phrased softly. Scores are only for you, your care team, or an AI you trust. Not a diagnosis.</p>
+      <p class="picker-label">Mood &amp; interest (past two weeks)</p>
+      <p class="scale-question" id="phq2q1">How often have you felt down, low, or not interested in things you usually care about?</p>
+      <div class="scale-likert" id="phq2Row" role="group" aria-labelledby="phq2q1">
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="0" data-val="0">Not at all</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="0" data-val="1">A few days</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="0" data-val="2">More than half</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="0" data-val="3">Nearly every day</button>
+      </div>
+      <p class="scale-question" id="phq2q2" style="margin-top:12px">How often has it been hard to feel interest or pleasure?</p>
+      <div class="scale-likert" id="phq2Row2" role="group" aria-labelledby="phq2q2">
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="1" data-val="0">Not at all</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="1" data-val="1">A few days</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="1" data-val="2">More than half</button>
+        <button type="button" class="likert-btn" data-scale="phq" data-idx="1" data-val="3">Nearly every day</button>
+      </div>
+      <p class="scale-score" id="phq2ScoreLine" hidden></p>
+      <p class="picker-label" style="margin-top:18px">Nervousness &amp; worry (past two weeks)</p>
+      <p class="scale-question" id="gad2q1">How often have you felt nervous, on edge, or like something bad might happen?</p>
+      <div class="scale-likert" id="gad2Row" role="group" aria-labelledby="gad2q1">
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="0" data-val="0">Not at all</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="0" data-val="1">A few days</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="0" data-val="2">More than half</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="0" data-val="3">Nearly every day</button>
+      </div>
+      <p class="scale-question" id="gad2q2" style="margin-top:12px">How often has it been hard to stop or control worry?</p>
+      <div class="scale-likert" id="gad2Row2" role="group" aria-labelledby="gad2q2">
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="1" data-val="0">Not at all</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="1" data-val="1">A few days</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="1" data-val="2">More than half</button>
+        <button type="button" class="likert-btn" data-scale="gad" data-idx="1" data-val="3">Nearly every day</button>
+      </div>
+      <p class="scale-score" id="gad2ScoreLine" hidden></p>
+    </details>
+
     <section class="support-panel no-print" id="supportPanel" hidden aria-live="polite">
       <div class="support-image" aria-hidden="true"></div>
       <div class="support-body">
@@ -3184,7 +3356,12 @@
       <div class="chips" id="chips">
         <!-- populated by JS -->
       </div>
-    </section>
+      <label for="symptomsFreeText" class="sub" style="display:block;margin-top:14px">Add words for your own body (optional)</label>
+      <textarea class="mood-note" id="symptomsFreeText" rows="2" maxlength="400" placeholder="E.g. tight chest when the inbox grows · a flutter before calls — anything in your words…" spellcheck="true"></textarea>
+      <p class="picker-label" style="margin-top:16px">If symptoms showed up, how much did they shape your day?</p>
+      <p class="leaf-sub" style="margin-top:0">0 = barely · 4 = a lot. No wrong answer.</p>
+      <input type="range" min="0" max="4" step="1" value="0" class="slider" id="functionalImpactSlider" aria-label="How much symptoms affected your day" />
+      <div class="functional-labels"><span>0 gentle</span><span>4 full weight</span></div>
 
     <!-- Mood-aware suggestion card (auto-shown by JS when mood/symptoms suggest support) -->
     <section class="recommend-panel no-print" id="recommendPanel" hidden aria-live="polite">
@@ -3235,8 +3412,8 @@
       <button type="button" class="today-tab-link" id="goToJournal">Journal</button>
     </div>
 
-    <div style="text-align: center; padding: 14px 0 20px; font-family: ‘Cormorant Garamond’, serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
-      <span id="mindfulMinutes">0</span> mindful minutes today
+    <div style="text-align: center; padding: 14px 0 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
+      <span class="mindful-minutes">0</span> mindful minutes today
     </div>
 
   </div>
@@ -3412,17 +3589,55 @@
       <div class="log-list" id="mealList"></div>
     </section>
 
+    <details class="leaf collapsible-section" id="medsAllergiesDetails" aria-label="Medications and allergies">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Medicine &amp; <em>allergies</em> (optional)</h2>
+        <span class="leaf-num">private</span>
+      </summary>
+      <p class="leaf-sub">For your records or to share with a clinician. Stillness never sends this to a server — it lives only on this device.</p>
+      <p class="picker-label">Time of day (for the next line you add)</p>
+      <select class="retention-select" id="medTimeSelect" style="max-width:100%;margin-bottom:8px" title="When you usually take the next entry">
+        <option value="morning">Morning</option>
+        <option value="midday">Midday</option>
+        <option value="evening">Evening</option>
+        <option value="night">Night / bedtime</option>
+        <option value="asNeeded">As needed</option>
+      </select>
+      <div class="input-row med-input-row">
+        <input type="text" class="text-in" id="medNameInput" placeholder="Name" maxlength="80" autocomplete="off" />
+        <input type="text" class="text-in" id="medDoseInput" placeholder="Dose" maxlength="40" />
+      </div>
+      <input type="text" class="text-in" id="medNoteInput" placeholder="Short note (optional) — e.g. with food" maxlength="120" style="width:100%;margin:8px 0" />
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+        <button class="add-btn" type="button" id="medAddBtn">Add</button>
+      </div>
+      <div class="log-list" id="medList"></div>
+      <label for="allergiesInput" class="picker-label" style="margin-top:16px">Allergies or sensitivities (one line is enough)</label>
+      <input type="text" class="text-in" id="allergiesInput" placeholder="e.g. penicillin · tree pollen — mild itch" maxlength="200" style="width:100%" />
+    </details>
+
     <!-- Pain -->
     <section class="leaf">
       <div class="leaf-head">
         <h2 class="leaf-title">Body &amp; <em>pain</em></h2>
         <span class="leaf-num">№ 02</span>
       </div>
-      <p class="leaf-sub">Honor what your body is carrying today.</p>
+      <p class="leaf-sub">Honor what your body is carrying today. A few details can help your care team or a trusted AI see the pattern — only if you want them.</p>
       <div class="pain-input">
         <input type="text" class="text-in" id="painLocation" placeholder="Where? (head, back, teeth…)" maxlength="40" spellcheck="true" />
         <input type="text" class="text-in" id="painNote" placeholder="A note (optional)" maxlength="60" spellcheck="true" />
       </div>
+      <label for="painQuality" class="sub" style="display:block;margin:8px 0 4px">Quality (optional)</label>
+      <select class="retention-select" id="painQuality" title="How the pain feels" style="max-width:100%;margin-bottom:8px">
+        <option value="">— choose if it helps —</option>
+        <option value="ache">Dull / aching</option>
+        <option value="sharp">Sharp / stabbing</option>
+        <option value="burn">Burning</option>
+        <option value="throb">Throbbing</option>
+        <option value="pressure">Pressure / tight</option>
+        <option value="tingle">Tingling / pins</option>
+        <option value="other">Other (see note)</option>
+      </select>
       <div class="pain-add-row">
         <div class="severity" id="painSeverity">
           <button class="sev-btn" data-sev="1">Mild</button>
@@ -3477,10 +3692,44 @@
         <button class="moon-btn" data-quality="3"><svg class="moon-svg"><use href="#moon-gibbous"/></svg><div class="lbl">Decent</div></button>
         <button class="moon-btn" data-quality="4"><svg class="moon-svg"><use href="#moon-full"/></svg><div class="lbl">Deep</div></button>
       </div>
+      <p class="picker-label" style="margin-top:16px">A few sleep details (optional)</p>
+      <div class="sleep-clinical-grid">
+        <div>
+          <label for="sleepLatency" class="sub">Time to fall asleep</label>
+          <select class="retention-select" id="sleepLatency" style="width:100%">
+            <option value="0">—</option>
+            <option value="5">~5 min</option>
+            <option value="15">~15 min</option>
+            <option value="30">~30 min</option>
+            <option value="45">~45+ min</option>
+            <option value="60">~1 hr+</option>
+          </select>
+        </div>
+        <div>
+          <label for="sleepAwakenings" class="sub">Times you woke (roughly)</label>
+          <select class="retention-select" id="sleepAwakenings" style="width:100%">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </div>
+        <div>
+          <label for="sleepRested" class="sub">How rested you feel now</label>
+          <select class="retention-select" id="sleepRested" style="width:100%">
+            <option value="0">—</option>
+            <option value="1">Not rested</option>
+            <option value="2">A little</option>
+            <option value="3">Mostly</option>
+            <option value="4">Deeply</option>
+          </select>
+        </div>
+      </div>
     </section>
 
     <!-- Gratitude -->
-    <section class="leaf">
+    <section class="leaf" id="gratitudeSection">
       <div class="leaf-head">
         <h2 class="leaf-title">A small <em>gratitude</em></h2>
         <span class="leaf-num">№ 02</span>
@@ -3488,6 +3737,26 @@
       <p class="leaf-sub">Something — anything — you're thankful for today.</p>
       <textarea class="deep-input" id="gratitudeInput" rows="3" placeholder="A warm cup of tea · a kind word · the way light fell through the window…"></textarea>
     </section>
+
+    <details class="leaf collapsible-section" id="careSystemDetails" aria-label="Strengths and people who help">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Strengths &amp; <em>support</em> (optional)</h2>
+        <span class="leaf-num">soft</span>
+      </summary>
+      <p class="picker-label">What’s going a little well — even small</p>
+      <textarea class="mood-note" id="strengthsNote" rows="2" maxlength="600" placeholder="A trait, a skill, a moment of steadiness…"></textarea>
+      <p class="picker-label" style="margin-top:12px">People, places, or things that help you feel held</p>
+      <textarea class="mood-note" id="supportNote" rows="2" maxlength="600" placeholder="No names required — a partner, a pet, a group, a text thread…"></textarea>
+    </details>
+
+    <details class="leaf collapsible-section" id="stressGentleDetails" aria-label="Gentle stress check-in">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">A gentle <em>load</em> check (optional)</h2>
+        <span class="leaf-num">tender</span>
+      </summary>
+      <p class="leaf-sub">If the last while has been heavy, you can name it here in your own words. This is for you and people you choose — not a label.</p>
+      <textarea class="deep-input" id="stressCheckIn" rows="3" maxlength="1000" placeholder="Stress, old hurts, or hard things on your mind — a sentence or a list, whatever feels safe today…"></textarea>
+    </details>
 
     <!-- Reflection with rotating prompt -->
     <section class="leaf">
@@ -3558,12 +3827,15 @@
         <button type="button" class="sum-btn" id="printPage" title="Open print dialog">Print / save PDF</button>
       </div>
       <p class="sum-hint no-print">Data stays on this device. <strong>Memory</strong> → backup for a file you can keep anywhere.</p>
+      <div class="data-row no-print" style="margin-top:14px; justify-content:center; flex-wrap:wrap; gap:8px">
+        <button type="button" class="sum-btn" id="openExportModal" title="Exports for print, your clinician, or AI">Exports…</button>
+      </div>
     </section>
 
     <div class="flourish" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
     <div style="text-align: center; padding: 14px 0; font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--ink-faint); font-size: 0.95rem;" aria-live="polite">
-      <span id="mindfulMinutes">0</span> mindful minutes today
+      <span class="mindful-minutes">0</span> mindful minutes today
     </div>
 
     <div class="data-row" style="margin-top:0; margin-bottom: 8px; justify-content: center">
@@ -3582,6 +3854,8 @@
       <div class="date-line">Each day · a small offering</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+
+    <div class="garden-refresh-hint" id="gardenRefreshHint" role="status" aria-live="polite"></div>
 
     <div class="streak-card" id="streakCard">
       <div class="streak-num" id="streakNum">0</div>
@@ -3655,6 +3929,12 @@
         <option value="365">1 year</option>
       </select>
       <p class="data-hint" id="retentionStatus">—</p>
+      <p class="picker-label" style="margin-top:20px">Reading size (this device)</p>
+      <div class="data-row" style="flex-wrap:wrap; gap:8px; margin-bottom:4px">
+        <button type="button" class="data-btn" id="textSizeDefault" data-text-size="default" aria-pressed="true">Comfortable</button>
+        <button type="button" class="data-btn data-btn-ghost" id="textSizeLarge" data-text-size="large" aria-pressed="false">Larger</button>
+      </div>
+      <p class="data-hint">A slightly larger type can help on bright days or small screens. Saved with your theme in this browser.</p>
       <p class="picker-label" style="margin-top:20px">Appearance</p>
       <div class="theme-row" id="themeRow" role="group" aria-label="Color theme">
         <button type="button" class="theme-swatch" data-set-theme="parchment" title="Parchment">
@@ -3730,6 +4010,7 @@
       <div class="date-line">A gentle trail of your check-ins</div>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
+    <p class="log-refresh-hint" id="logRefreshHint" role="status" aria-live="polite"></p>
     <div class="leaf" style="padding-bottom:12px">
       <p class="picker-label">Search everything you’ve written</p>
       <div class="log-search-wrap">
@@ -3799,6 +4080,19 @@
         <div class="path-list" id="pathExperimentList"></div>
       </section>
     </div>
+
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Care <em>goals</em> (optional)</h2>
+        <span class="leaf-num">05</span>
+      </div>
+      <p class="leaf-sub">Trackable goals for you and anyone who supports you. One line each — you can mark a small “tried this week” when you like.</p>
+      <div class="path-input-row">
+        <input type="text" class="text-in" id="pathGoalInput" maxlength="120" placeholder="e.g. Text one friend · walk after lunch 3x" />
+        <button class="add-btn" type="button" id="pathAddGoal">Add</button>
+      </div>
+      <div class="path-list" id="pathGoalList"></div>
+    </section>
 
     <section class="leaf">
       <div class="leaf-head">
@@ -3909,6 +4203,26 @@
     <span class="nav-label">More</span>
   </button>
 </nav>
+
+<div class="sticky-save-bar no-print" id="stickySaveBar" aria-hidden="true">
+  <span class="sticky-save-hint" id="stickySaveHint">When you’re ready, save the day in one tap.</span>
+  <button type="button" class="sticky-save-btn" id="stickySaveBtn">Save to journal</button>
+</div>
+
+<div class="overlay" id="exportModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="exportModalTitle">
+  <div class="export-modal-panel leaf" style="max-width:min(480px,92vw); margin:0 auto">
+    <button type="button" class="overlay-close" id="exportModalClose" aria-label="Close">×</button>
+    <h2 class="leaf-title" id="exportModalTitle" style="margin-top:0">Gentle <em>exports</em></h2>
+    <p class="leaf-sub">Everything stays on this device until you print, copy, or share from your browser. Choose the shape of the story.</p>
+    <div class="export-btn-stack" style="display:flex; flex-direction:column; gap:10px; margin-top:14px">
+      <button type="button" class="data-btn" id="exportBeautifulPdf">Beautiful journal (print / PDF)</button>
+      <button type="button" class="data-btn" id="exportClinicalPdf">For my doctor (print / PDF)</button>
+      <button type="button" class="data-btn" id="exportAiMarkdown">Copy for AI — Markdown + summary</button>
+      <button type="button" class="data-btn data-btn-ghost" id="exportAiJson">Copy structured JSON for AI</button>
+    </div>
+    <p class="data-hint" style="margin-top:14px">“PDF” uses your browser’s print dialog — pick “Save as PDF” where available.</p>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════
      BREATHING OVERLAY
@@ -4356,6 +4670,7 @@
     const bits = [p.northStar, p.values, p.practice, p.letter, 'path', 'values', 'north star', 'step', 'experiment'];
     (p.experiments || []).forEach(x => { if (x && x.text) bits.push(x.text); });
     (p.steps || []).forEach(x => { if (x && x.text) bits.push(x.text); });
+    (p.therapyGoals || []).forEach(x => { if (x && x.text) bits.push(x.text); });
     return bits.filter(Boolean).join(' ');
   }
   function pathFieldHits(q) {
@@ -4383,6 +4698,12 @@
       const t = (x && x.text) ? x.text : '';
       if (t && t.toLowerCase().indexOf(q) !== -1) {
         out.push({ label: 'Next step', k: 'st' + j, snippet: snippetAround(t, q, 140) });
+      }
+    });
+    (p.therapyGoals || []).forEach((x, j) => {
+      const t = (x && x.text) ? x.text : '';
+      if (t && t.toLowerCase().indexOf(q) !== -1) {
+        out.push({ label: 'Care goal', k: 'tg' + j, snippet: snippetAround(t, q, 140) });
       }
     });
     return out;
@@ -4431,15 +4752,19 @@
   const blankDay = () => ({
     intention: '',
     mood: 0, energy: 0, moodNote: '',
-    symptoms: [], rituals: [],
+    symptoms: [], symptomsFreeText: '', rituals: [],
+    phq2: [null, null], gad2: [null, null],
+    supportNote: '', strengthsNote: '', stressCheckIn: '',
+    functionalImpact: 0,
     water: 0, pee: 0, coffee: 0,
     movement: 0, steps: 0, moveMode: 'min', sun: 0, exerciseNote: '',
     outings: 0, sweets: 0, calories: 0,
-    meals: [], pains: [],
-    sleepHours: 7.0, sleepQuality: 0, dreams: '',
+    meals: [], medications: [], allergies: '',
+    pains: [],
+    sleepHours: 7.0, sleepQuality: 0, sleepLatencyMins: 0, sleepAwakenings: 0, sleepRested: 0, dreams: '',
     gratitude: '', reflection: '',
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
-    activeMeal: 'breakfast', activeSeverity: 0, activePart: '',
+    activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
     dbtSkills: [],
     thoughtRecords: []
@@ -4458,6 +4783,20 @@
     } else {
       day = blankDay();
     }
+    normalizeDayFields();
+  }
+  function normalizeDayFields() {
+    const b = blankDay();
+    day = { ...b, ...day };
+    if (!Array.isArray(day.phq2) || day.phq2.length !== 2) day.phq2 = [null, null];
+    if (!Array.isArray(day.gad2) || day.gad2.length !== 2) day.gad2 = [null, null];
+    if (!Array.isArray(day.medications)) day.medications = [];
+    if (typeof day.allergies !== 'string') day.allergies = '';
+    if (typeof day.symptomsFreeText !== 'string') day.symptomsFreeText = '';
+    if (typeof day.supportNote !== 'string') day.supportNote = '';
+    if (typeof day.strengthsNote !== 'string') day.strengthsNote = '';
+    if (typeof day.stressCheckIn !== 'string') day.stressCheckIn = '';
+    (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
   function saveDayNow() {
@@ -4466,6 +4805,7 @@
       Storage.set(getStorageKey(), JSON.stringify(day));
       setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       renderDataCorner();
+      try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
     } catch (e) {
       setSaveBarText('Could not save — storage may be full or blocked', 'error');
       pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -4480,6 +4820,7 @@
         setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
         renderDataCorner();
+        try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
       } catch (e) {
         setSaveBarText('Could not save — storage may be full or blocked', 'error');
         pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -4571,6 +4912,7 @@
     values: '',
     practice: '',
     letter: '',
+    therapyGoals: [],
     experiments: [],
     steps: []
   });
@@ -4586,6 +4928,7 @@
       pathData = { ...blankPath(), ...(parsed && typeof parsed === 'object' ? parsed : {}) };
       if (!Array.isArray(pathData.experiments)) pathData.experiments = [];
       if (!Array.isArray(pathData.steps)) pathData.steps = [];
+      if (!Array.isArray(pathData.therapyGoals)) pathData.therapyGoals = [];
     } catch {
       pathData = blankPath();
     }
@@ -4600,7 +4943,7 @@
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
-  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -4615,6 +4958,7 @@
           if (typeof j.retentionUserSet === 'boolean') config.retentionUserSet = j.retentionUserSet;
           if (j.activityCap != null) config.activityCap = Math.max(50, Math.min(500, Number(j.activityCap) || 200));
           if (j.theme === 'parchment' || j.theme === 'forest' || j.theme === 'midnight') config.theme = j.theme;
+          if (j.textSize === 'large' || j.textSize === 'default') config.textSize = j.textSize;
           if (typeof j.breatheSound === 'string') config.breatheSound = j.breatheSound;
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
           if (j.lastBackupAt != null) config.lastBackupAt = Math.max(0, Number(j.lastBackupAt) || 0);
@@ -4630,6 +4974,7 @@
       retentionUserSet: !!config.retentionUserSet,
       activityCap: config.activityCap,
       theme: config.theme,
+      textSize: config.textSize || 'default',
       breatheSound: config.breatheSound,
       breatheCues: config.breatheCues,
       voiceCues: config.voiceCues,
@@ -4654,6 +4999,7 @@
       btn.classList.toggle('on', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
+    applyTextSize();
   }
 
   const BREATHE_SOUNDS = ['rain', 'forest', 'steam', 'bowl', 'bali', 'silent'];
@@ -5134,6 +5480,7 @@
     pushActivity(msg);
   }
 
+  let _lastSaveClass = 'saved';
   function setSaveBarText(text, className) {
     const bar = document.getElementById('saveBar');
     const el = document.getElementById('saveBarText');
@@ -5141,17 +5488,176 @@
     el.textContent = text;
     bar.classList.remove('saving', 'saved', 'error');
     if (className) bar.classList.add(className);
+    _lastSaveClass = className || 'saved';
     document.body.classList.toggle('save-bar-top', className === 'saving' || className === 'error');
+    if (className === 'saved' && text && /saved|Saved/i.test(text)) {
+      const sticky = document.getElementById('stickySaveHint');
+      if (sticky) sticky.textContent = 'Saved just now · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+  function flashSaveNow() {
+    setSaveBarText('Saved just now', 'saved');
+    setTimeout(() => { setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', _lastSaveClass === 'error' ? 'error' : 'saved'); }, 1600);
+  }
+  function applyTextSize() {
+    const s = (config.textSize === 'large') ? 'large' : 'default';
+    document.documentElement.setAttribute('data-text-size', s);
+    const def = document.getElementById('textSizeDefault');
+    const lg = document.getElementById('textSizeLarge');
+    if (def) { def.classList.toggle('data-btn-ghost', s === 'large'); def.setAttribute('aria-pressed', s === 'default' ? 'true' : 'false'); }
+    if (lg) { lg.classList.toggle('data-btn-ghost', s === 'default'); lg.setAttribute('aria-pressed', s === 'large' ? 'true' : 'false'); }
+  }
+  function scorePhq2() {
+    if (!day.phq2 || day.phq2[0] == null || day.phq2[1] == null) return null;
+    return Number(day.phq2[0]) + Number(day.phq2[1]);
+  }
+  function scoreGad2() {
+    if (!day.gad2 || day.gad2[0] == null || day.gad2[1] == null) return null;
+    return Number(day.gad2[0]) + Number(day.gad2[1]);
+  }
+  function computeProgressPct() {
+    const checks = [
+      day.intention && String(day.intention).trim(), day.mood, day.energy, (day.symptoms && day.symptoms.length) || (day.symptomsFreeText && day.symptomsFreeText.trim()),
+      (day.rituals && day.rituals.length), (day.moodNote && day.moodNote.trim()), scorePhq2() != null, scoreGad2() != null,
+      day.water > 0 || day.movement > 0 || day.sun > 0 || (day.steps > 0), (day.meals && day.meals.length), (day.pains && day.pains.length) || (day.medications && day.medications.length) || (day.allergies && day.allergies.trim()),
+      (day.gratitude && day.gratitude.trim()) || (day.reflection && day.reflection.trim()) || (day.dreams && day.dreams.trim()),
+      (day.strengthsNote && day.strengthsNote.trim()) || (day.supportNote && day.supportNote.trim()) || (day.stressCheckIn && day.stressCheckIn.trim()),
+      day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow, (day.mindfulMinutes > 0)
+    ];
+    const n = checks.filter(Boolean).length;
+    return Math.min(100, Math.round((n / checks.length) * 100));
+  }
+  function renderTodayProgress() {
+    const pct = computeProgressPct();
+    const circ = document.getElementById('todayProgressCircle');
+    const tx = document.getElementById('todayProgressText');
+    const cap = document.getElementById('todayProgressCaption');
+    if (circ) circ.setAttribute('stroke-dasharray', pct + ' ' + (100 - pct));
+    if (tx) tx.textContent = pct + '%';
+    if (cap) {
+      if (pct >= 85) cap.textContent = 'A full, soft day in the book.';
+      else if (pct >= 50) cap.textContent = 'You are filling this day with care.';
+      else cap.textContent = 'A little at a time — there is no pass or fail.';
+    }
+  }
+  function renderMoodScales() {
+    document.querySelectorAll('.likert-btn[data-scale="phq"]').forEach(btn => {
+      const idx = Number(btn.dataset.idx);
+      const on = day.phq2 && day.phq2[idx] != null && String(day.phq2[idx]) === String(btn.dataset.val);
+      btn.classList.toggle('on', on);
+    });
+    document.querySelectorAll('.likert-btn[data-scale="gad"]').forEach(btn => {
+      const idx = Number(btn.dataset.idx);
+      const on = day.gad2 && day.gad2[idx] != null && String(day.gad2[idx]) === String(btn.dataset.val);
+      btn.classList.toggle('on', on);
+    });
+    const phqS = document.getElementById('phq2ScoreLine');
+    const s1 = scorePhq2();
+    if (phqS) {
+      if (s1 == null) { phqS.hidden = true; }
+      else {
+        phqS.hidden = false;
+        phqS.textContent = 'PHQ-2 style sum: ' + s1 + ' (0–6). If both answers were “more than half the days” or “nearly every day” for 2+ weeks, consider checking in with a clinician — this app does not diagnose.';
+      }
+    }
+    const gadS = document.getElementById('gad2ScoreLine');
+    const s2 = scoreGad2();
+    if (gadS) {
+      if (s2 == null) { gadS.hidden = true; }
+      else {
+        gadS.hidden = false;
+        gadS.textContent = 'GAD-2 style sum: ' + s2 + ' (0–6). Scores of 3+ are often worth discussing with a professional — as a starting point, not a verdict.';
+      }
+    }
+  }
+  function renderFunctionalImpact() {
+    const el = document.getElementById('functionalImpactSlider');
+    if (el) el.value = String(day.functionalImpact != null ? day.functionalImpact : 0);
+  }
+  function renderSymptomsFree() {
+    const el = document.getElementById('symptomsFreeText');
+    if (el) el.value = day.symptomsFreeText || '';
+  }
+  function renderMeds() {
+    const sel = document.getElementById('medTimeSelect');
+    if (sel) sel.value = day.activeMedTime || 'morning';
+    const list = document.getElementById('medList');
+    if (!list) return;
+    list.innerHTML = '';
+    (day.medications || []).forEach((m, i) => {
+      const el = document.createElement('div');
+      el.className = 'log-item med-item';
+      const t = (m.time || '—') + ' · ' + (m.dose || '—');
+      el.innerHTML = '<span class="badge">' + escapeHtml(m.time || '—') + '</span><span class="desc"><strong>' + escapeHtml(m.name || '') + '</strong>' + (m.dose ? ' — ' + escapeHtml(m.dose) : '') + (m.note ? ' · ' + escapeHtml(m.note) : '') + '</span><button class="del" aria-label="remove">×</button>';
+      el.querySelector('.del').addEventListener('click', () => {
+        day.medications.splice(i, 1);
+        renderMeds(); saveDay();
+      });
+      list.appendChild(el);
+    });
+  }
+  function renderAllergies() {
+    const el = document.getElementById('allergiesInput');
+    if (el) el.value = day.allergies || '';
+  }
+  function renderSleepDetail() {
+    const a = document.getElementById('sleepLatency');
+    if (a) a.value = String(day.sleepLatencyMins != null ? day.sleepLatencyMins : 0);
+    const b = document.getElementById('sleepAwakenings');
+    if (b) b.value = String(day.sleepAwakenings != null ? day.sleepAwakenings : 0);
+    const c = document.getElementById('sleepRested');
+    if (c) c.value = String(day.sleepRested != null ? day.sleepRested : 0);
+  }
+  function renderSupportJournalFields() {
+    const a = document.getElementById('strengthsNote');
+    if (a) a.value = day.strengthsNote || '';
+    const b = document.getElementById('supportNote');
+    if (b) b.value = day.supportNote || '';
+    const c = document.getElementById('stressCheckIn');
+    if (c) c.value = day.stressCheckIn || '';
+  }
+  function renderPathGoals() {
+    const list = document.getElementById('pathGoalList');
+    if (!list) return;
+    list.innerHTML = '';
+    (pathData.therapyGoals || []).forEach((g, i) => {
+      const el = document.createElement('div');
+      el.className = 'path-item path-item-goal';
+      const tried = g.triedThisWeek ? 'checked' : '';
+      el.innerHTML = '<label class="path-goal-cb"><input type="checkbox" ' + tried + ' data-goal-idx="' + i + '" /> Tried a little this week</label><span class="desc">' + escapeHtml(g.text || '') + '</span><button type="button" class="del" aria-label="remove">×</button>';
+      const cb = el.querySelector('input[type="checkbox"]');
+      cb.addEventListener('change', () => {
+        pathData.therapyGoals[i].triedThisWeek = cb.checked;
+        savePath();
+      });
+      el.querySelector('.del').addEventListener('click', () => {
+        pathData.therapyGoals.splice(i, 1);
+        savePath();
+        renderPath();
+      });
+      list.appendChild(el);
+    });
+  }
+  function updateStickySaveBar() {
+    const bar = document.getElementById('stickySaveBar');
+    if (!bar) return;
+    const active = document.querySelector('.view.active');
+    const id = active && active.id;
+    const on = (id === 'view-today' || id === 'view-track' || id === 'view-journal') && (computeProgressPct() < 100 || (day.mindfulMinutes > 0));
+    bar.classList.toggle('visible', !!on);
+    bar.setAttribute('aria-hidden', on ? 'false' : 'true');
   }
 
   function hasAnyData(d) {
-    return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) ||
+    return d.mood || d.energy || d.intention || (d.symptoms && d.symptoms.length) || (d.symptomsFreeText && d.symptomsFreeText.trim()) ||
            (d.rituals && d.rituals.length) ||
            d.water || d.pee || d.coffee || d.movement || d.sun || d.steps || (d.exerciseNote && d.exerciseNote.trim()) ||
            d.outings || d.sweets || d.calories ||
-           (d.meals && d.meals.length) || (d.pains && d.pains.length) ||
+           (d.meals && d.meals.length) || (d.pains && d.pains.length) || (d.medications && d.medications.length) || (d.allergies && d.allergies.trim()) ||
            d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes ||
-           d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow;
+           d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ||
+           (d.phq2 && d.phq2.some(x => x != null)) || (d.gad2 && d.gad2.some(x => x != null)) ||
+           d.functionalImpact > 0 || (d.strengthsNote && d.strengthsNote.trim()) || (d.supportNote && d.supportNote.trim()) || (d.stressCheckIn && d.stressCheckIn.trim());
   }
 
   function savedDayCount() {
@@ -5350,15 +5856,22 @@
   function renderPains() {
     document.querySelectorAll('#painSeverity .sev-btn').forEach(b =>
       b.classList.toggle('on', Number(b.dataset.sev) === day.activeSeverity));
+    const qEl = document.getElementById('painQuality');
+    if (qEl) qEl.value = day.painQualitySelect || '';
     const list = document.getElementById('painList');
     list.innerHTML = '';
     const labels = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
+    const qualLabel = (q) => {
+      const m = { ache: 'dull', sharp: 'sharp', burn: 'burn', throb: 'throb', pressure: 'tight', tingle: 'tingle', other: 'other' };
+      return m[q] || (q || '');
+    };
     day.pains.forEach((p, i) => {
       const el = document.createElement('div');
       el.className = 'log-item pain-item';
+      const qtext = p.quality ? ' <em style="font-size:0.85em;opacity:0.85">(' + escapeHtml(qualLabel(p.quality)) + ')</em>' : '';
       el.innerHTML = `
         <span class="badge">${labels[p.severity] || ''}</span>
-        <span class="desc"><strong>${escapeHtml(p.location)}</strong>${p.note ? ' — ' + escapeHtml(p.note) : ''}</span>
+        <span class="desc"><strong>${escapeHtml(p.location)}</strong>${p.note ? ' — ' + escapeHtml(p.note) : ''}${qtext}</span>
         <button class="del" aria-label="remove">×</button>
       `;
       el.querySelector('.del').addEventListener('click', () => {
@@ -5385,8 +5898,7 @@
     if (dr) dr.value = day.dreams || '';
   }
   function renderMindful() {
-    const el = document.getElementById('mindfulMinutes');
-    if (el) el.textContent = day.mindfulMinutes || 0;
+    document.querySelectorAll('.mindful-minutes').forEach(el => { el.textContent = day.mindfulMinutes || 0; });
   }
   const MOOD_L = ['', 'Heavy / low', 'Off / flat', 'Okay / mixed', 'Good / light', 'Really good'];
   const ENERGY_L = ['', 'Wiped out', 'Low / flat', 'Steady', 'Up / alert', 'Fired up'];
@@ -5403,6 +5915,12 @@
       const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
       if (lbs.length) lines.push('Body weather: ' + lbs.join(', '));
     }
+    if (day.symptomsFreeText && day.symptomsFreeText.trim()) lines.push('Body in your words: ' + day.symptomsFreeText.trim());
+    const p1 = scorePhq2();
+    const p2 = scoreGad2();
+    if (p1 != null) lines.push('PHQ-2 style total (0–6): ' + p1);
+    if (p2 != null) lines.push('GAD-2 style total (0–6): ' + p2);
+    if (day.functionalImpact > 0) lines.push('Symptom impact on the day (0–4): ' + day.functionalImpact);
     if (day.rituals && day.rituals.length) {
       const lbls = day.rituals.map(r => RITUAL_LABELS[r] || r);
       lines.push('Rituals: ' + lbls.join(', '));
@@ -5424,13 +5942,33 @@
       const mt = totalMealsKcal(day.meals);
       if (mt) lines.push('  (Meals subtotal ~' + mt + ' kcal from words — very rough)');
     }
+    if (day.medications && day.medications.length) {
+      lines.push('Medications / supplements:');
+      day.medications.forEach(m => lines.push('  · ' + (m.name || '—') + (m.dose ? ' — ' + m.dose : '') + (m.time ? ' (' + m.time + ')' : '') + (m.note ? ' — ' + m.note : '')));
+    }
+    if (day.allergies && day.allergies.trim()) lines.push('Allergies / sensitivities: ' + day.allergies.trim());
     if (day.pains && day.pains.length) {
       lines.push('Pain log:');
       const sev = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
-      day.pains.forEach(p => lines.push('  · ' + (sev[p.severity] || '') + ' — ' + p.location + (p.note ? ' — ' + p.note : '')));
+      day.pains.forEach(p => {
+        const q = p.quality ? ' quality ' + p.quality : '';
+        lines.push('  · ' + (sev[p.severity] || '') + ' — ' + p.location + (p.note ? ' — ' + p.note : '') + q);
+      });
     }
-    lines.push('Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · quality: ' + (SLEEP_Q[day.sleepQuality] || '') : ''));
+    {
+      const sl = day.sleepLatencyMins | 0;
+      const aw = day.sleepAwakenings | 0;
+      const ar = day.sleepRested | 0;
+      let sleepExtra = 'Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · quality: ' + (SLEEP_Q[day.sleepQuality] || '') : '');
+      if (sl) sleepExtra += ' · approx. ' + sl + ' min to fall asleep';
+      if (aw) sleepExtra += ' · woke ~' + aw + ' time(s)';
+      if (ar) sleepExtra += ' · rested now: ' + (['', 'low', 'a little', 'mostly', 'deeply'][ar] || '');
+      lines.push(sleepExtra);
+    }
     if (day.dreams) lines.push('Dreams / sleep notes: ' + day.dreams);
+    if (day.strengthsNote && day.strengthsNote.trim()) lines.push('Strengths / what’s going okay: ' + day.strengthsNote.trim());
+    if (day.supportNote && day.supportNote.trim()) lines.push('Support system: ' + day.supportNote.trim());
+    if (day.stressCheckIn && day.stressCheckIn.trim()) lines.push('Gentle load / stress: ' + day.stressCheckIn.trim());
     if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
     if (day.reflection) lines.push('Reflection: ' + day.reflection);
     if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow) {
@@ -5479,6 +6017,10 @@
       const lbs = SYMPTOMS.filter(s => !s.divider && day.symptoms.includes(s.id)).map(s => s.label);
       if (lbs.length) parts.push(h('p', 'sum-line', 'Body weather: ' + e(lbs.join(', '))));
     }
+    if (day.symptomsFreeText && day.symptomsFreeText.trim()) parts.push(h('p', 'sum-line', 'In your words: ' + e(day.symptomsFreeText.trim())));
+    if (scorePhq2() != null) parts.push(h('p', 'sum-line', 'PHQ-2 style: ' + scorePhq2() + '/6'));
+    if (scoreGad2() != null) parts.push(h('p', 'sum-line', 'GAD-2 style: ' + scoreGad2() + '/6'));
+    if (day.functionalImpact > 0) parts.push(h('p', 'sum-line', 'Symptom load on the day: ' + day.functionalImpact + '/4'));
     if (day.rituals && day.rituals.length) {
       const lbls = day.rituals.map(r => RITUAL_LABELS[r] || r);
       parts.push(h('p', 'sum-line', 'Rituals: ' + e(lbls.join(', '))));
@@ -5508,18 +6050,38 @@
       }
     }
 
+    if (day.medications && day.medications.length) {
+      parts.push(h('div', 'sum-head', 'Medicine & supplements'));
+      day.medications.forEach(m => {
+        parts.push(h('p', 'sum-line', e(m.name || '—') + (m.dose ? ' — ' + e(m.dose) : '') + (m.time ? ' (' + e(m.time) + ')' : '') + (m.note ? ' · ' + e(m.note) : '')));
+      });
+    }
+    if (day.allergies && day.allergies.trim()) parts.push(h('p', 'sum-line', 'Allergies: ' + e(day.allergies.trim())));
+
     if (day.pains && day.pains.length) {
       parts.push(h('div', 'sum-head', 'Pain & comfort'));
       const sev = ['', 'Mild', 'Moderate', 'Strong', 'Severe'];
       day.pains.forEach(p => {
-        parts.push(h('p', 'sum-line', e(sev[p.severity] || '') + ' — ' + e(p.location) + (p.note ? ' — ' + e(p.note) : '')));
+        const ex = p.quality ? ' · ' + e(p.quality) : '';
+        parts.push(h('p', 'sum-line', e(sev[p.severity] || '') + ' — ' + e(p.location) + (p.note ? ' — ' + e(p.note) : '') + ex));
       });
     }
 
     parts.push(h('div', 'sum-head', 'Rest'));
-    const sleepLine = 'Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · ' + e(SLEEP_Q[day.sleepQuality] || '') : '');
-    parts.push(h('p', 'sum-line', sleepLine));
+    {
+      const sl = day.sleepLatencyMins | 0;
+      const aw = day.sleepAwakenings | 0;
+      const ar = day.sleepRested | 0;
+      let sleepLine = 'Sleep: ' + (day.sleepHours != null ? Number(day.sleepHours).toFixed(1) : '7.0') + ' h' + (day.sleepQuality ? ' · ' + e(SLEEP_Q[day.sleepQuality] || '') : '');
+      if (sl) sleepLine += ' · ~' + sl + ' min to fall asleep';
+      if (aw) sleepLine += ' · woke ~' + aw + '×';
+      if (ar) sleepLine += ' · rested: ' + ['', 'low', 'a little', 'mostly', 'deeply'][ar];
+      parts.push(h('p', 'sum-line', sleepLine));
+    }
     if (day.dreams) parts.push(h('p', 'sum-line', 'Dreams: ' + e(day.dreams)));
+    if (day.strengthsNote && day.strengthsNote.trim()) parts.push(h('p', 'sum-line', 'Strengths: ' + e(day.strengthsNote.trim())));
+    if (day.supportNote && day.supportNote.trim()) parts.push(h('p', 'sum-line', 'Support: ' + e(day.supportNote.trim())));
+    if (day.stressCheckIn && day.stressCheckIn.trim()) parts.push(h('p', 'sum-line', 'Load check-in: ' + e(day.stressCheckIn.trim())));
     if (day.gratitude) parts.push(h('p', 'sum-line', 'Gratitude: ' + e(day.gratitude)));
     if (day.reflection) parts.push(h('p', 'sum-line', 'Reflection: ' + e(day.reflection)));
 
@@ -5585,14 +6147,14 @@
   function dayMatchesQuery(d, q) {
     if (!q) return true;
     const parts = [
-      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams, d.exerciseNote,
-      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow
+      d.date, d.intention, d.moodNote, d.gratitude, d.reflection, d.dreams, d.exerciseNote, d.symptomsFreeText,
+      d.eveningWin, d.eveningNote, d.eveningObstacle, d.eveningTomorrow, d.strengthsNote, d.supportNote, d.stressCheckIn, d.allergies
     ];
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { parts.push(String(r), RITUAL_LABELS[r] || ''); });
     if (d.symptoms && d.symptoms.length) d.symptoms.forEach(sid => { parts.push(sid, symLabel(sid)); });
     if (d.meals && d.meals.length) d.meals.forEach(m => { if (m.description) parts.push(m.description); });
-    if (d.pains && d.pains.length) d.pains.forEach(p => { parts.push(p.location, p.note); });
-    if (d.dbtSkills && d.dbtSkills.length) d.dbtSkills.forEach(s => { parts.push(s.skill, s.note); });
+    if (d.medications && d.medications.length) d.medications.forEach(m => { parts.push(m.name, m.dose, m.note, m.time); });
+    if (d.pains && d.pains.length) d.pains.forEach(p => { parts.push(p.location, p.note, p.quality); });
     if (d.thoughtRecords && d.thoughtRecords.length) d.thoughtRecords.forEach(r => {
       parts.push(r.situation, r.feeling, r.automatic, r.automaticThought, r.evidenceFor, r.evidenceAgainst, r.reframe, r.balancedThought, r.nextMove);
       if (r.distortions) parts.push(r.distortions.join(' '));
@@ -5608,7 +6170,11 @@
       { h: 'Gratitude', t: d.gratitude },
       { h: 'Reflection', t: d.reflection },
       { h: 'Dreams', t: d.dreams },
-      { h: 'Movement / exercise', t: d.exerciseNote },
+      { h: 'Body words', t: d.symptomsFreeText },
+      { h: 'Strengths', t: d.strengthsNote },
+      { h: 'Support', t: d.supportNote },
+      { h: 'Load check-in', t: d.stressCheckIn },
+      { h: 'Allergies', t: d.allergies },
       { h: 'Win', t: d.eveningWin },
       { h: 'Carry', t: d.eveningNote },
       { h: 'Stuck', t: d.eveningObstacle },
@@ -5617,7 +6183,8 @@
     if (d.rituals && d.rituals.length) d.rituals.forEach(r => { fields.push({ h: 'Ritual', t: (RITUAL_LABELS[r] || r) + '' }); });
     if (d.symptoms && d.symptoms.length) d.symptoms.forEach(sid => { const lb = symLabel(sid); if (lb) fields.push({ h: 'Body', t: lb + ' ' + sid }); else fields.push({ h: 'Body', t: String(sid) }); });
     if (d.meals && d.meals.length) d.meals.forEach(m => { if (m.description) fields.push({ h: 'Food', t: m.description }); });
-    if (d.pains && d.pains.length) d.pains.forEach(p => { if (p.location) fields.push({ h: 'Pain', t: p.location + (p.note ? ' ' + p.note : '') }); });
+    if (d.pains && d.pains.length) d.pains.forEach(p => { if (p.location) fields.push({ h: 'Pain', t: p.location + (p.note ? ' ' + p.note : '') + (p.quality ? ' ' + p.quality : '') }); });
+    if (d.medications && d.medications.length) d.medications.forEach(m => { fields.push({ h: 'Medicine', t: (m.name || '') + ' ' + (m.dose || '') + ' ' + (m.note || '') + ' ' + (m.time || '') }); });
     if (d.dbtSkills && d.dbtSkills.length) d.dbtSkills.forEach(s => { fields.push({ h: 'Skill', t: (s.skill || '') + (s.note ? ' ' + s.note : '') }); });
     if (d.thoughtRecords && d.thoughtRecords.length) d.thoughtRecords.forEach(r => {
       [r.situation, r.feeling, r.automaticThought, r.balancedThought, r.reframe, r.nextMove].forEach(t => {
@@ -5811,19 +6378,29 @@
     renderQuoteAndAffirmation();
     renderIntention();
     renderMood();
+    renderMoodScales();
     renderChips();
+    renderSymptomsFree();
+    renderFunctionalImpact();
+    renderMeds();
+    renderAllergies();
     renderWater(); renderPee(); renderCoffee(); renderMove(); renderSun();
     renderMeals(); renderPains();
     renderSleep();
+    renderSleepDetail();
     renderTextFields();
+    renderSupportJournalFields();
     renderMindful();
     renderTodaySummary();
+    renderTodayProgress();
     renderLowMoodSupport();
     renderThoughtRecordList();
     updateVoiceToggle();
     setRetentionSelect();
+    applyTextSize();
     renderRetentionStatus();
     renderDataCorner();
+    updateStickySaveBar();
   }
 
   /* ────────────────────────────────────────────────────────
@@ -5916,8 +6493,10 @@
   function addPain() {
     const loc = document.getElementById('painLocation').value.trim();
     const note = document.getElementById('painNote').value.trim();
+    const pq = document.getElementById('painQuality');
+    const quality = (pq && pq.value) ? pq.value : '';
     if (!loc || !day.activeSeverity) return;
-    day.pains.push({ location: loc, note, severity: day.activeSeverity });
+    day.pains.push({ location: loc, note, severity: day.activeSeverity, quality: quality || undefined });
     document.getElementById('painLocation').value = '';
     document.getElementById('painNote').value = '';
     day.activeSeverity = 0;
@@ -5925,6 +6504,68 @@
     pushActivity('Pain entry: ' + loc.slice(0, 30) + (loc.length > 30 ? '…' : ''));
   }
   document.getElementById('painAdd').addEventListener('click', addPain);
+  const pqEl = document.getElementById('painQuality');
+  if (pqEl) pqEl.addEventListener('change', () => { day.painQualitySelect = pqEl.value; saveDay(); });
+
+  const sft = document.getElementById('symptomsFreeText');
+  if (sft) sft.addEventListener('input', () => { day.symptomsFreeText = sft.value; saveDay(); renderTodayProgress(); });
+
+  document.querySelectorAll('.likert-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sc = btn.dataset.scale;
+      const idx = Number(btn.dataset.idx);
+      const v = Number(btn.dataset.val);
+      if (sc === 'phq') {
+        if (!day.phq2) day.phq2 = [null, null];
+        day.phq2[idx] = v;
+      } else if (sc === 'gad') {
+        if (!day.gad2) day.gad2 = [null, null];
+        day.gad2[idx] = v;
+      }
+      renderMoodScales();
+      saveDay();
+      renderTodayProgress();
+    });
+  });
+
+  const fi = document.getElementById('functionalImpactSlider');
+  if (fi) fi.addEventListener('input', () => { day.functionalImpact = Number(fi.value) || 0; saveDay(); renderTodayProgress(); });
+
+  const mts = document.getElementById('medTimeSelect');
+  if (mts) mts.addEventListener('change', () => { day.activeMedTime = mts.value; saveDay(); });
+  function addMed() {
+    const n = document.getElementById('medNameInput');
+    const d = document.getElementById('medDoseInput');
+    const note = document.getElementById('medNoteInput');
+    const name = n && n.value.trim();
+    if (!name) return;
+    day.medications.push({ name, dose: (d && d.value.trim()) || '', note: (note && note.value.trim()) || '', time: day.activeMedTime || 'morning' });
+    if (n) n.value = '';
+    if (d) d.value = '';
+    if (note) note.value = '';
+    renderMeds();
+    saveDay();
+    renderTodayProgress();
+    pushActivity('Medication line added.');
+  }
+  const mab = document.getElementById('medAddBtn');
+  if (mab) mab.addEventListener('click', addMed);
+  const ainp = document.getElementById('allergiesInput');
+  if (ainp) ainp.addEventListener('input', () => { day.allergies = ainp.value; saveDay(); renderTodayProgress(); });
+
+  const sl1 = document.getElementById('sleepLatency');
+  if (sl1) sl1.addEventListener('change', () => { day.sleepLatencyMins = Number(sl1.value) || 0; saveDay(); });
+  const sl2 = document.getElementById('sleepAwakenings');
+  if (sl2) sl2.addEventListener('change', () => { day.sleepAwakenings = Number(sl2.value) || 0; saveDay(); });
+  const sl3 = document.getElementById('sleepRested');
+  if (sl3) sl3.addEventListener('change', () => { day.sleepRested = Number(sl3.value) || 0; saveDay(); });
+
+  const sn1 = document.getElementById('strengthsNote');
+  if (sn1) sn1.addEventListener('input', () => { day.strengthsNote = sn1.value; saveDay(); });
+  const sn2 = document.getElementById('supportNote');
+  if (sn2) sn2.addEventListener('input', () => { day.supportNote = sn2.value; saveDay(); });
+  const sn3 = document.getElementById('stressCheckIn');
+  if (sn3) sn3.addEventListener('input', () => { day.stressCheckIn = sn3.value; saveDay(); });
 
   document.getElementById('sleepSlider').addEventListener('input', e => {
     day.sleepHours = Number(e.target.value);
@@ -5938,7 +6579,15 @@
     });
   });
 
-  document.getElementById('gratitudeInput').addEventListener('input', e => { day.gratitude = e.target.value; saveDay(); });
+  document.getElementById('gratitudeInput').addEventListener('input', e => {
+    day.gratitude = e.target.value;
+    saveDay();
+    const gsec = document.getElementById('gratitudeSection');
+    if (gsec && (e.target.value || '').trim().length > 2) {
+      gsec.classList.add('positive-bloom');
+      setTimeout(() => gsec.classList.remove('positive-bloom'), 700);
+    }
+  });
   document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
 
   const fieldSavedIds = { win: 'fieldSavedWin', note: 'fieldSavedNote', obstacle: 'fieldSavedObstacle', tomorrow: 'fieldSavedTomorrow' };
@@ -6008,9 +6657,11 @@
     if (target === 'history') { renderHistory(); renderInsights(); }
     if (target === 'quotes') renderQuotes();
     if (target === 'log') renderLogView();
+    if (target === 'path') renderPath();
     if (target === 'memory') { setRetentionSelect(); renderRetentionStatus(); }
     if (target === 'today') renderTodaySummary();
     if (target === 'journal') renderTodaySummary();
+    updateStickySaveBar();
   }
   window.addEventListener('hashchange', () => {
     const v = getRouteView();
@@ -6570,6 +7221,7 @@
     if ((pathData.practice || '').trim()) score++;
     if ((pathData.letter || '').trim()) score++;
     if ((pathData.experiments || []).length) score++;
+    if ((pathData.therapyGoals || []).length) score++;
     if ((pathData.steps || []).length) score++;
     return score;
   }
@@ -6605,7 +7257,7 @@
     });
   }
   function updatePathMeter() {
-    const pct = Math.round((pathCompletionScore() / 6) * 100);
+    const pct = Math.round((pathCompletionScore() / 7) * 100);
     const fill = document.getElementById('pathMeterFill');
     if (fill) fill.style.width = pct + '%';
     const text = document.getElementById('pathMeterText');
@@ -6635,6 +7287,7 @@
     renderPathList(pathData.experiments, 'pathExperimentList', 'experiment');
     renderPathList(pathData.steps, 'pathStepList', 'step');
     updatePathMeter();
+    renderPathGoals();
   }
   function addPathExperiment(text) {
     const input = document.getElementById('pathExperimentInput');
@@ -6658,6 +7311,18 @@
     renderPath();
     pushActivity('Added path step.');
   }
+  function addPathGoal() {
+    const input = document.getElementById('pathGoalInput');
+    const val = (input && input.value || '').trim();
+    if (!val) return;
+    if (!Array.isArray(pathData.therapyGoals)) pathData.therapyGoals = [];
+    pathData.therapyGoals.push({ text: val, triedThisWeek: false, createdAt: new Date().toISOString() });
+    pathData.therapyGoals = pathData.therapyGoals.slice(0, 20);
+    input.value = '';
+    savePath();
+    renderPath();
+    pushActivity('Added a care goal.');
+  }
   ['pathNorthStar', 'pathValues', 'pathPractice', 'pathLetter'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -6678,6 +7343,10 @@
   if (pathAddStepBtn) pathAddStepBtn.addEventListener('click', addPathStep);
   const pathStepInput = document.getElementById('pathStepInput');
   if (pathStepInput) pathStepInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathStep(); });
+  const pathAddGoalBtn = document.getElementById('pathAddGoal');
+  if (pathAddGoalBtn) pathAddGoalBtn.addEventListener('click', addPathGoal);
+  const pathGoalInput = document.getElementById('pathGoalInput');
+  if (pathGoalInput) pathGoalInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPathGoal(); });
 
   document.querySelectorAll('.nav-btn').forEach(b => {
     b.addEventListener('click', () => {
@@ -7042,6 +7711,96 @@
     });
   }
 
+  function buildAiNarrativeSummary() {
+    const phq = scorePhq2();
+    const gad = scoreGad2();
+    const parts = [];
+    parts.push('**Summary (auto, for an AI assistant)**');
+    parts.push('');
+    parts.push('User completed a Stillness journal entry for **' + formatDate(currentDateKey) + '** on this device. ');
+    if (day.mood || day.energy) {
+      parts.push('Self-reported mood' + (day.mood ? ' ' + day.mood + '/5' : '') + (day.energy ? ' and energy ' + day.energy + '/5' : '') + '. ');
+    }
+    if (phq != null) parts.push('Optional PHQ-2–inspired total: **' + phq + '/6** (not a diagnosis). ');
+    if (gad != null) parts.push('Optional GAD-2–inspired total: **' + gad + '/6**. ');
+    if (day.functionalImpact > 0) parts.push('They noted symptom impact on the day as **' + day.functionalImpact + '/4**. ');
+    parts.push('Sleep about **' + (day.sleepHours != null ? day.sleepHours.toFixed(1) : '7') + ' h**' + (day.sleepQuality ? ' with quality ' + (SLEEP_Q[day.sleepQuality] || '') : '') + '. ');
+    parts.push('Data is **local-only** unless the user copies or prints it. ');
+    parts.push('Do not infer a medical diagnosis; treat as user-reported context for support.');
+    return parts.join('');
+  }
+  function buildClinicalHtml() {
+    const phq = scorePhq2();
+    const gad = scoreGad2();
+    const rows = [
+      ['Date', formatDate(currentDateKey)],
+      ['Mood (1-5)', day.mood || '—'],
+      ['Energy (1-5)', day.energy || '—'],
+      ['PHQ-2 style (0-6)', phq != null ? phq : '—'],
+      ['GAD-2 style (0-6)', gad != null ? gad : '—'],
+      ['Symptom impact (0-4)', day.functionalImpact | 0],
+      ['Sleep (hours)', day.sleepHours != null ? day.sleepHours.toFixed(1) : '7.0'],
+      ['Sleep quality', day.sleepQuality ? (SLEEP_Q[day.sleepQuality] || '—') : '—'],
+      ['Latency to sleep (min est.)', (day.sleepLatencyMins | 0) ? String(day.sleepLatencyMins) : '—'],
+      ['Night awakenings (count)', String(day.sleepAwakenings | 0)],
+      ['Rested feeling (0-4)', String(day.sleepRested | 0 || '—')],
+      ['Steps', day.steps ? Number(day.steps).toLocaleString() : '—'],
+      ['Mindful minutes', String(day.mindfulMinutes | 0)]
+    ];
+    let t = '<table class="clin-table" style="width:100%;border-collapse:collapse;font-size:11pt"><thead><tr><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Field</th><th style="text-align:left;border-bottom:1px solid #999;padding:6px">Value</th></tr></thead><tbody>';
+    rows.forEach(r => { t += '<tr><td style="padding:6px;border-bottom:1px solid #ddd">' + r[0] + '</td><td style="padding:6px;border-bottom:1px solid #ddd">' + escapeHtml(String(r[1])) + '</td></tr>'; });
+    t += '</tbody></table>';
+    t += '<h2 style="font:14pt Georgia;margin-top:18px">Narrative (user)</h2><pre style="white-space:pre-wrap;font:11pt/1.45 Georgia;border:1px solid #ccc;padding:10px;background:#faf9f6">' + escapeHtml(buildTodaySummaryText()) + '</pre>';
+    t += '<p style="font-size:9pt;color:#666">Generated by Stillness. Not a substitute for a medical visit.</p>';
+    return t;
+  }
+  function openExportModal() { const m = document.getElementById('exportModal'); if (m) { m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); } }
+  function closeExportModal() { const m = document.getElementById('exportModal'); if (m) { m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); } }
+  function runPrintForHtmlDoc(innerBody, title) {
+    const w = window.open('', '_blank');
+    if (!w) { window.print(); return; }
+    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><style>body{font-family:Georgia,serif;padding:20px;max-width:700px;margin:0 auto} h1{font-size:18pt}.clin-table th{background:#f0f0f0}</style></head><body>' + innerBody + '</body></html>');
+    w.document.close();
+    w.focus();
+    setTimeout(() => { w.print(); }, 300);
+  }
+  const oem = document.getElementById('openExportModal');
+  if (oem) oem.addEventListener('click', openExportModal);
+  const exClose = document.getElementById('exportModalClose');
+  if (exClose) exClose.addEventListener('click', closeExportModal);
+  document.getElementById('exportModal')?.addEventListener('click', (e) => { if (e.target && e.target.id === 'exportModal') closeExportModal(); });
+  document.getElementById('exportBeautifulPdf')?.addEventListener('click', () => {
+    closeExportModal();
+    const box = document.getElementById('summaryCard');
+    if (box) { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    setTimeout(() => window.print(), 200);
+  });
+  document.getElementById('exportClinicalPdf')?.addEventListener('click', () => { closeExportModal(); runPrintForHtmlDoc('<h1>Stillness — clinical handoff</h1>' + buildClinicalHtml(), 'Stillness clinical handoff'); });
+  document.getElementById('exportAiMarkdown')?.addEventListener('click', () => {
+    const md = buildAiNarrativeSummary() + '\n\n---\n\n```\n' + buildTodaySummaryText() + '\n```';
+    closeExportModal();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(md).then(() => pushActivity('Copied Markdown for AI.'), () => pushActivity('Copy failed — try a desktop browser.'));
+    } else {
+      pushActivity('Clipboard not available in this context.');
+    }
+  });
+  document.getElementById('exportAiJson')?.addEventListener('click', () => {
+    const payload = {
+      meta: { app: 'Stillness', exportVersion: 1, date: currentDateKey, generatedAt: new Date().toISOString() },
+      day: day,
+      path: pathData,
+      narrativeForModels: buildAiNarrativeSummary()
+    };
+    const json = JSON.stringify(payload, null, 2);
+    closeExportModal();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(json).then(() => pushActivity('Copied JSON for AI.'), () => pushActivity('Copy failed.'));
+    } else {
+      pushActivity('Clipboard not available.');
+    }
+  });
+
   document.getElementById('copySummary').addEventListener('click', () => {
     const t = buildTodaySummaryText();
     (navigator.clipboard && navigator.clipboard.writeText
@@ -7064,11 +7823,38 @@
     renderLogView();
   });
 
+  const tsDef = document.getElementById('textSizeDefault');
+  const tsLg = document.getElementById('textSizeLarge');
+  if (tsDef) tsDef.addEventListener('click', () => { config.textSize = 'default'; applyTextSize(); saveConfig(); });
+  if (tsLg) tsLg.addEventListener('click', () => { config.textSize = 'large'; applyTextSize(); saveConfig(); });
+  const stickyBtn = document.getElementById('stickySaveBtn');
+  if (stickyBtn) stickyBtn.addEventListener('click', () => { saveDayNow(); flashSaveNow(); try { if (window.navigator && navigator.vibrate) navigator.vibrate(12); } catch (e) {} renderTodayProgress(); updateStickySaveBar(); });
   let logSearchTimer = null;
   document.getElementById('logSearch').addEventListener('input', () => {
     clearTimeout(logSearchTimer);
     logSearchTimer = setTimeout(() => renderLogView(), 200);
   });
+  (function initPullToRefresh() {
+    let y0 = 0;
+    document.addEventListener('touchstart', (e) => { y0 = (e.touches[0] && e.touches[0].clientY) || 0; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      const y1 = (e.changedTouches[0] && e.changedTouches[0].clientY) || 0;
+      if (y1 - y0 < 70) return;
+      if (window.scrollY > 4) return;
+      const active = document.querySelector('.view.active');
+      if (!active) return;
+      const v = active.id;
+      if (v === 'view-log') {
+        try { renderLogView(); } catch (err) {}
+        const h = document.getElementById('logRefreshHint');
+        if (h) { h.textContent = 'Refreshed. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
+      } else if (v === 'view-history') {
+        try { renderHistory(); renderInsights(); } catch (err) {}
+        const h = document.getElementById('gardenRefreshHint');
+        if (h) { h.textContent = 'Refreshed your garden. ·✦·'; h.classList.add('on'); setTimeout(() => { h.textContent = ''; h.classList.remove('on'); }, 1400); }
+      }
+    }, { passive: true });
+  })();
 
   window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
   window.addEventListener('beforeunload', stopSoundscape);
@@ -7078,6 +7864,8 @@
   });
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const ex = document.getElementById('exportModal');
+    if (ex && ex.classList.contains('open')) { closeExportModal(); return; }
     const b = document.getElementById('breatheOverlay');
     const g = document.getElementById('groundOverlay');
     const k = document.getElementById('kindnessOverlay');
@@ -7660,6 +8448,7 @@
   ──────────────────────────────────────────────────────── */
   loadConfig();
   applyTheme(config.theme || 'parchment');
+  applyTextSize();
   syncBreatheSoundSelects();
   updateBreatheCueToggle();
   setRetentionSelect();
