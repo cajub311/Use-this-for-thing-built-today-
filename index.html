@@ -3338,195 +3338,219 @@
   }
 
   /* ═══════════════════════════════════════════════════════════
-     REDESIGN LAYER — stronger identity, cleaner separation
+     REDESIGN LAYER v2 — stronger identity, cleaner hierarchy
      Additive overrides only — no existing CSS removed.
      ═══════════════════════════════════════════════════════════ */
 
-  /* ── Greeting — more dramatic ────────────────────────────── */
+  /* ── Header plate ────────────────────────────────────────── */
+  .plate { margin-bottom: 38px; padding-bottom: 4px; }
+  .plate-rule::before, .plate-rule::after { max-width: 130px; }
   .greeting {
     font-size: clamp(2.3rem, 8vw, 3.4rem);
-    letter-spacing: -0.025em;
-    text-shadow: 0 2px 30px rgba(201, 169, 97, 0.14);
-    margin: 10px 0 10px;
+    letter-spacing: -0.028em;
+    text-shadow: 0 3px 32px rgba(201, 169, 97, 0.16);
+    margin: 10px 0 8px;
+    line-height: 1.08;
   }
-  .plate { margin-bottom: 36px; }
-  .plate-rule::before, .plate-rule::after { max-width: 130px; }
+  .date-line {
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    opacity: 0.75;
+  }
+  .sync-hint {
+    font-size: 0.67rem;
+    opacity: 0.55;
+    margin-top: 12px;
+  }
 
-  /* ── Day-moment group containers — distinct per time block ── */
+  /* ── Day-moment group containers ────────────────────────── */
   .day-moment {
     padding: clamp(20px, 4vw, 30px);
-    margin-bottom: 36px;
-    border-radius: 26px;
+    margin-bottom: 40px;
+    border-radius: 28px;
+    border: 1px solid rgba(201, 187, 164, 0.4);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.5) inset,
-      0 4px 8px rgba(74, 64, 49, 0.05),
-      0 14px 36px var(--shadow-warm);
-    border: 1px solid rgba(201, 187, 164, 0.5);
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 4px 8px rgba(74, 64, 49, 0.04),
+      0 16px 40px rgba(74, 64, 49, 0.1);
     position: relative;
     overflow: hidden;
   }
 
-  /* Morning: warm golden sunrise tint */
+  /* Morning — warm amber with sunrise glow */
   .day-moment[data-moment="morning"] {
-    background: linear-gradient(
-      158deg,
-      rgba(229, 213, 170, 0.38) 0%,
-      rgba(244, 236, 218, 0.55) 40%,
-      rgba(237, 227, 210, 0.30) 100%
-    );
-    border-color: rgba(201, 169, 97, 0.3);
+    background: linear-gradient(162deg,
+      rgba(229, 213, 170, 0.50) 0%,
+      rgba(248, 240, 220, 0.72) 38%,
+      rgba(237, 227, 210, 0.45) 100%);
+    border-color: rgba(201, 169, 97, 0.38);
+    border-top: 4px solid rgba(201, 169, 97, 0.55);
   }
   .day-moment[data-moment="morning"]::before {
     content: '';
     position: absolute;
-    top: -30px; right: -30px;
-    width: 150px; height: 150px;
-    background: radial-gradient(ellipse, rgba(201, 169, 97, 0.14), transparent 70%);
-    filter: blur(20px);
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(ellipse, rgba(201, 169, 97, 0.18), transparent 68%);
+    filter: blur(28px);
     pointer-events: none;
   }
 
-  /* Midday: crisp, slightly cooler */
+  /* Midday — fresh green */
   .day-moment[data-moment="midday"] {
-    background: linear-gradient(
-      158deg,
-      rgba(214, 220, 201, 0.42) 0%,
-      rgba(244, 236, 218, 0.52) 45%,
-      rgba(237, 227, 210, 0.28) 100%
-    );
-    border-color: rgba(184, 197, 178, 0.45);
+    background: linear-gradient(162deg,
+      rgba(184, 197, 178, 0.52) 0%,
+      rgba(244, 236, 218, 0.70) 40%,
+      rgba(214, 220, 201, 0.38) 100%);
+    border-color: rgba(74, 107, 79, 0.32);
+    border-top: 4px solid rgba(74, 107, 79, 0.45);
   }
   .day-moment[data-moment="midday"]::before {
     content: '';
     position: absolute;
-    top: -20px; right: -20px;
-    width: 130px; height: 130px;
-    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.10), transparent 70%);
-    filter: blur(18px);
+    top: -30px; right: -30px;
+    width: 160px; height: 160px;
+    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.13), transparent 68%);
+    filter: blur(24px);
     pointer-events: none;
   }
 
-  /* Evening: deep, warm, restful */
+  /* Evening — deep, calm moss-clay */
   .day-moment[data-moment="evening"],
   .day-moment.day-moment--evening {
-    background: linear-gradient(
-      158deg,
-      rgba(47, 74, 53, 0.14) 0%,
-      rgba(244, 236, 218, 0.45) 40%,
-      rgba(181, 101, 74, 0.08) 100%
-    );
-    border-color: rgba(74, 107, 79, 0.28);
+    background: linear-gradient(162deg,
+      rgba(47, 74, 53, 0.20) 0%,
+      rgba(244, 236, 218, 0.62) 42%,
+      rgba(181, 101, 74, 0.12) 100%);
+    border-color: rgba(47, 74, 53, 0.34);
+    border-top: 4px solid rgba(47, 74, 53, 0.52);
   }
   .day-moment[data-moment="evening"]::before,
   .day-moment.day-moment--evening::before {
     content: '';
     position: absolute;
-    bottom: -20px; left: -20px;
-    width: 160px; height: 160px;
-    background: radial-gradient(ellipse, rgba(181, 101, 74, 0.10), transparent 68%);
-    filter: blur(24px);
+    bottom: -30px; left: -30px;
+    width: 180px; height: 180px;
+    background: radial-gradient(ellipse, rgba(47, 74, 53, 0.14), transparent 68%);
+    filter: blur(28px);
     pointer-events: none;
   }
 
-  /* Dark themes */
+  /* Dark theme overrides */
   [data-theme="forest"] .day-moment[data-moment="morning"],
   [data-theme="midnight"] .day-moment[data-moment="morning"] {
-    background: linear-gradient(158deg, rgba(77, 61, 31, 0.28) 0%, rgba(50, 58, 51, 0.5) 100%);
-    border-color: rgba(140, 140, 100, 0.25);
+    background: linear-gradient(162deg, rgba(77, 61, 31, 0.38) 0%, rgba(48, 56, 48, 0.60) 100%);
+    border-color: rgba(140, 140, 90, 0.28); border-top-color: rgba(201, 169, 97, 0.40);
   }
   [data-theme="forest"] .day-moment[data-moment="midday"],
   [data-theme="midnight"] .day-moment[data-moment="midday"] {
-    background: linear-gradient(158deg, rgba(74, 107, 79, 0.22) 0%, rgba(50, 58, 51, 0.5) 100%);
-    border-color: rgba(140, 150, 135, 0.3);
+    background: linear-gradient(162deg, rgba(74, 107, 79, 0.28) 0%, rgba(42, 52, 44, 0.62) 100%);
+    border-color: rgba(120, 150, 120, 0.30); border-top-color: rgba(74, 107, 79, 0.5);
   }
   [data-theme="forest"] .day-moment[data-moment="evening"],
   [data-theme="midnight"] .day-moment[data-moment="evening"] {
-    background: linear-gradient(158deg, rgba(90, 106, 136, 0.22) 0%, rgba(42, 50, 43, 0.55) 100%);
-    border-color: rgba(90, 106, 136, 0.3);
+    background: linear-gradient(162deg, rgba(90, 106, 136, 0.28) 0%, rgba(38, 46, 38, 0.62) 100%);
+    border-color: rgba(90, 106, 136, 0.32); border-top-color: rgba(90, 106, 136, 0.52);
   }
 
-  /* ── Day-moment label — clear, prominent group header ─────── */
+  /* ── Day-moment label — pill badge with color dot ────────── */
   .day-moment-label {
-    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
     letter-spacing: 0.18em;
-    margin: 0 0 18px;
-    padding: 6px 12px;
-    background: rgba(201, 187, 164, 0.25);
+    text-transform: uppercase;
+    margin: 0 0 22px;
+    padding: 5px 14px 5px 10px;
     border-radius: 999px;
+    border: 1px solid rgba(201, 187, 164, 0.38);
+    background: rgba(237, 227, 210, 0.45);
+    color: var(--ink-faint);
+    position: relative;
+    z-index: 1;
+  }
+  .day-moment-label::before {
+    content: '';
     display: inline-block;
-    border: 1px solid rgba(201, 187, 164, 0.35);
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: rgba(201, 187, 164, 0.7);
   }
   .day-moment[data-moment="morning"] .day-moment-label {
-    background: rgba(201, 169, 97, 0.15);
-    border-color: rgba(201, 169, 97, 0.28);
+    background: rgba(201, 169, 97, 0.16);
+    border-color: rgba(201, 169, 97, 0.35);
     color: #7A5C1E;
   }
+  .day-moment[data-moment="morning"] .day-moment-label::before { background: rgba(201, 169, 97, 0.85); }
   .day-moment[data-moment="midday"] .day-moment-label {
-    background: rgba(74, 107, 79, 0.12);
-    border-color: rgba(74, 107, 79, 0.25);
+    background: rgba(74, 107, 79, 0.13);
+    border-color: rgba(74, 107, 79, 0.28);
     color: var(--moss-deep);
   }
+  .day-moment[data-moment="midday"] .day-moment-label::before { background: rgba(74, 107, 79, 0.85); }
   .day-moment[data-moment="evening"] .day-moment-label,
   .day-moment.day-moment--evening .day-moment-label {
-    background: rgba(47, 74, 53, 0.12);
-    border-color: rgba(47, 74, 53, 0.25);
+    background: rgba(47, 74, 53, 0.13);
+    border-color: rgba(47, 74, 53, 0.28);
     color: var(--moss-deep);
   }
+  .day-moment[data-moment="evening"] .day-moment-label::before,
+  .day-moment.day-moment--evening .day-moment-label::before { background: rgba(47, 74, 53, 0.85); }
   [data-theme="forest"] .day-moment-label,
   [data-theme="midnight"] .day-moment-label {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.15);
     color: var(--ink-soft);
   }
+  [data-theme="forest"] .day-moment-label::before,
+  [data-theme="midnight"] .day-moment-label::before { background: rgba(255, 255, 255, 0.45); }
 
-  /* ── Leaf cards within day-moments — lighter, nested feel ─── */
+  /* ── Leaf cards within day-moments — nestled, lighter ─────── */
   .day-moment .leaf {
-    background: rgba(255, 255, 255, 0.55);
-    border-color: rgba(201, 187, 164, 0.35);
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(201, 187, 164, 0.32);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.7) inset,
-      0 3px 10px rgba(74, 64, 49, 0.06),
-      0 8px 22px rgba(74, 64, 49, 0.08);
-    margin-bottom: 16px;
+      0 1px 0 rgba(255, 255, 255, 0.75) inset,
+      0 3px 8px rgba(74, 64, 49, 0.05),
+      0 8px 20px rgba(74, 64, 49, 0.07);
+    margin-bottom: 14px;
     transition: transform .25s ease, box-shadow .28s ease;
   }
   .day-moment .leaf:last-child { margin-bottom: 0; }
   .day-moment .leaf:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.7) inset,
-      0 6px 18px rgba(74, 64, 49, 0.1),
-      0 14px 32px rgba(74, 64, 49, 0.12);
+      0 1px 0 rgba(255, 255, 255, 0.75) inset,
+      0 6px 16px rgba(74, 64, 49, 0.09),
+      0 16px 32px rgba(74, 64, 49, 0.11);
   }
   [data-theme="forest"] .day-moment .leaf,
   [data-theme="midnight"] .day-moment .leaf {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.055);
     border-color: rgba(255, 255, 255, 0.10);
   }
+  .day-moment[data-moment="evening"] .leaf,
+  .day-moment.day-moment--evening .leaf { background: rgba(255, 255, 255, 0.44); }
 
-  /* Evening leaf — slightly darker/warmer */
-  .day-moment--evening .leaf,
-  .day-moment[data-moment="evening"] .leaf {
-    background: rgba(255, 255, 255, 0.40);
-  }
-
-  /* ── Standalone leaves outside day-moments ──────────────── */
+  /* ── Standalone leaf cards outside day-moments ───────────── */
   .leaf {
     transition: transform .25s ease, box-shadow .28s ease;
-    border-left: 3px solid rgba(74, 107, 79, 0.18);
+    border-left: 3px solid rgba(74, 107, 79, 0.2);
   }
   .leaf:hover {
     transform: translateY(-2px);
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.56) inset,
       0 2px 0 rgba(255, 255, 255, 0.22) inset,
-      0 14px 40px var(--shadow-deep);
+      0 16px 44px var(--shadow-deep);
   }
-  .leaf.intention { border-left-color: rgba(74, 107, 79, 0.5); }
-  .leaf.soundscape-panel { border-left-color: rgba(201, 169, 97, 0.45); }
-  .leaf.wind-down-panel { border-left-color: rgba(90, 106, 136, 0.45); }
+  .leaf.intention { border-left-color: rgba(74, 107, 79, 0.55); }
+  .leaf.soundscape-panel { border-left-color: rgba(201, 169, 97, 0.5); }
+  .leaf.wind-down-panel { border-left-color: rgba(90, 106, 136, 0.5); }
 
-  /* ── Section number — actual badge pill ─────────────────── */
+  /* ── Section number — badge pill ────────────────────────── */
   .leaf-num {
     background: var(--paper-2);
     border: 1px solid rgba(201, 187, 164, 0.5);
@@ -3537,27 +3561,36 @@
     opacity: 1;
     flex-shrink: 0;
   }
-  .day-moment .leaf-num {
-    background: transparent;
-    border-color: rgba(201, 187, 164, 0.35);
-  }
+  .day-moment .leaf-num { background: transparent; border-color: rgba(201, 187, 164, 0.32); }
 
   /* ── Section title + subtitle ────────────────────────────── */
-  .leaf-title { font-size: 1.42rem; }
-  .leaf-sub { font-size: 1rem; line-height: 1.62; margin-bottom: 22px; }
+  .leaf-title { font-size: 1.45rem; letter-spacing: -0.01em; }
+  .leaf-sub { font-size: 0.98rem; line-height: 1.65; margin-bottom: 22px; }
+
+  /* ── Collapsible details — open/close chevron ────────────── */
+  details.leaf.collapsible-section > summary .leaf-num::after {
+    content: ' ›';
+    font-style: normal;
+    transition: transform .2s ease;
+    display: inline-block;
+  }
+  details.leaf.collapsible-section[open] > summary .leaf-num::after {
+    transform: rotate(90deg);
+  }
+  details.leaf.collapsible-section > summary:hover { opacity: 0.88; }
 
   /* ── Quick-action cards ──────────────────────────────────── */
   .quick-action {
     border-radius: 16px;
-    transition: all .22s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
     overflow: hidden;
+    transition: all .22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .quick-action::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(74, 107, 79, 0.07), transparent 60%);
+    background: linear-gradient(135deg, rgba(74, 107, 79, 0.08), transparent 58%);
     opacity: 0;
     transition: opacity .2s ease;
     pointer-events: none;
@@ -3566,21 +3599,25 @@
   .quick-action:hover {
     transform: translateY(-2px) scale(1.03);
     border-color: var(--moss-soft);
-    box-shadow: 0 6px 18px var(--shadow-warm);
+    box-shadow: 0 6px 20px var(--shadow-warm);
   }
   .quick-action:active { transform: scale(0.96); }
   .quick-action span {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.06rem;
+    font-size: 1.08rem;
     font-weight: 500;
+    display: block;
+    color: var(--ink);
   }
   .quick-action small {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.61rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--moss-deep);
     margin-top: 4px;
+    display: block;
+    line-height: 1.35;
   }
 
   /* ── Picker buttons ─────────────────────────────────────── */
@@ -3588,128 +3625,208 @@
     will-change: transform;
     transition: all .26s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .picker-btn:hover {
-    transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 5px 16px var(--shadow-warm);
-  }
-  .picker-btn.on {
-    transform: translateY(-2px) scale(1.06);
-    box-shadow: 0 6px 18px rgba(74, 107, 79, 0.22);
-  }
-  .energy-row .picker-btn.on { box-shadow: 0 6px 18px rgba(181, 101, 74, 0.22); }
+  .picker-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 5px 16px var(--shadow-warm); }
+  .picker-btn.on { transform: translateY(-2px) scale(1.07); box-shadow: 0 6px 20px rgba(74, 107, 79, 0.24); }
+  .energy-row .picker-btn.on { box-shadow: 0 6px 20px rgba(181, 101, 74, 0.24); }
 
-  /* ── Chips ───────────────────────────────────────────────── */
-  .chip {
-    transition: all .24s cubic-bezier(0.34, 1.56, 0.64, 1);
-    font-size: 0.9rem;
-  }
-  .chip:hover { transform: translateY(-2px) scale(1.02); background: var(--paper-3); }
-  .chip.on { transform: scale(1.05); box-shadow: 0 3px 12px rgba(74, 107, 79, 0.22); }
-  .chip.bad.on { box-shadow: 0 3px 12px rgba(181, 101, 74, 0.22); }
+  /* ── Chips ──────────────────────────────────────────────── */
+  .chip { transition: all .24s cubic-bezier(0.34, 1.56, 0.64, 1); font-size: 0.9rem; padding: 8px 15px; }
+  .chip:hover { transform: translateY(-2px) scale(1.02); background: var(--paper-3); border-color: var(--moss-soft); }
+  .chip.on { transform: scale(1.05); box-shadow: 0 3px 14px rgba(74, 107, 79, 0.24); }
+  .chip.bad.on { box-shadow: 0 3px 14px rgba(181, 101, 74, 0.24); }
 
-  /* ── Practice buttons ────────────────────────────────────── */
-  .practice-btn { min-height: 116px; padding: 22px 20px; }
-  .practice-btn .ptitle {
-    font-size: 1.3rem;
-    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
-    margin-bottom: 6px;
-  }
-  .practice-btn::before {
-    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.26), transparent);
-  }
+  /* ── Practice buttons ───────────────────────────────────── */
+  .practice-btn { min-height: 120px; padding: 22px 20px 18px; }
+  .practice-btn .ptitle { font-size: 1.32rem; text-shadow: 0 1px 10px rgba(0,0,0,0.18); margin-bottom: 6px; }
+  .practice-btn::before { background: linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent); }
   .practices-row { gap: 14px; margin-bottom: 14px; }
 
-  /* ── Tracker cards ───────────────────────────────────────── */
+  /* ── Tracker cards ──────────────────────────────────────── */
   .tracker {
     transition: transform .22s ease, box-shadow .22s ease;
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.5) inset,
-      0 6px 20px var(--shadow-warm);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 6px 22px var(--shadow-warm);
   }
-  .tracker:hover { transform: translateY(-2px); box-shadow: 0 10px 28px var(--shadow-deep); }
+  .tracker:hover { transform: translateY(-2px); box-shadow: 0 12px 30px var(--shadow-deep); }
   .tracker-value { font-size: 2.8rem; }
-  .grid-trackers { gap: 14px; margin-bottom: 24px; }
+  .grid-trackers { gap: 14px; margin-bottom: 26px; }
 
-  /* ── Streak card ─────────────────────────────────────────── */
-  .streak-card { padding: 36px 26px 32px; overflow: hidden; }
+  /* ── Streak card ────────────────────────────────────────── */
+  .streak-card { padding: 38px 28px 34px; overflow: hidden; }
   .streak-card::before {
     content: '';
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -65%);
-    width: 220px; height: 220px;
-    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.14), transparent 68%);
-    filter: blur(22px);
+    width: 230px; height: 230px;
+    background: radial-gradient(ellipse, rgba(74, 107, 79, 0.15), transparent 68%);
+    filter: blur(26px);
     pointer-events: none;
   }
-  .streak-num { font-size: 4.2rem; position: relative; z-index: 1; }
+  .streak-num { font-size: 4.4rem; position: relative; z-index: 1; }
   .streak-label { font-size: 1.1rem; position: relative; z-index: 1; }
 
-  /* ── Insight stat color-coded tops ──────────────────────── */
-  .insight-row .insight-stat:nth-child(1) { border-top: 2.5px solid var(--moss); }
-  .insight-row .insight-stat:nth-child(2) { border-top: 2.5px solid var(--clay); }
-  .insight-row .insight-stat:nth-child(3) { border-top: 2.5px solid var(--gold); }
-  .insight-stat { transition: transform .2s ease; }
-  .insight-stat:hover { transform: translateY(-2px); }
-  .insight-stat .num { font-size: 1.9rem; }
+  /* ── Insight stat tops ──────────────────────────────────── */
+  .insight-row .insight-stat:nth-child(1) { border-top: 3px solid var(--moss); }
+  .insight-row .insight-stat:nth-child(2) { border-top: 3px solid var(--clay); }
+  .insight-row .insight-stat:nth-child(3) { border-top: 3px solid var(--gold); }
+  .insight-stat { transition: transform .2s ease, box-shadow .2s ease; }
+  .insight-stat:hover { transform: translateY(-2px); box-shadow: 0 4px 14px var(--shadow-warm); }
+  .insight-stat .num { font-size: 1.95rem; }
 
   /* ── History day cards ───────────────────────────────────── */
   .history-day {
-    border-left: 3px solid rgba(74, 107, 79, 0.16);
+    border-left: 3px solid rgba(74, 107, 79, 0.18);
     transition: transform .2s ease, box-shadow .2s ease;
     margin-bottom: 14px;
   }
-  .history-day:hover { transform: translateY(-1px); box-shadow: 0 8px 26px var(--shadow-deep); }
+  .history-day:hover { transform: translateY(-1px); box-shadow: 0 8px 28px var(--shadow-deep); }
+
+  /* ── Quote frame — more room, more impact ────────────────── */
+  .quote-frame { padding: 46px 36px 40px; margin-bottom: 30px; }
+  .quote-text { font-size: clamp(1.22rem, 3.6vw, 1.52rem); line-height: 1.5; }
+  .quote-mark { font-size: 4.8rem; height: 28px; opacity: 0.5; }
+
+  /* ── Quick-start panel ───────────────────────────────────── */
+  .quick-start { padding: 24px 22px 20px; margin-bottom: 30px; box-shadow: 0 6px 26px var(--shadow-warm); }
+  .quick-start h2 { font-size: clamp(1.4rem, 5vw, 1.85rem); margin-top: 4px; }
+  .quick-action-grid { gap: 10px; margin-top: 16px; }
+
+  /* ── Peace visual ────────────────────────────────────────── */
+  .peace-visual { margin-bottom: 30px; box-shadow: 0 10px 34px var(--shadow-warm); }
 
   /* ── Navigation — pill active state ─────────────────────── */
   .nav-btn {
     border-radius: 10px;
+    padding: 8px 5px;
     transition: color .22s ease, background .22s ease;
-    padding: 8px 6px;
   }
-  .nav-btn.active {
-    color: var(--moss);
-    background: rgba(74, 107, 79, 0.11);
-  }
+  .nav-btn.active { color: var(--moss); background: rgba(74, 107, 79, 0.12); }
   .nav-icon { transition: transform .32s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .nav-btn.active .nav-icon { transform: scale(1.16) translateY(-2px); }
-  .nav-btn::after {
-    height: 3px;
-    left: 20%; right: 20%;
-    border-radius: 0 0 4px 4px;
-    transition: transform .38s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+  .nav-btn.active .nav-icon { transform: scale(1.18) translateY(-2px); }
+  .nav-btn.active .nav-label { font-weight: 600; }
+  .nav-btn::after { height: 3px; left: 20%; right: 20%; border-radius: 0 0 4px 4px; transition: transform .38s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-  /* ── View transition — gentle lift ──────────────────────── */
-  .view.active { animation: viewEnterR .42s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  /* ── View transition ────────────────────────────────────── */
+  .view.active { animation: viewEnterR .44s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
   @keyframes viewEnterR {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(9px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Quote frame ─────────────────────────────────────────── */
-  .quote-frame { padding: 44px 34px 38px; margin-bottom: 28px; }
-  .quote-text { font-size: clamp(1.2rem, 3.6vw, 1.5rem); }
-  .quote-mark { font-size: 4.6rem; height: 26px; }
+  /* ── Staggered day-moment entrance ──────────────────────── */
+  .view.active .day-moment:nth-child(1) { animation-delay: 0s; }
+  .view.active .day-moment:nth-child(2) { animation-delay: 0.06s; }
+  .view.active .day-moment:nth-child(3) { animation-delay: 0.12s; }
 
-  /* ── Peace visual ────────────────────────────────────────── */
-  .peace-visual { margin-bottom: 28px; box-shadow: 0 10px 32px var(--shadow-warm); }
+  /* ── Progress ring strip ─────────────────────────────────── */
+  .today-progress-wrap {
+    box-shadow: 0 4px 16px var(--shadow-warm);
+    border-color: rgba(201, 187, 164, 0.5);
+    margin-bottom: 30px;
+  }
+  .today-progress-caption { font-size: 0.94rem; color: var(--ink-soft); }
 
-  /* ── Quick-start panel ───────────────────────────────────── */
-  .quick-start { padding: 24px 22px 20px; margin-bottom: 28px; box-shadow: 0 6px 24px var(--shadow-warm); }
-  .quick-start h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); }
-  .quick-action-grid { margin-top: 16px; gap: 10px; }
+  /* ── Visual banner ───────────────────────────────────────── */
+  .visual-banner { margin-bottom: 28px; box-shadow: 0 6px 24px var(--shadow-warm); }
+  .visual-banner strong { font-size: 1.22rem; line-height: 1.3; }
+
+  /* ── Day-moment photo atmospherics ──────────────────────── */
+  .day-moment { isolation: isolate; }
+  .day-moment::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center 25%;
+    opacity: 0.13;
+    filter: saturate(0.82) contrast(0.93) brightness(1.03);
+    -webkit-mask-image: linear-gradient(170deg,
+      rgba(0,0,0,0.8) 0%,
+      rgba(0,0,0,0.55) 30%,
+      rgba(0,0,0,0.22) 62%,
+      transparent 100%);
+    mask-image: linear-gradient(170deg,
+      rgba(0,0,0,0.8) 0%,
+      rgba(0,0,0,0.55) 30%,
+      rgba(0,0,0,0.22) 62%,
+      transparent 100%);
+  }
+  .day-moment[data-moment="morning"]::after {
+    background-image: url("assets/peaceful/meditation-room-morning.jpg");
+    background-position: center top;
+  }
+  .day-moment[data-moment="midday"]::after {
+    background-image: url("assets/peaceful/still-lake-dawn.jpg");
+    background-position: center 35%;
+  }
+  .day-moment[data-moment="evening"]::after,
+  .day-moment.day-moment--evening::after {
+    background-image: url("assets/peaceful/candle-meditation-corner.jpg");
+    background-position: center 55%;
+  }
+  [data-theme="forest"] .day-moment::after,
+  [data-theme="midnight"] .day-moment::after { opacity: 0.07; filter: saturate(0.6) contrast(0.88); }
+
+  /* ── Quote frame — lotus backdrop ───────────────────────── */
+  .quote-frame { position: relative; overflow: hidden; isolation: isolate; }
+  .quote-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url("assets/peaceful/lotus-water.jpg") center 45% / cover no-repeat;
+    opacity: 0.10;
+    filter: saturate(0.72) contrast(0.88);
+    -webkit-mask-image: linear-gradient(to right,
+      transparent 0%,
+      rgba(0,0,0,0.55) 28%,
+      rgba(0,0,0,0.62) 58%,
+      transparent 100%);
+    mask-image: linear-gradient(to right,
+      transparent 0%,
+      rgba(0,0,0,0.55) 28%,
+      rgba(0,0,0,0.62) 58%,
+      transparent 100%);
+  }
+
+  /* ── Quick-start panel — rain leaves accent ──────────────── */
+  .quick-start { position: relative; overflow: hidden; isolation: isolate; }
+  .quick-start::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 52%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: url("assets/peaceful/rain-leaves.jpg") right center / cover no-repeat;
+    opacity: 0.09;
+    filter: saturate(0.7) contrast(0.88);
+    -webkit-mask-image: linear-gradient(to left,
+      rgba(0,0,0,0.7) 0%,
+      rgba(0,0,0,0.38) 50%,
+      transparent 100%);
+    mask-image: linear-gradient(to left,
+      rgba(0,0,0,0.7) 0%,
+      rgba(0,0,0,0.38) 50%,
+      transparent 100%);
+  }
 
   /* ── Mobile ──────────────────────────────────────────────── */
   @media (max-width: 520px) {
-    .day-moment { padding: 18px 16px; margin-bottom: 28px; border-radius: 22px; }
-    .practice-btn { min-height: 106px; padding: 18px 16px; }
-    .tracker-value { font-size: 2.4rem; }
-    .quote-frame { padding: 36px 22px 30px; }
+    .day-moment { padding: 18px 16px; margin-bottom: 30px; border-radius: 22px; }
+    .day-moment-label { font-size: 0.67rem; padding: 5px 12px 5px 9px; margin-bottom: 18px; }
+    .practice-btn { min-height: 108px; padding: 18px 16px; }
+    .tracker-value { font-size: 2.5rem; }
+    .quote-frame { padding: 38px 22px 32px; }
     .practices-row { gap: 10px; }
     .quick-start { padding: 18px 16px 14px; }
+    .streak-num { font-size: 3.6rem; }
+    .day-moment::after { opacity: 0.10; }
   }
-  /* ═══ END REDESIGN LAYER ════════════════════════════════════ */
+  /* ═══ END REDESIGN LAYER v2 ══════════════════════════════════ */
 </style>
 <link rel="stylesheet" href="visual-polish.css" />
 </head>

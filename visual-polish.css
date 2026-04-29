@@ -12,10 +12,10 @@
   inset: 0;
   z-index: -1;
   background: var(--plate-image, none) center / cover no-repeat;
-  opacity: 0.2;
-  filter: saturate(0.9) contrast(0.96);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.8) 52%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.8) 52%, transparent 100%);
+  opacity: 0.22;
+  filter: saturate(0.88) contrast(0.95);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 42%, rgba(0,0,0,0.3) 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 42%, rgba(0,0,0,0.3) 78%, transparent 100%);
 }
 
 #view-today > .plate { --plate-image: url("assets/peaceful/meditation-room-morning.jpg"); }
