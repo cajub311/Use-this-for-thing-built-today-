@@ -1782,7 +1782,7 @@
   /* ── Views ──────────────────────────────────────────────── */
   .view { display: none; }
   .view.active { display: block; animation: viewEnter .38s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
-  .nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); width: min(720px, calc(100% - 20px)); }
+  .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: min(720px, calc(100% - 20px)); }
   .nav-btn { min-height: 48px; padding: 8px 8px; }
   .quick-start, .visual-banner, .support-panel {
     background: var(--paper-3);
@@ -2745,6 +2745,53 @@
   <!-- ═══════════════════════════════════════════════════════
        TRACK VIEW
   ═══════════════════════════════════════════════════════ -->
+  <div class="view" id="view-practice">
+    <header class="plate">
+      <div class="plate-rule"><span class="ornament">Practice</span></div>
+      <h1 class="greeting">A place to settle.</h1>
+      <div class="date-line">Breath Â· grounding Â· kindness Â· wind down</div>
+      <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
+    </header>
+
+    <section class="visual-banner no-print">
+      <img src="assets/peaceful/evening-tea-lamp.jpg" alt="Evening tea and a warm lamp for a quiet wind-down" />
+      <div>
+        <small>Low-light support</small>
+        <strong>Choose one calming practice without scrolling the whole journal.</strong>
+      </div>
+    </section>
+
+    <section class="leaf">
+      <div class="leaf-head">
+        <h2 class="leaf-title">Quick <em>practice</em></h2>
+        <span class="leaf-num">now</span>
+      </div>
+      <p class="leaf-sub">These open the same offline overlays and sound engine already built into Stillness.</p>
+      <div class="quick-action-grid">
+        <button type="button" class="quick-action" data-practice-launch="breathe"><span>Breathe</span><small>4-7-8, box, calm</small></button>
+        <button type="button" class="quick-action" data-practice-launch="ground"><span>Ground</span><small>5-4-3-2-1</small></button>
+        <button type="button" class="quick-action" data-practice-launch="kindness"><span>Kindness</span><small>metta phrases</small></button>
+        <button type="button" class="quick-action" data-practice-launch="scan"><span>Body scan</span><small>head to toe</small></button>
+        <button type="button" class="quick-action" data-practice-launch="worry"><span>Release</span><small>worry paper</small></button>
+      </div>
+    </section>
+
+    <section class="leaf wind-down-panel" id="windDownPanel">
+      <div class="leaf-head">
+        <h2 class="leaf-title"><em>Wind down</em> flow</h2>
+        <span class="leaf-num">night</span>
+      </div>
+      <p class="leaf-sub">A simple close: low sound, body scan, then one sleep note.</p>
+      <div class="wind-grid">
+        <button type="button" class="wind-step" data-wind-sound="rain">Rain timer<br><small>20 min</small></button>
+        <button type="button" class="wind-step" data-wind-sound="steam">Steam timer<br><small>30 min</small></button>
+        <button type="button" class="wind-step" data-practice-launch="scan">Body scan<br><small>guided</small></button>
+        <button type="button" class="wind-step" data-practice-journal="dream">Sleep note<br><small>journal</small></button>
+      </div>
+      <p class="support-note">Tip: sound starts only after a tap, which keeps Android Chrome happy.</p>
+    </section>
+  </div>
+
   <div class="view" id="view-track">
 
     <header class="plate">
@@ -3061,6 +3108,10 @@
         <h2 class="leaf-title">Your <em>archive</em></h2>
       </div>
       <p class="leaf-sub">Day pages save automatically. Older days roll off after the window below to keep the journal light.</p>
+      <div class="data-row no-print" style="margin-bottom:14px">
+        <button type="button" class="data-btn data-btn-ghost" id="memoryOpenLog">Open saved log</button>
+        <button type="button" class="data-btn data-btn-ghost" id="memoryOpenTrack">Open body tracking</button>
+      </div>
       <p class="picker-label">How long to keep</p>
       <select class="retention-select" id="retentionSelect" title="Keep journal days for this many days">
         <option value="30">30 days (default)</option>
@@ -3297,11 +3348,10 @@
 <!-- Bottom navigation -->
 <nav class="nav" aria-label="Main">
   <button type="button" class="nav-btn active" data-view="today" aria-pressed="true" aria-label="Today view">Today</button>
-  <button type="button" class="nav-btn" data-view="track" aria-pressed="false" aria-label="Track — body habits">Track</button>
+  <button type="button" class="nav-btn" data-view="practice" aria-pressed="false" aria-label="Practice tools">Practice</button>
   <button type="button" class="nav-btn" data-view="journal" aria-pressed="false" aria-label="Journal — reflection and evening">Journal</button>
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">Garden</button>
-  <button type="button" class="nav-btn" data-view="log" aria-pressed="false" aria-label="Log — search saved days">Log</button>
-  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="Memory — backup and settings">Memory</button>
+  <button type="button" class="nav-btn" data-view="memory" aria-pressed="false" aria-label="More — backup, log, and settings">More</button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -4974,6 +5024,8 @@
   document.getElementById('goToLogFromToday').addEventListener('click', () => switchView('log'));
   document.getElementById('goToTrack').addEventListener('click', () => switchView('track'));
   document.getElementById('goToJournal').addEventListener('click', () => switchView('journal'));
+  document.getElementById('memoryOpenLog')?.addEventListener('click', () => switchView('log'));
+  document.getElementById('memoryOpenTrack')?.addEventListener('click', () => switchView('track'));
 
   /* ────────────────────────────────────────────────────────
      Breathing — three techniques
@@ -4983,7 +5035,8 @@
       const action = btn.dataset.quickGo;
       if (action === 'checkin') document.getElementById('moodRow')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (action === 'breathe') document.getElementById('breatheBtn')?.click();
-      if (action === 'winddown' || action === 'journal') switchView('journal');
+      if (action === 'winddown') switchView('practice');
+      if (action === 'journal') switchView('journal');
       if (action === 'timer') {
         const amb = document.getElementById('ambienceDetails');
         if (amb) amb.open = true;
@@ -4997,6 +5050,28 @@
       if (action === 'breathe') { e.preventDefault(); document.getElementById('breatheBtn')?.click(); }
       if (action === 'ground') { e.preventDefault(); document.getElementById('groundBtn')?.click(); }
       if (action === 'write') { e.preventDefault(); switchView('journal'); setTimeout(() => document.getElementById('reflectionInput')?.focus(), 200); }
+    });
+  });
+  document.querySelectorAll('[data-practice-launch]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const map = { breathe: 'breatheBtn', ground: 'groundBtn', kindness: 'kindnessBtn', scan: 'scanBtn', worry: 'worryBtn' };
+      const target = document.getElementById(map[btn.dataset.practiceLaunch]);
+      if (target) target.click();
+    });
+  });
+  document.querySelectorAll('[data-wind-sound]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sound = btn.dataset.windSound;
+      startSoundscape(sound);
+      const minutes = sound === 'rain' ? 20 : 30;
+      window.setTimeout(stopSoundscape, minutes * 60 * 1000);
+      pushActivity(`Started ${minutes}-minute ${sound} wind-down timer.`);
+    });
+  });
+  document.querySelectorAll('[data-practice-journal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchView('journal');
+      setTimeout(() => document.getElementById('dreamInput')?.focus(), 200);
     });
   });
 
