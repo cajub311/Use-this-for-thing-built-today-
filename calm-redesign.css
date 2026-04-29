@@ -28,6 +28,48 @@
   --r-xl: 24px;
 }
 
+[data-theme="forest"] {
+  --paper: #202922;
+  --paper-2: #172019;
+  --paper-3: #2b362d;
+  --ink: #e8e4d8;
+  --ink-soft: #c8c2b4;
+  --ink-faint: #9fa896;
+  --moss: #9fbe93;
+  --moss-deep: #d1e7c6;
+  --moss-soft: #5f7e5d;
+  --moss-mist: #354a38;
+  --clay: #d58c70;
+  --gold: #d7ba73;
+  --line: rgba(203, 218, 192, 0.18);
+  --shadow-warm: rgba(0, 0, 0, 0.26);
+  --shadow-deep: rgba(0, 0, 0, 0.42);
+  --nav-bg: rgba(23, 32, 25, 0.9);
+  --nav-border: rgba(175, 198, 164, 0.20);
+  --nav-hover: rgba(159, 190, 147, 0.12);
+}
+
+[data-theme="midnight"] {
+  --paper: #181d2c;
+  --paper-2: #111626;
+  --paper-3: #222943;
+  --ink: #e9eaf4;
+  --ink-soft: #c3c8dc;
+  --ink-faint: #9aa3c1;
+  --moss: #91a9d5;
+  --moss-deep: #c3cff0;
+  --moss-soft: #64769d;
+  --moss-mist: #2d375c;
+  --clay: #d7a27c;
+  --gold: #dbc47f;
+  --line: rgba(186, 196, 226, 0.18);
+  --shadow-warm: rgba(0, 0, 0, 0.30);
+  --shadow-deep: rgba(0, 0, 0, 0.50);
+  --nav-bg: rgba(17, 22, 38, 0.9);
+  --nav-border: rgba(186, 196, 226, 0.18);
+  --nav-hover: rgba(145, 169, 213, 0.14);
+}
+
 body {
   background-color: var(--paper);
   background-image:
@@ -39,6 +81,102 @@ body {
 
 body::before { opacity: 0.12; }
 body::after { opacity: 0.16; }
+
+[data-theme="forest"] body {
+  background-color: #202922;
+  background-image:
+    linear-gradient(180deg, rgba(45, 67, 48, 0.94), rgba(32, 41, 34, 0.96) 34%, rgba(23, 32, 25, 0.98) 100%),
+    radial-gradient(760px 360px at 82% 0%, rgba(159, 190, 147, 0.16), transparent 72%),
+    radial-gradient(640px 360px at 0% 14%, rgba(215, 186, 115, 0.11), transparent 68%);
+}
+
+[data-theme="midnight"] body {
+  background-color: #181d2c;
+  background-image:
+    linear-gradient(180deg, rgba(35, 44, 75, 0.96), rgba(24, 29, 44, 0.98) 34%, rgba(17, 22, 38, 0.99) 100%),
+    radial-gradient(760px 360px at 82% 0%, rgba(145, 169, 213, 0.18), transparent 72%),
+    radial-gradient(640px 360px at 0% 14%, rgba(219, 196, 127, 0.11), transparent 68%);
+}
+
+[data-theme="forest"] .plate,
+[data-theme="forest"] .quick-start,
+[data-theme="forest"] .today-progress-wrap,
+[data-theme="forest"] .rest-mode-pill,
+[data-theme="forest"] .day-moment,
+[data-theme="forest"] .leaf,
+[data-theme="forest"] .support-panel,
+[data-theme="forest"] .recommend-panel,
+[data-theme="forest"] .visual-banner,
+[data-theme="forest"] .heatmap-wrap,
+[data-theme="forest"] .streak-card,
+[data-theme="midnight"] .plate,
+[data-theme="midnight"] .quick-start,
+[data-theme="midnight"] .today-progress-wrap,
+[data-theme="midnight"] .rest-mode-pill,
+[data-theme="midnight"] .day-moment,
+[data-theme="midnight"] .leaf,
+[data-theme="midnight"] .support-panel,
+[data-theme="midnight"] .recommend-panel,
+[data-theme="midnight"] .visual-banner,
+[data-theme="midnight"] .heatmap-wrap,
+[data-theme="midnight"] .streak-card {
+  background: rgba(34, 43, 37, 0.82);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: 0 18px 44px var(--shadow-warm);
+}
+
+[data-theme="midnight"] .plate,
+[data-theme="midnight"] .quick-start,
+[data-theme="midnight"] .today-progress-wrap,
+[data-theme="midnight"] .rest-mode-pill,
+[data-theme="midnight"] .day-moment,
+[data-theme="midnight"] .leaf,
+[data-theme="midnight"] .support-panel,
+[data-theme="midnight"] .recommend-panel,
+[data-theme="midnight"] .visual-banner,
+[data-theme="midnight"] .heatmap-wrap,
+[data-theme="midnight"] .streak-card {
+  background: rgba(28, 34, 54, 0.84);
+}
+
+[data-theme="forest"] #view-today > .plate,
+[data-theme="forest"] #view-today > .day-moment[data-moment="midday"],
+[data-theme="forest"] #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type,
+[data-theme="forest"] #view-today > .day-moment[data-moment="morning"],
+[data-theme="forest"] #view-today #summaryCard,
+[data-theme="midnight"] #view-today > .plate,
+[data-theme="midnight"] #view-today > .day-moment[data-moment="midday"],
+[data-theme="midnight"] #view-today > .day-moment[data-moment="midday"] > .leaf:first-of-type,
+[data-theme="midnight"] #view-today > .day-moment[data-moment="morning"],
+[data-theme="midnight"] #view-today #summaryCard {
+  background-image: none;
+}
+
+[data-theme="forest"] .quick-action,
+[data-theme="forest"] .sum-btn,
+[data-theme="forest"] .data-btn,
+[data-theme="forest"] .pill,
+[data-theme="forest"] .picker-btn,
+[data-theme="forest"] .moon-btn,
+[data-theme="forest"] .meal-type,
+[data-theme="forest"] .sev-btn,
+[data-theme="forest"] .likert-btn,
+[data-theme="forest"] .mini-btn,
+[data-theme="midnight"] .quick-action,
+[data-theme="midnight"] .sum-btn,
+[data-theme="midnight"] .data-btn,
+[data-theme="midnight"] .pill,
+[data-theme="midnight"] .picker-btn,
+[data-theme="midnight"] .moon-btn,
+[data-theme="midnight"] .meal-type,
+[data-theme="midnight"] .sev-btn,
+[data-theme="midnight"] .likert-btn,
+[data-theme="midnight"] .mini-btn {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: var(--line);
+  color: var(--ink);
+}
 
 .app {
   width: min(100%, 1140px);
