@@ -15,7 +15,7 @@
   - Main view roots (search by id when editing): #view-today, #view-practice, #view-track,
     #view-journal, #view-history (log + insights), #view-memory, #view-log, #view-path, #view-quotes.
   - Repo siblings (not inlined here): manifest.json, icon.svg, sw.js (offline shell),
-    minimal-meditation.css (minimal calm UI layer — linked after polish-v2.css; precached in sw.js),
+    minimal-meditation.css (optional quiet UI layer; toggle in More → Today layout; data-minimal-zen on <html> when on; precached in sw.js),
     vercel.json (headers / cache). Deploy the repo root as a static site (e.g. Vercel, main).
 -->
 <meta charset="UTF-8" />
@@ -3547,7 +3547,22 @@
 <link rel="stylesheet" href="visual-polish.css" />
 <link rel="stylesheet" href="calm-redesign.css" />
 <link rel="stylesheet" href="polish-v2.css" />
-<link rel="stylesheet" href="minimal-meditation.css" />
+<link rel="stylesheet" href="minimal-meditation.css" id="minimalZenCss" media="all" />
+<script>
+(function () {
+  try {
+    var raw = localStorage.getItem('mindful:config:');
+    var zen = true;
+    if (raw) {
+      var j = JSON.parse(raw);
+      if (j && typeof j.minimalZenMode === 'boolean') zen = j.minimalZenMode;
+    }
+    var link = document.getElementById('minimalZenCss');
+    if (link) link.media = zen ? 'all' : 'none';
+    document.documentElement.setAttribute('data-minimal-zen', zen ? 'on' : 'off');
+  } catch (e) { /* no-op */ }
+})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to journal</a>
@@ -4661,6 +4676,12 @@
         <button type="button" class="data-btn data-btn-ghost" id="textSizeLarge" data-text-size="large" aria-pressed="false">Larger</button>
       </div>
       <p class="data-hint">A slightly larger type can help on bright days or small screens. Saved with your theme in this browser.</p>
+      <p class="picker-label" style="margin-top:20px">Today layout</p>
+      <div class="data-row" style="flex-wrap:wrap; gap:8px; margin-bottom:4px">
+        <button type="button" class="data-btn" id="minimalZenOn" aria-pressed="true">Quiet layout</button>
+        <button type="button" class="data-btn data-btn-ghost" id="minimalZenOff" aria-pressed="false">Classic density</button>
+      </div>
+      <p class="data-hint">Quiet layout applies the calmer, smaller “minimal” surface on Today (gentle path, fewer extras). Classic keeps the full botanical density without that layer.</p>
       <p class="picker-label" style="margin-top:20px">Appearance</p>
       <div class="theme-row" id="themeRow" role="group" aria-label="Color theme">
         <button type="button" class="theme-swatch" data-set-theme="parchment" title="Parchment">
@@ -5871,7 +5892,7 @@
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
-  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+  let config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0, minimalZenMode: true };
   function loadConfig() {
     const raw = Storage.get(CONFIG_KEY);
     if (raw) {
@@ -5892,6 +5913,7 @@
           if (typeof j.breatheCues === 'boolean') config.breatheCues = j.breatheCues;
           if (j.lastBackupAt != null) config.lastBackupAt = Math.max(0, Number(j.lastBackupAt) || 0);
           if (typeof j.voiceCues === 'boolean') config.voiceCues = j.voiceCues;
+          if (typeof j.minimalZenMode === 'boolean') config.minimalZenMode = j.minimalZenMode;
         }
       } catch {}
     }
@@ -5908,7 +5930,8 @@
       breatheSound: config.breatheSound,
       breatheCues: config.breatheCues,
       voiceCues: config.voiceCues,
-      lastBackupAt: config.lastBackupAt || 0
+      lastBackupAt: config.lastBackupAt || 0,
+      minimalZenMode: config.minimalZenMode !== false
     }));
   }
 
@@ -5931,6 +5954,24 @@
     });
     applyTextSize();
     applyRestMode();
+    applyMinimalZenMode();
+  }
+
+  function applyMinimalZenMode() {
+    const on = config.minimalZenMode !== false;
+    const link = document.getElementById('minimalZenCss');
+    if (link) link.media = on ? 'all' : 'none';
+    document.documentElement.setAttribute('data-minimal-zen', on ? 'on' : 'off');
+    const btnOn = document.getElementById('minimalZenOn');
+    const btnOff = document.getElementById('minimalZenOff');
+    if (btnOn) {
+      btnOn.classList.toggle('data-btn-ghost', !on);
+      btnOn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    if (btnOff) {
+      btnOff.classList.toggle('data-btn-ghost', on);
+      btnOff.setAttribute('aria-pressed', on ? 'false' : 'true');
+    }
   }
 
   const BREATHE_SOUNDS = ['rain', 'forest', 'steam', 'bowl', 'bali', 'silent'];
@@ -9343,6 +9384,18 @@
   const tsLg = document.getElementById('textSizeLarge');
   if (tsDef) tsDef.addEventListener('click', () => { config.textSize = 'default'; applyTextSize(); saveConfig(); });
   if (tsLg) tsLg.addEventListener('click', () => { config.textSize = 'large'; applyTextSize(); saveConfig(); });
+  document.getElementById('minimalZenOn')?.addEventListener('click', () => {
+    config.minimalZenMode = true;
+    applyMinimalZenMode();
+    saveConfig();
+    pushActivity('Quiet layout on.');
+  });
+  document.getElementById('minimalZenOff')?.addEventListener('click', () => {
+    config.minimalZenMode = false;
+    applyMinimalZenMode();
+    saveConfig();
+    pushActivity('Classic density layout.');
+  });
   const restBtn = document.getElementById('restModeBtn');
   if (restBtn) restBtn.addEventListener('click', () => { config.restMode = !config.restMode; applyRestMode(); saveConfig(); pushActivity(config.restMode ? 'Rest mode on.' : 'Rest mode off.'); });
   const stickyBtn = document.getElementById('stickySaveBtn');
@@ -9540,8 +9593,9 @@
   function performWipeAll() {
     closeWipeConfirm();
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
-    config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
+    config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', textSize: 'default', restMode: false, breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0, minimalZenMode: true };
     applyTheme('parchment');
+    applyMinimalZenMode();
     saveConfig();
     currentDateKey = dateKey();
     loadDay();
@@ -10015,6 +10069,7 @@
   ──────────────────────────────────────────────────────── */
   loadConfig();
   applyTheme(config.theme || 'parchment');
+  applyMinimalZenMode();
   applyTextSize();
   applyRestMode();
   syncBreatheSoundSelects();
