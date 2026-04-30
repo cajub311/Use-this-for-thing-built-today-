@@ -1,12 +1,13 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v37-quick-focus-fix';
+const CACHE = 'stillness-shell-v38-minimal-meditation';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
   '/visual-polish.css',
   '/calm-redesign.css',
   '/polish-v2.css',
+  '/minimal-meditation.css',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-192.png',

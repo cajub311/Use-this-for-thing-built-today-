@@ -1,0 +1,493 @@
+/* Minimal meditation layer.
+   Keeps the deeper app intact while making the default surface quieter,
+   smaller, and more contemplative. */
+
+:root,
+[data-theme="parchment"] {
+  --zen-paper: #f4f1e9;
+  --zen-surface: rgba(255, 253, 247, 0.74);
+  --zen-surface-strong: rgba(255, 253, 247, 0.88);
+  --zen-line: rgba(90, 108, 94, 0.16);
+  --zen-shadow: rgba(32, 45, 38, 0.055);
+}
+
+[data-theme="forest"] {
+  --zen-paper: #19231c;
+  --zen-surface: rgba(34, 45, 37, 0.70);
+  --zen-surface-strong: rgba(38, 50, 41, 0.86);
+  --zen-line: rgba(198, 220, 190, 0.16);
+  --zen-shadow: rgba(0, 0, 0, 0.24);
+}
+
+[data-theme="midnight"] {
+  --zen-paper: #151a29;
+  --zen-surface: rgba(28, 34, 54, 0.70);
+  --zen-surface-strong: rgba(31, 39, 63, 0.86);
+  --zen-line: rgba(190, 202, 232, 0.16);
+  --zen-shadow: rgba(0, 0, 0, 0.28);
+}
+
+body {
+  background-color: var(--zen-paper);
+}
+
+body::after {
+  opacity: 0.24;
+}
+
+.app {
+  width: min(100%, 980px);
+  max-width: 980px;
+}
+
+.view.active {
+  animation-duration: 0.18s;
+}
+
+.plate {
+  min-height: 0;
+}
+
+#view-today > .plate {
+  width: min(100%, 720px);
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  background: var(--zen-surface);
+  box-shadow: 0 10px 30px var(--zen-shadow);
+}
+
+#view-today .greeting {
+  font-size: clamp(1.8rem, 4vw, 2.45rem);
+  line-height: 1;
+}
+
+#view-today .date-line {
+  margin-top: 8px;
+  font-size: 0.68rem;
+}
+
+#view-today .sync-hint,
+.storage-truth,
+.today-progress-wrap,
+.rest-mode-pill,
+#startHereDetails,
+.today-quick-links,
+#goToLogFromToday {
+  display: none !important;
+}
+
+#view-today.active {
+  gap: 14px;
+}
+
+#view-today > .gentle-path-leaf {
+  order: 1;
+}
+
+#view-today > .quick-start {
+  order: 2;
+}
+
+#view-today > .today-deep-toggle-wrap {
+  order: 3;
+}
+
+#view-today > .mindful-minutes-strip {
+  order: 4;
+}
+
+.gentle-path-leaf {
+  width: min(100%, 720px);
+  padding: clamp(18px, 4vw, 26px);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, var(--zen-surface-strong), var(--zen-surface)),
+    url("assets/peaceful/lotus-stones-sunrise.jpg") right bottom / 34% auto no-repeat;
+  border-color: var(--zen-line);
+  box-shadow: 0 16px 42px var(--zen-shadow);
+}
+
+.gentle-path-flourish {
+  margin: 0 0 10px;
+}
+
+.gentle-path-flourish svg {
+  width: 56px;
+  height: 12px;
+}
+
+.gentle-path-leaf .leaf-head {
+  justify-content: center;
+  text-align: center;
+}
+
+.gentle-path-leaf .leaf-num {
+  display: none;
+}
+
+.gentle-path-leaf .leaf-title {
+  font-size: clamp(1.45rem, 4vw, 1.9rem);
+}
+
+.gentle-path-leaf > .leaf-sub {
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.gentle-path-item {
+  margin-bottom: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--zen-line);
+}
+
+.gentle-path-mood-energy {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.gentle-path-label {
+  margin-bottom: 7px;
+  color: var(--ink-faint);
+  letter-spacing: 0.16em;
+}
+
+.gentle-path-mood-energy .picker-row--vertical {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.gentle-path-mood-energy .picker-btn {
+  min-width: 0;
+  min-height: 54px;
+  padding: 8px 4px;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+[data-theme="forest"] .gentle-path-mood-energy .picker-btn,
+[data-theme="midnight"] .gentle-path-mood-energy .picker-btn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.gentle-path-mood-energy .picker-btn .icon-wrap {
+  margin-bottom: 3px;
+}
+
+.gentle-path-mood-energy .picker-btn .lbl {
+  font-size: 0.58rem;
+  line-height: 1.08;
+}
+
+.gentle-path-leaf .deep-input,
+.gentle-path-leaf textarea {
+  min-height: 56px;
+  max-height: 82px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+[data-theme="forest"] .gentle-path-leaf .deep-input,
+[data-theme="midnight"] .gentle-path-leaf .deep-input,
+[data-theme="forest"] .gentle-path-leaf textarea,
+[data-theme="midnight"] .gentle-path-leaf textarea {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.micro-practice-btn {
+  min-height: 50px;
+  max-width: 360px;
+  padding: 12px 15px;
+  border-radius: 16px;
+  background: var(--zen-surface-strong);
+  box-shadow: none;
+}
+
+.micro-practice-btn strong {
+  font-size: 1rem;
+}
+
+.quick-start {
+  width: min(100%, 720px);
+  padding: 12px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.quick-start-copy {
+  display: none;
+}
+
+.quick-start .quick-action-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 7px;
+  margin-top: 0;
+}
+
+.quick-action {
+  min-height: 50px;
+  padding: 8px 7px;
+  text-align: center;
+  background: var(--zen-surface);
+  box-shadow: none;
+}
+
+.quick-action span {
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.quick-action small {
+  display: none;
+}
+
+.today-deep-toggle-wrap {
+  margin: 0 auto 4px;
+}
+
+.today-deep-toggle-btn {
+  min-height: 42px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--moss-deep);
+  border-color: var(--zen-line);
+  box-shadow: none;
+  font-size: 1rem;
+}
+
+[data-theme="forest"] .today-deep-toggle-btn,
+[data-theme="midnight"] .today-deep-toggle-btn {
+  color: var(--ink);
+}
+
+.today-deep-inner {
+  width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.day-moment,
+.leaf,
+.quote-frame,
+.support-panel,
+.recommend-panel,
+.visual-banner,
+.heatmap-wrap,
+.streak-card {
+  border-radius: 18px;
+  box-shadow: 0 10px 28px var(--zen-shadow);
+}
+
+.day-moment {
+  padding: 14px;
+  background: var(--zen-surface);
+}
+
+.day-moment-label {
+  margin-bottom: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 0.14em;
+}
+
+.day-moment .leaf,
+.leaf {
+  padding: 16px;
+}
+
+.leaf-title {
+  font-size: clamp(1.25rem, 3vw, 1.55rem);
+}
+
+.leaf-sub,
+.support-note,
+.data-hint {
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.flow-connector {
+  display: none;
+}
+
+.practice-flow {
+  gap: 12px;
+}
+
+#view-practice .visual-banner {
+  min-height: 92px;
+  grid-template-columns: 96px 1fr;
+  background: var(--zen-surface);
+}
+
+#view-practice .visual-banner img {
+  min-height: 92px;
+}
+
+#view-practice .flow-section,
+#view-memory .leaf,
+#view-track .tracker,
+#view-history .leaf {
+  background: var(--zen-surface);
+  border-color: var(--zen-line);
+  box-shadow: 0 10px 28px var(--zen-shadow);
+}
+
+#view-practice .leaf,
+#view-memory .leaf {
+  padding: 16px;
+}
+
+.dbt-skill-stack {
+  gap: 8px;
+}
+
+.dbt-skill-block {
+  padding: 12px;
+}
+
+.soundscape-grid,
+#view-practice .quick-action-grid,
+.wind-grid,
+.theme-row {
+  gap: 7px;
+}
+
+.soundscape-btn,
+.wind-step,
+.data-btn,
+.sum-btn,
+.mini-btn,
+.theme-swatch {
+  min-height: 40px;
+  border-radius: 12px !important;
+}
+
+.theme-swatch {
+  padding: 8px 10px;
+}
+
+.memory-shortcuts,
+.data-row {
+  gap: 7px !important;
+}
+
+.sticky-save-bar {
+  width: min(90vw, 460px);
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--zen-surface-strong);
+}
+
+.sticky-save-btn {
+  min-height: 42px;
+}
+
+.nav {
+  width: min(100%, 560px);
+  background: var(--nav-bg);
+}
+
+@media (min-width: 980px) {
+  body {
+    padding-top: 74px;
+  }
+
+  #view-today.active {
+    gap: 14px;
+  }
+
+  .gentle-path-leaf,
+  .quick-start,
+  #view-today > .plate {
+    width: min(100%, 740px);
+  }
+
+  .gentle-path-leaf {
+    background-size: 28% auto;
+  }
+
+  .nav {
+    width: min(86vw, 640px);
+  }
+
+  .nav-btn {
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #view-today > .plate {
+    padding: 15px 14px;
+  }
+
+  #view-today .greeting {
+    font-size: 1.72rem;
+  }
+
+  .gentle-path-leaf {
+    background-image: linear-gradient(180deg, var(--zen-surface-strong), var(--zen-surface));
+    padding: 15px;
+  }
+
+  .gentle-path-mood-energy .picker-row--vertical {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 5px;
+  }
+
+  .quick-start .quick-action-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .gentle-path-mood-energy .picker-btn {
+    min-height: 46px;
+    padding: 7px 2px;
+  }
+
+  .gentle-path-mood-energy .picker-btn .icon-wrap {
+    display: none;
+  }
+
+  .gentle-path-mood-energy .picker-btn .lbl {
+    font-size: 0.52rem;
+    line-height: 1.05;
+  }
+
+  .gentle-path-leaf .gentle-path-item:not(.gentle-path-mood-energy):not(:last-child) {
+    display: none;
+  }
+
+  .gentle-path-item {
+    margin-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .quick-action span {
+    font-size: 0.78rem;
+  }
+
+  .today-deep-toggle-btn {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .day-moment .leaf,
+  .leaf {
+    padding: 14px;
+  }
+
+  .nav-label {
+    font-size: 0.56rem;
+  }
+}
