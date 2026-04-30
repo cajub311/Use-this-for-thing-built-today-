@@ -1452,6 +1452,18 @@
     letter-spacing: 0.2em;
     z-index: 1;
   }
+  /* Fixed warm ink on dark gradient — theme tokens use dark --paper-3 in forest/midnight, which matched the breathe backdrop */
+  #breatheOverlay .breathe-text {
+    color: #EDE3D2;
+    text-shadow: 0 1px 22px rgba(8, 12, 10, 0.65), 0 0 1px rgba(8, 12, 10, 0.4);
+  }
+  #breatheOverlay .breathe-counter {
+    color: rgba(237, 227, 210, 0.72);
+  }
+  #breatheOverlay .overlay-close,
+  #breatheOverlay .tech-tab {
+    color: #EDE3D2;
+  }
   .technique-tabs {
     display: flex;
     gap: 6px;
