@@ -1,6 +1,6 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v42-minimal-zen-toggle';
+const CACHE = 'stillness-shell-v43-merge-polish-features';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
