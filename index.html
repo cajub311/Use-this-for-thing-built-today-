@@ -2248,6 +2248,165 @@
   .quick-action, .wind-step, .more-menu button { min-height: 48px; border: 1px solid rgba(201, 187, 164, 0.55); background: var(--paper); color: var(--ink); border-radius: 14px; padding: 10px; cursor: pointer; text-align: left; font-family: 'Lora', serif; }
   .quick-action span { display: block; font-weight: 600; overflow-wrap: anywhere; }
   .quick-action small, .wind-step small { display: block; color: var(--ink-faint); font-size: 0.72rem; line-height: 1.25; margin-top: 2px; }
+  /* ── Today’s Gentle Path + deepen ────────────────────────── */
+  .gentle-path-leaf {
+    border: 1px solid rgba(184, 197, 178, 0.45);
+    box-shadow: 0 8px 32px rgba(74, 64, 49, 0.06);
+    background: linear-gradient(165deg, rgba(255, 252, 246, 0.92) 0%, var(--paper) 55%, rgba(214, 220, 201, 0.35) 100%);
+  }
+  .gentle-path-flourish {
+    text-align: center; margin: 6px 0 14px; opacity: 0.55;
+  }
+  .gentle-path-flourish svg { width: 72px; height: 14px; color: var(--moss-soft); }
+  .gentle-path-item { margin-bottom: 18px; }
+  .gentle-path-item:last-child { margin-bottom: 0; }
+  .gentle-path-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--moss-deep);
+    margin-bottom: 8px;
+  }
+  .gentle-path-item .picker-label { margin-bottom: 6px; }
+  .gentle-path-mood-energy .mood-scale-col,
+  .gentle-path-mood-energy .energy-scale-col { max-width: 100%; }
+  .gentle-path-mood-energy .picker-row--vertical {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .gentle-path-mood-energy .picker-btn {
+    flex: 1 1 calc(33.33% - 6px);
+    min-width: 72px;
+    max-width: 120px;
+    padding: 10px 4px 8px;
+  }
+  .gentle-path-mood-energy .picker-btn .lbl { font-size: 0.62rem; }
+  .gentle-path-mood-energy .picker-btn .icon-wrap svg { width: 22px; height: 22px; }
+  .gentle-path-mood-energy .mood-intensity-track { width: 6px; }
+  @media (max-width: 520px) {
+    .gentle-path-mood-energy .picker-btn { min-width: 64px; max-width: none; flex: 1 1 calc(50% - 4px); }
+  }
+  .micro-practice-btn {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 14px 18px;
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(74, 107, 79, 0.35);
+    background: linear-gradient(135deg, var(--moss-mist) 0%, var(--paper-3) 100%);
+    cursor: pointer;
+    font-family: 'Lora', serif;
+    color: var(--ink);
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 16px rgba(74, 107, 79, 0.08);
+  }
+  .micro-practice-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74, 107, 79, 0.12); }
+  .micro-practice-btn strong { font-size: 1.05rem; font-weight: 600; color: var(--moss-deep); }
+  .micro-practice-btn small { font-size: 0.72rem; color: var(--ink-faint); }
+  .today-deep-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 22px 0 10px;
+    padding: 0 12px;
+  }
+  .today-deep-details {
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+  }
+  .today-deep-details > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .today-deep-details > summary::-webkit-details-marker { display: none; }
+  .today-deep-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(74, 107, 79, 0.45);
+    background: linear-gradient(135deg, var(--moss) 0%, var(--moss-deep) 100%);
+    color: var(--paper-3);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 22px rgba(74, 107, 79, 0.2);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .today-deep-toggle-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(74, 107, 79, 0.28); }
+  .today-deep-details[open] .today-deep-toggle-btn .today-deep-chevron { transform: rotate(180deg); }
+  .today-deep-chevron {
+    display: inline-block;
+    font-size: 0.75rem;
+    opacity: 0.85;
+    transition: transform 0.35s ease;
+  }
+  .today-deep-inner {
+    margin-top: 18px;
+    animation: fadeIn 0.45s var(--ease-slow) both;
+  }
+  .quick-focus-overlay.open { display: flex !important; }
+  .quick-focus-panel {
+    position: relative;
+    max-width: min(560px, 94vw);
+    max-height: min(88vh, 900px);
+    overflow-y: auto;
+    margin: auto;
+    padding: 18px 18px 22px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 24px 60px var(--shadow-deep);
+  }
+  .quick-focus-panel .overlay-close {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 12px;
+  }
+  .quick-focus-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(201, 187, 164, 0.45);
+  }
+  /* Modal readability: breathe + grounding only */
+  #breatheOverlay .breathe-text {
+    font-size: clamp(1.75rem, 5.5vw, 2.35rem);
+    line-height: 1.25;
+    letter-spacing: 0.03em;
+  }
+  #breatheOverlay .breathe-counter { font-size: 0.82rem; margin-top: 16px; }
+  .grounding-overlay .grounding-prompt {
+    font-size: clamp(1.55rem, 4.5vw, 1.95rem);
+    line-height: 1.45;
+    margin-bottom: 28px;
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .grounding-overlay .grounding-step { margin-bottom: 12px; }
+  .grounding-overlay .grounding-content { padding-top: 8px; padding-bottom: 12px; }
   .storage-truth { margin: 10px 0 0; color: var(--ink-faint); font-family: 'Lora', Georgia, serif; font-size: 0.72rem; letter-spacing: 0.02em; text-transform: none; font-style: italic; line-height: 1.4; opacity: 0.72; max-width: 28em; margin-left: auto; margin-right: auto; text-align: center; }
   .storage-truth.session-only { color: var(--clay); opacity: 0.9; font-style: normal; }
   .sync-hint {
@@ -3637,6 +3796,80 @@
       <p class="storage-truth storage-truth-default" id="storageTruth">Entries stay on this device.</p>
     </section>
 
+    <section class="leaf gentle-path-leaf no-print" id="gentlePathSection" aria-label="Today’s Gentle Path">
+      <div class="gentle-path-flourish" aria-hidden="true"><svg><use href="#flourish-svg"/></svg></div>
+      <div class="leaf-head">
+        <h2 class="leaf-title">Today&apos;s <em>Gentle Path</em></h2>
+        <span class="leaf-num">today</span>
+      </div>
+      <p class="leaf-sub">A short arc for right now — everything else waits kindly below.</p>
+
+      <div class="gentle-path-item gentle-path-mood-energy">
+        <div class="gentle-path-label">Mood &amp; energy</div>
+        <div class="picker-label">Mood</div>
+        <div class="mood-scale-col" id="gentleMoodScaleWrap">
+          <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="gentleMoodIntensityFill"></div></div>
+          <div class="picker-col-inner">
+            <div class="picker-row picker-row--vertical" id="gentleMoodRow">
+              <button type="button" class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy / low</span></button>
+              <button type="button" class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off / flat</span></button>
+              <button type="button" class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Okay / mixed</span></button>
+              <button type="button" class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Good / light</span></button>
+              <button type="button" class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Really good</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="picker-label" style="margin-top:12px">Energy</div>
+        <div class="energy-scale-col" id="gentleEnergyScaleWrap">
+          <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="gentleEnergyIntensityFill"></div></div>
+          <div class="picker-col-inner">
+            <div class="picker-row picker-row--vertical energy-row" id="gentleEnergyRow">
+              <button type="button" class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Wiped out</span></button>
+              <button type="button" class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low / flat</span></button>
+              <button type="button" class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Steady</span></button>
+              <button type="button" class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Up / alert</span></button>
+              <button type="button" class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Fired up</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gentle-path-item">
+        <div class="gentle-path-label">A gentle question</div>
+        <p class="leaf-sub" style="margin:0 0 8px; font-size:0.88rem" id="gentleDailyPromptText">—</p>
+        <textarea class="deep-input" id="gentleDailyPromptAnswer" rows="2" maxlength="800" placeholder="A line or two — no polish needed." aria-labelledby="gentleDailyPromptText"></textarea>
+      </div>
+
+      <div class="gentle-path-item">
+        <div class="gentle-path-label">Body awareness</div>
+        <p class="leaf-sub" style="margin:0 0 8px; font-size:0.88rem" id="gentleBodyPromptText">—</p>
+        <textarea class="deep-input" id="gentleBodyPromptAnswer" rows="2" maxlength="600" placeholder="Notice — without fixing." aria-labelledby="gentleBodyPromptText"></textarea>
+      </div>
+
+      <div class="gentle-path-item">
+        <div class="gentle-path-label">Go a little deeper</div>
+        <p class="leaf-sub" style="margin:0 0 8px; font-size:0.88rem" id="gentleReflectPromptText">—</p>
+        <textarea class="deep-input" id="gentleReflectPromptAnswer" rows="2" maxlength="800" placeholder="Optional — stay soft with yourself." aria-labelledby="gentleReflectPromptText"></textarea>
+      </div>
+
+      <div class="gentle-path-item">
+        <div class="gentle-path-label">Micro-practice</div>
+        <button type="button" class="micro-practice-btn" id="gentleMicroPracticeBtn">
+          <strong id="gentleMicroPracticeTitle">—</strong>
+          <small id="gentleMicroPracticeSub">Tap to open</small>
+        </button>
+      </div>
+    </section>
+
+    <div class="today-deep-toggle-wrap no-print">
+      <details class="today-deep-details" id="todayDeepDetails">
+        <summary>
+          <span class="today-deep-toggle-btn" role="presentation">
+            Deepen this moment <span class="today-deep-chevron" aria-hidden="true">▼</span>
+          </span>
+        </summary>
+        <div class="today-deep-inner">
+
     <details class="leaf start-here collapsible-section no-print rest-mode-soft" id="startHereDetails" aria-label="How to use today">
       <summary class="leaf-head">
         <h2 class="leaf-title">Start <em>here</em></h2>
@@ -3694,40 +3927,13 @@
     <div class="day-moment" data-moment="midday" role="region" aria-label="Midday check-in">
       <span class="day-moment-label" id="middayMomentLabel">Midday &middot; mood, energy &amp; what shaped this</span>
     <!-- Mood + Energy -->
-    <section class="leaf">
+    <div data-quick-slot="qfMiddaySection"></div>
+    <section class="leaf" id="qfMiddaySection">
       <div class="leaf-head">
         <h2 class="leaf-title">How are you, <em>really?</em></h2>
         <span class="leaf-num">№ 02</span>
       </div>
-      <p class="leaf-sub">Mood and energy are different — both deserve a check-in. Choose one step for each; the line beside them is just a soft guide, not a report card.</p>
-
-      <div class="picker-label">Mood</div>
-      <div class="mood-scale-col" id="moodScaleWrap">
-        <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="moodIntensityFill"></div></div>
-        <div class="picker-col-inner">
-      <div class="picker-row picker-row--vertical" id="moodRow">
-        <button type="button" class="picker-btn" data-mood="1"><span class="icon-wrap"><svg><use href="#mood-1"/></svg></span><span class="lbl">Heavy / low</span></button>
-        <button type="button" class="picker-btn" data-mood="2"><span class="icon-wrap"><svg><use href="#mood-2"/></svg></span><span class="lbl">Off / flat</span></button>
-        <button type="button" class="picker-btn" data-mood="3"><span class="icon-wrap"><svg><use href="#mood-3"/></svg></span><span class="lbl">Okay / mixed</span></button>
-        <button type="button" class="picker-btn" data-mood="4"><span class="icon-wrap"><svg><use href="#mood-4"/></svg></span><span class="lbl">Good / light</span></button>
-        <button type="button" class="picker-btn" data-mood="5"><span class="icon-wrap"><svg><use href="#mood-5"/></svg></span><span class="lbl">Really good</span></button>
-      </div>
-        </div>
-      </div>
-
-      <div class="picker-label" style="margin-top:8px">Energy</div>
-      <div class="energy-scale-col" id="energyScaleWrap">
-        <div class="mood-intensity-track" aria-hidden="true"><div class="mood-intensity-fill" id="energyIntensityFill"></div></div>
-        <div class="picker-col-inner">
-      <div class="picker-row picker-row--vertical energy-row" id="energyRow">
-        <button type="button" class="picker-btn" data-energy="1"><span class="icon-wrap"><svg><use href="#energy-1"/></svg></span><span class="lbl">Wiped out</span></button>
-        <button type="button" class="picker-btn" data-energy="2"><span class="icon-wrap"><svg><use href="#energy-2"/></svg></span><span class="lbl">Low / flat</span></button>
-        <button type="button" class="picker-btn" data-energy="3"><span class="icon-wrap"><svg><use href="#energy-3"/></svg></span><span class="lbl">Steady</span></button>
-        <button type="button" class="picker-btn" data-energy="4"><span class="icon-wrap"><svg><use href="#energy-4"/></svg></span><span class="lbl">Up / alert</span></button>
-        <button type="button" class="picker-btn" data-energy="5"><span class="icon-wrap"><svg><use href="#energy-5"/></svg></span><span class="lbl">Fired up</span></button>
-      </div>
-        </div>
-      </div>
+      <p class="leaf-sub">Mood and energy live in <strong>Today&apos;s Gentle Path</strong> above — one tap each is enough. Below: context, body weather, and optional depth.</p>
 
       <details class="calm-more-note no-print">
         <summary>Add a few words (optional)</summary>
@@ -3744,6 +3950,7 @@
       </details>
     </section>
 
+    <div data-quick-slot="innerLandscapeDetails"></div>
     <details class="leaf collapsible-section" id="innerLandscapeDetails" aria-label="Emotional weather">
       <summary class="leaf-head">
         <h2 class="leaf-title">Inner <em>landscape</em> (optional)</h2>
@@ -3815,6 +4022,7 @@
     </section>
 
     <!-- Body weather (chips) — collapsed by default: tap to expand -->
+    <div data-quick-slot="bodyWeatherDetails"></div>
     <details class="leaf collapsible-section" id="bodyWeatherDetails" aria-label="Body weather">
       <summary class="leaf-head" style="cursor: pointer; list-style: none;">
         <h2 class="leaf-title">Body <em>weather</em> <span style="font-size:0.7em; font-weight:400; color: var(--ink-faint)">(show more)</span></h2>
@@ -3926,6 +4134,7 @@
       <textarea class="deep-input" id="stressCheckIn" rows="3" maxlength="1000" placeholder="Stress, old hurts, or hard things on your mind — a sentence or a list, whatever feels safe today…"></textarea>
     </details>
 
+    <div data-quick-slot="reflectionBlock"></div>
     <section class="leaf" id="reflectionBlock">
       <div class="leaf-head">
         <h2 class="leaf-title">One <em>line</em> about the day</h2>
@@ -3938,6 +4147,7 @@
 
     <p class="leaf-sub" style="margin: 0 0 6px; text-align:center">Deeper CBT/DBT tools &amp; sound live in the <strong>Practice</strong> tab.</p>
 
+    <div data-quick-slot="eveningSection"></div>
     <section class="leaf" id="eveningSection" aria-label="Evening check-in">
       <div class="leaf-head">
         <h2 class="leaf-title"><em>Evening</em> check-in</h2>
@@ -3995,6 +4205,10 @@
       </div>
     </section>
 
+        </div>
+      </details>
+    </div>
+
     <div class="flourish rest-mode-soft no-print" style="margin: 30px 0 16px;"><svg><use href="#flourish-svg"/></svg></div>
 
     <div class="mindful-minutes-strip no-print" aria-live="polite">
@@ -4023,7 +4237,8 @@
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
-    <div class="practice-flow">
+    <div data-quick-slot="qfPracticeFlow"></div>
+    <div class="practice-flow" id="qfPracticeFlow">
     <section class="visual-banner no-print flow-section">
       <img src="assets/peaceful/rain-window-winddown.jpg" alt="Evening wind-down scene with tea, lamp, blanket, and rain-speckled window" />
       <div>
@@ -4032,7 +4247,8 @@
       </div>
     </section>
 
-    <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft flow-section" id="ambienceDetails" aria-label="Peaceful soundscapes">
+    <div data-quick-slot="qfAmbience"></div>
+    <details class="leaf soundscape-panel no-print collapsible-section rest-mode-soft flow-section" id="qfAmbience" aria-label="Peaceful soundscapes">
       <summary class="leaf-head">
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
         <span class="leaf-num">offline</span>
@@ -4158,6 +4374,8 @@
     </header>
 
     <!-- Quick trackers grid -->
+    <div data-quick-slot="qfTrackPack"></div>
+    <div id="qfTrackPack">
     <div class="grid-trackers">
       <div class="tracker">
         <div class="tracker-head"><svg><use href="#i-water"/></svg><span class="name">Water</span></div>
@@ -4231,6 +4449,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <!-- Food log -->
@@ -4751,6 +4970,17 @@
   </div>
 </div>
 
+<div class="overlay" id="quickFocusOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="quickFocusTitle" style="display:none;z-index:110">
+  <div class="leaf quick-focus-panel" id="quickFocusPanel" style="width:100%">
+    <button type="button" class="overlay-close" id="quickFocusClose" aria-label="Close">close</button>
+    <h2 class="leaf-title" id="quickFocusTitle" style="margin-top:0">—</h2>
+    <div id="quickFocusBody"></div>
+    <div class="quick-focus-actions">
+      <button type="button" class="data-btn" id="quickFocusBackToday">Back to Today</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════════
      BREATHING OVERLAY
 ═══════════════════════════════════════════════════════ -->
@@ -5137,6 +5367,41 @@
     { title: 'Rain window wind-down', src: 'assets/peaceful/rain-window-winddown.jpg', alt: 'An evening wind-down bedside scene with tea, warm lamp, blanket, and rain-speckled window' }
   ];
 
+  const GENTLE_BODY_PROMPTS = [
+    'Where do you notice your body most kindly today — shoulders, belly, hands?',
+    'If sleep last night had a color, what would it be — and what does your body want tonight?',
+    "Movement doesn't have to be exercise: what small motion might feel grounding?",
+    'Hydration check: what would feel gentle to offer your body in the next hour?',
+    'Outdoor light: when did you last see sky or green — even through a window?',
+    'Stress often lands somewhere physical for people — where is it landing for you?',
+    'What does tired feel like in your body today — heavy, wired, hollow?',
+    'Breath: without changing anything, where do you feel the inhale arrive?',
+    'Appetite and food: what would enough feel like for the next meal?',
+    'Pain or ache: if it could speak one sentence, what might it say?'
+  ];
+  const GENTLE_REFLECT_DEEP = [
+    'What truth about today feels almost too tender to say out loud?',
+    'Who would you be if you believed you were already doing enough?',
+    'What old story tried to run the show today — and what would you rather believe?',
+    'What did you almost skip feeling — and what happens if you stay with it gently?',
+    'What would forgiveness toward yourself sound like in one honest sentence?',
+    "What are you carrying that isn't actually yours to fix?",
+    'When did you feel lonely today — and what kind of connection would have softened it?',
+    'What boundary would future-you thank you for practicing — even in a tiny way?',
+    'What fear showed up — and what courage did you already show by staying?',
+    'What would good enough for tonight look like — no extra credit?'
+  ];
+  const MICRO_PRACTICES = [
+    { id: 'breathe', title: 'Guided breathing', sub: '4-7-8 · box · calm' },
+    { id: 'ground', title: 'Ground with 5-4-3-2-1', sub: 'Name what you sense' },
+    { id: 'kindness', title: 'Loving-kindness phrases', sub: 'Soft repetition' },
+    { id: 'scan', title: 'Body scan', sub: 'Head to toe' },
+    { id: 'worry', title: 'Release a worry', sub: 'Write · read · let go' },
+    { id: 'tipp', title: 'TIPP skill', sub: 'When the body is loud' },
+    { id: 'stop', title: 'STOP skill', sub: 'Pause before acting' },
+    { id: 'radacc', title: 'Radical acceptance', sub: 'Three small prompts' },
+    { id: 'thought', title: 'Thought record', sub: 'Five-step reframe' }
+  ];
   const PATH_SUGGESTIONS = [
     'Try a 10-minute walk after lunch for three days.',
     'Put your phone away for the first 20 minutes after waking.',
@@ -5337,6 +5602,9 @@
    * @property {string} eveningQuietPride
    * @property {string} eveningNeedTomorrow
    * @property {string} journalLong
+   * @property {string} gentleDailyAnswer
+   * @property {string} gentleBodyAnswer
+   * @property {string} gentleReflectAnswer
    * @property {string} activeMeal
    * @property {number} activeSeverity
    * @property {string} painQualitySelect
@@ -5363,6 +5631,7 @@
     eveningWin: '', eveningNote: '', eveningObstacle: '', eveningTomorrow: '',
     eveningStrongestEmotion: '', eveningQuietPride: '', eveningNeedTomorrow: '',
     journalLong: '',
+    gentleDailyAnswer: '', gentleBodyAnswer: '', gentleReflectAnswer: '',
     activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
     dbtSkills: [],
@@ -5401,7 +5670,9 @@
     if (typeof day.eveningQuietPride !== 'string') day.eveningQuietPride = '';
     if (typeof day.eveningNeedTomorrow !== 'string') day.eveningNeedTomorrow = '';
     if (typeof day.journalLong !== 'string') day.journalLong = '';
-    (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
+    if (typeof day.gentleDailyAnswer !== 'string') day.gentleDailyAnswer = '';
+    if (typeof day.gentleBodyAnswer !== 'string') day.gentleBodyAnswer = '';
+    if (typeof day.gentleReflectAnswer !== 'string') day.gentleReflectAnswer = '';
   }
   let saveTimer = null;
   let quietDaySaveTimer = null;
@@ -6226,7 +6497,101 @@
     return id;
   }
 
-  const COLLAPSE_IDS = ['startHereDetails', 'innerLandscapeDetails', 'moodScalesDetails', 'bodyWeatherDetails', 'careSystemDetails', 'stressGentleDetails', 'eveningMoreDetails', 'ambienceDetails', 'medsAllergiesDetails'];
+  function microPracticeTrigger(mp) {
+    if (!mp || !mp.id) return;
+    const map = {
+      breathe: 'breatheBtn',
+      ground: 'groundBtn',
+      kindness: 'kindnessBtn',
+      scan: 'scanBtn',
+      worry: 'worryBtn'
+    };
+    if (map[mp.id]) {
+      document.getElementById(map[mp.id])?.click();
+      return;
+    }
+    openSkillByName(mp.id);
+  }
+
+  const QUICK_FOCUS_RESTORE = {};
+  let quickFocusActive = null;
+  function closeQuickFocus(skipRestore, skipRouteSwitch) {
+    const ov = document.getElementById('quickFocusOverlay');
+    if (ov) {
+      ov.classList.remove('open');
+      ov.style.display = 'none';
+      ov.setAttribute('aria-hidden', 'true');
+    }
+    if (!skipRestore && quickFocusActive) {
+      Object.keys(QUICK_FOCUS_RESTORE).forEach(id => {
+        const slot = document.querySelector('[data-quick-slot="' + id + '"]');
+        const node = QUICK_FOCUS_RESTORE[id];
+        if (slot && node) slot.appendChild(node);
+        delete QUICK_FOCUS_RESTORE[id];
+      });
+    }
+    quickFocusActive = null;
+    document.body.style.overflow = '';
+    if (!skipRestore && !skipRouteSwitch) {
+      try { switchView('today', { fromHash: false }); } catch (e) {}
+    }
+  }
+  function openQuickFocus(mode) {
+    closeQuickFocus(false, true);
+    quickFocusActive = mode;
+    const ov = document.getElementById('quickFocusOverlay');
+    const title = document.getElementById('quickFocusTitle');
+    const body = document.getElementById('quickFocusBody');
+    if (!ov || !title || !body) return;
+    if (mode === 'track') {
+      try { switchView('track', { fromHash: false }); } catch (e) {}
+    } else if (mode === 'practice' || mode === 'timer') {
+      try { switchView('practice', { fromHash: false }); } catch (e) {}
+    } else {
+      try { switchView('today', { fromHash: false }); } catch (e) {}
+    }
+    const packs = {
+      checkin: {
+        title: 'Check in · mood & body',
+        ids: ['qfMiddaySection', 'innerLandscapeDetails', 'bodyWeatherDetails']
+      },
+      journal: {
+        title: 'Journal · rest & evening',
+        ids: ['reflectionBlock', 'eveningSection']
+      },
+      practice: {
+        title: 'Practice',
+        ids: ['qfPracticeFlow']
+      },
+      track: {
+        title: 'Track body',
+        ids: ['qfTrackPack']
+      },
+      timer: {
+        title: 'Timer · soft sound',
+        ids: ['qfAmbience']
+      }
+    };
+    const cfg = packs[mode];
+    if (!cfg) return;
+    title.textContent = cfg.title;
+    body.innerHTML = '';
+    cfg.ids.forEach(id => {
+      const node = document.getElementById(id);
+      if (!node) return;
+      const slot = document.querySelector('[data-quick-slot="' + id + '"]');
+      if (!slot) return;
+      QUICK_FOCUS_RESTORE[id] = node;
+      body.appendChild(node);
+    });
+    ov.style.display = 'flex';
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    try { document.getElementById('quickFocusClose').focus(); } catch (e) {}
+  }
+
+  const COLLAPSE_IDS = ['startHereDetails', 'innerLandscapeDetails', 'moodScalesDetails', 'bodyWeatherDetails', 'careSystemDetails', 'stressGentleDetails', 'eveningMoreDetails', 'qfAmbience', 'medsAllergiesDetails'];
   const COLLAPSE_KEY = 'stillness:collapse:v1';
   function loadCollapseState() {
     let map = {};
@@ -6545,20 +6910,56 @@
       document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
     }
   }
+  function dateSeedFromKey(k) {
+    const d = k ? new Date(k + 'T12:00:00') : new Date();
+    return seedFromDate(d);
+  }
+  function getGentlePathIndices() {
+    const s = dateSeedFromKey(currentDateKey);
+    return {
+      dailyPromptIdx: s % PROMPTS.length,
+      bodyPromptIdx: s % GENTLE_BODY_PROMPTS.length,
+      reflectPromptIdx: (s * 7 + 13) % GENTLE_REFLECT_DEEP.length,
+      microIdx: s % MICRO_PRACTICES.length
+    };
+  }
+  function getDailyPromptForGentlePath() {
+    return PROMPTS[getGentlePathIndices().dailyPromptIdx];
+  }
+  function renderGentlePath() {
+    const ix = getGentlePathIndices();
+    const dailyTx = document.getElementById('gentleDailyPromptText');
+    const bodyTx = document.getElementById('gentleBodyPromptText');
+    const refTx = document.getElementById('gentleReflectPromptText');
+    if (dailyTx) dailyTx.textContent = PROMPTS[ix.dailyPromptIdx];
+    if (bodyTx) bodyTx.textContent = GENTLE_BODY_PROMPTS[ix.bodyPromptIdx];
+    if (refTx) refTx.textContent = GENTLE_REFLECT_DEEP[ix.reflectPromptIdx];
+    const gd = document.getElementById('gentleDailyPromptAnswer');
+    const gb = document.getElementById('gentleBodyPromptAnswer');
+    const gr = document.getElementById('gentleReflectPromptAnswer');
+    if (gd) gd.value = day.gentleDailyAnswer || '';
+    if (gb) gb.value = day.gentleBodyAnswer || '';
+    if (gr) gr.value = day.gentleReflectAnswer || '';
+    const mp = MICRO_PRACTICES[ix.microIdx];
+    const tEl = document.getElementById('gentleMicroPracticeTitle');
+    const sEl = document.getElementById('gentleMicroPracticeSub');
+    if (tEl && mp) tEl.textContent = mp.title;
+    if (sEl && mp) sEl.textContent = mp.sub + ' · opens practice';
+  }
   function renderIntention() {
     document.getElementById('intentionInput').value = day.intention || '';
   }
   function renderMood() {
-    document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
-      const on = Number(b.dataset.mood) === day.mood;
-      b.classList.toggle('on', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-    document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
-      const on = Number(b.dataset.energy) === day.energy;
-      b.classList.toggle('on', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
+    function syncMoodRow(selector, val, key) {
+      document.querySelectorAll(selector).forEach(b => {
+        const n = key === 'mood' ? Number(b.dataset.mood) : Number(b.dataset.energy);
+        const on = n === val;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    syncMoodRow('#moodRow .picker-btn, #gentleMoodRow .picker-btn', day.mood, 'mood');
+    syncMoodRow('#energyRow .picker-btn, #gentleEnergyRow .picker-btn', day.energy, 'energy');
     document.getElementById('moodNote').value = day.moodNote || '';
     const mc = document.getElementById('moodContextInput');
     if (mc) mc.value = day.moodContext || '';
@@ -6567,10 +6968,16 @@
     updateMoodEnergyIntensity();
   }
   function updateMoodEnergyIntensity() {
-    const mf = document.getElementById('moodIntensityFill');
-    const ef = document.getElementById('energyIntensityFill');
-    if (mf) mf.style.height = (day.mood ? ((day.mood - 1) / 4) * 100 : 0) + '%';
-    if (ef) ef.style.height = (day.energy ? ((day.energy - 1) / 4) * 100 : 0) + '%';
+    const moodPct = (day.mood ? ((day.mood - 1) / 4) * 100 : 0);
+    const energyPct = (day.energy ? ((day.energy - 1) / 4) * 100 : 0);
+    ['moodIntensityFill', 'gentleMoodIntensityFill'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.height = moodPct + '%';
+    });
+    ['energyIntensityFill', 'gentleEnergyIntensityFill'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.height = energyPct + '%';
+    });
   }
   function renderChips() {
     const wrap = document.getElementById('chips');
@@ -6806,7 +7213,10 @@
     if (day.strengthsNote && day.strengthsNote.trim()) lines.push('Strengths / what’s going okay: ' + day.strengthsNote.trim());
     if (day.supportNote && day.supportNote.trim()) lines.push('Support system: ' + day.supportNote.trim());
     if (day.stressCheckIn && day.stressCheckIn.trim()) lines.push('Gentle load / stress: ' + day.stressCheckIn.trim());
-    if (day.gratitude) lines.push('Gratitude: ' + day.gratitude);
+    if (day.gratitude && day.gratitude.trim()) lines.push('Gratitude: ' + day.gratitude);
+    if (day.gentleDailyAnswer && day.gentleDailyAnswer.trim()) lines.push('Today\'s Gentle Path — daily prompt: ' + day.gentleDailyAnswer.trim());
+    if (day.gentleBodyAnswer && day.gentleBodyAnswer.trim()) lines.push('Today\'s Gentle Path — body awareness: ' + day.gentleBodyAnswer.trim());
+    if (day.gentleReflectAnswer && day.gentleReflectAnswer.trim()) lines.push('Today\'s Gentle Path — deeper reflection: ' + day.gentleReflectAnswer.trim());
     if (day.reflection) lines.push('Reflection: ' + day.reflection);
     if (day.journalLong && day.journalLong.trim()) lines.push('Long journal (overflow): ' + day.journalLong.trim());
     if (day.eveningWin || day.eveningNote || day.eveningObstacle || day.eveningTomorrow || (day.eveningStrongestEmotion && day.eveningStrongestEmotion.trim()) || (day.eveningQuietPride && day.eveningQuietPride.trim()) || (day.eveningNeedTomorrow && day.eveningNeedTomorrow.trim())) {
@@ -7264,6 +7674,7 @@
     renderHeader();
     renderDailyPeaceImage();
     renderQuoteAndAffirmation();
+    renderGentlePath();
     renderIntention();
     renderMood();
     renderMoodScales();
@@ -7299,11 +7710,20 @@
     day.intention = e.target.value; saveDayQuiet();
   });
 
-  document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
+  document.querySelectorAll('#moodRow .picker-btn, #gentleMoodRow .picker-btn').forEach(b => {
     b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); recommendDismissed = false; renderMood(); renderLowMoodSupport(); saveDayQuiet(); });
   });
-  document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
+  document.querySelectorAll('#energyRow .picker-btn, #gentleEnergyRow .picker-btn').forEach(b => {
     b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDayQuiet(); });
+  });
+  const gentleDailyEl = document.getElementById('gentleDailyPromptAnswer');
+  if (gentleDailyEl) gentleDailyEl.addEventListener('input', () => { day.gentleDailyAnswer = gentleDailyEl.value; saveDayQuiet(); });
+  const gentleBodyEl = document.getElementById('gentleBodyPromptAnswer');
+  if (gentleBodyEl) gentleBodyEl.addEventListener('input', () => { day.gentleBodyAnswer = gentleBodyEl.value; saveDayQuiet(); });
+  const gentleRefEl = document.getElementById('gentleReflectPromptAnswer');
+  if (gentleRefEl) gentleRefEl.addEventListener('input', () => { day.gentleReflectAnswer = gentleRefEl.value; saveDayQuiet(); });
+  document.getElementById('gentleMicroPracticeBtn')?.addEventListener('click', () => {
+    microPracticeTrigger(MICRO_PRACTICES[getGentlePathIndices().microIdx]);
   });
   const jLong = document.getElementById('journalLongInput');
   if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDayQuiet(); renderTodayProgress(); });
@@ -7589,20 +8009,13 @@
   document.querySelectorAll('[data-quick-go]').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.quickGo;
-      if (action === 'checkin') document.getElementById('moodRow')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      if (action === 'practice') switchView('practice');
-      if (action === 'track') switchView('track');
-      if (action === 'winddown') switchView('practice');
-      if (action === 'journal') { switchView('today'); setTimeout(() => document.getElementById('eveningSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120); }
-      if (action === 'timer') {
-        switchView('practice');
-        setTimeout(() => {
-          const amb = document.getElementById('ambienceDetails');
-          if (amb) amb.open = true;
-          amb?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 120);
-      }
+      openQuickFocus(action);
     });
+  });
+  document.getElementById('quickFocusClose')?.addEventListener('click', () => closeQuickFocus(false, false));
+  document.getElementById('quickFocusBackToday')?.addEventListener('click', () => closeQuickFocus(false, false));
+  document.getElementById('quickFocusOverlay')?.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'quickFocusOverlay') closeQuickFocus(false, false);
   });
   document.querySelectorAll('[data-support-action]').forEach(el => {
     el.addEventListener('click', (e) => {
@@ -8978,6 +9391,8 @@
     if (wipe && wipe.classList.contains('open')) { closeWipeConfirm(); return; }
     const ex = document.getElementById('exportModal');
     if (ex && ex.classList.contains('open')) { closeExportModal(); return; }
+    const qf = document.getElementById('quickFocusOverlay');
+    if (qf && qf.classList.contains('open')) { closeQuickFocus(false, false); return; }
     const b = document.getElementById('breatheOverlay');
     const g = document.getElementById('groundOverlay');
     const k = document.getElementById('kindnessOverlay');
