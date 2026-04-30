@@ -5280,8 +5280,11 @@
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
+  let quietDaySaveTimer = null;
+  let quietPathSaveTimer = null;
   function saveDayNow() {
     clearTimeout(saveTimer);
+    clearTimeout(quietDaySaveTimer);
     try {
       Storage.set(getStorageKey(), JSON.stringify(day));
       setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
@@ -5294,12 +5297,27 @@
   }
   function saveDay() {
     clearTimeout(saveTimer);
+    clearTimeout(quietDaySaveTimer);
     setSaveBarText('Saving…', 'saving');
     saveTimer = setTimeout(() => {
       try {
         Storage.set(getStorageKey(), JSON.stringify(day));
         setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
+        renderDataCorner();
+        try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
+      } catch (e) {
+        setSaveBarText('Could not save — storage may be full or blocked', 'error');
+        pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+      }
+    }, 220);
+  }
+  /** Same debounced persist as saveDay, without moving the save bar or “Saving…” flash — for typing. */
+  function saveDayQuiet() {
+    clearTimeout(quietDaySaveTimer);
+    quietDaySaveTimer = setTimeout(() => {
+      try {
+        Storage.set(getStorageKey(), JSON.stringify(day));
         renderDataCorner();
         try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
       } catch (e) {
@@ -5423,12 +5441,35 @@
     }
   }
   function savePath() {
+    clearTimeout(quietPathSaveTimer);
     Storage.set(PATH_KEY, JSON.stringify(pathData));
     setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     renderDataCorner();
     if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
       try { renderLogView(); } catch (e) {}
     }
+  }
+  function savePathQuiet() {
+    clearTimeout(quietPathSaveTimer);
+    quietPathSaveTimer = setTimeout(() => {
+      try {
+        Storage.set(PATH_KEY, JSON.stringify(pathData));
+        renderDataCorner();
+        if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
+          try { renderLogView(); } catch (e) {}
+        }
+      } catch (e) {
+        setSaveBarText('Could not save — storage may be full or blocked', 'error');
+        pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+      }
+    }, 220);
+  }
+  /** Immediate persist if a quiet path save was scheduled — call before tab close. */
+  function flushQuietPathSave() {
+    if (!quietPathSaveTimer) return;
+    clearTimeout(quietPathSaveTimer);
+    quietPathSaveTimer = null;
+    savePath();
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
@@ -7021,7 +7062,7 @@
      Event wiring
   ──────────────────────────────────────────────────────── */
   document.getElementById('intentionInput').addEventListener('input', e => {
-    day.intention = e.target.value; saveDay();
+    day.intention = e.target.value; saveDayQuiet();
   });
 
   document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
@@ -7031,24 +7072,24 @@
     b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDay(); });
   });
   const jLong = document.getElementById('journalLongInput');
-  if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDay(); renderTodayProgress(); });
+  if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDayQuiet(); renderTodayProgress(); });
   document.getElementById('goToTodayFromJournal')?.addEventListener('click', () => switchView('today'));
   document.getElementById('moodNote').addEventListener('input', e => {
-    day.moodNote = e.target.value; saveDay();
+    day.moodNote = e.target.value; saveDayQuiet();
   });
   const moodCtx = document.getElementById('moodContextInput');
-  if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDay(); renderTodayProgress(); });
+  if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDayQuiet(); renderTodayProgress(); });
   const emoW = document.getElementById('emotionalWeatherInput');
-  if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDay(); renderTodayProgress(); });
+  if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDayQuiet(); renderTodayProgress(); });
   document.getElementById('moodNoteClear').addEventListener('click', () => {
     day.moodNote = '';
     document.getElementById('moodNote').value = '';
     saveDay();
   });
   const exEl = document.getElementById('exerciseNote');
-  if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDay(); });
+  if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDayQuiet(); });
   const dreamEl = document.getElementById('dreamInput');
-  if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDay(); });
+  if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDayQuiet(); });
 
   function handleTrackerActionDataset(a) {
     if (!a) return;
@@ -7124,7 +7165,7 @@
   if (pqEl) pqEl.addEventListener('change', () => { day.painQualitySelect = pqEl.value; saveDay(); });
 
   const sft = document.getElementById('symptomsFreeText');
-  if (sft) sft.addEventListener('input', () => { day.symptomsFreeText = sft.value; saveDay(); renderTodayProgress(); });
+  if (sft) sft.addEventListener('input', () => { day.symptomsFreeText = sft.value; saveDayQuiet(); renderTodayProgress(); });
 
   document.querySelectorAll('.likert-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -7145,7 +7186,7 @@
   });
 
   const fi = document.getElementById('functionalImpactSlider');
-  if (fi) fi.addEventListener('input', () => { day.functionalImpact = Number(fi.value) || 0; saveDay(); renderTodayProgress(); });
+  if (fi) fi.addEventListener('input', () => { day.functionalImpact = Number(fi.value) || 0; saveDayQuiet(); renderTodayProgress(); });
 
   const mts = document.getElementById('medTimeSelect');
   if (mts) mts.addEventListener('change', () => { day.activeMedTime = mts.value; saveDay(); });
@@ -7167,7 +7208,7 @@
   const mab = document.getElementById('medAddBtn');
   if (mab) mab.addEventListener('click', addMed);
   const ainp = document.getElementById('allergiesInput');
-  if (ainp) ainp.addEventListener('input', () => { day.allergies = ainp.value; saveDay(); renderTodayProgress(); });
+  if (ainp) ainp.addEventListener('input', () => { day.allergies = ainp.value; saveDayQuiet(); renderTodayProgress(); });
 
   const sl1 = document.getElementById('sleepLatency');
   if (sl1) sl1.addEventListener('change', () => { day.sleepLatencyMins = Number(sl1.value) || 0; saveDay(); });
@@ -7177,16 +7218,16 @@
   if (sl3) sl3.addEventListener('change', () => { day.sleepRested = Number(sl3.value) || 0; saveDay(); });
 
   const sn1 = document.getElementById('strengthsNote');
-  if (sn1) sn1.addEventListener('input', () => { day.strengthsNote = sn1.value; saveDay(); });
+  if (sn1) sn1.addEventListener('input', () => { day.strengthsNote = sn1.value; saveDayQuiet(); });
   const sn2 = document.getElementById('supportNote');
-  if (sn2) sn2.addEventListener('input', () => { day.supportNote = sn2.value; saveDay(); });
+  if (sn2) sn2.addEventListener('input', () => { day.supportNote = sn2.value; saveDayQuiet(); });
   const sn3 = document.getElementById('stressCheckIn');
-  if (sn3) sn3.addEventListener('input', () => { day.stressCheckIn = sn3.value; saveDay(); });
+  if (sn3) sn3.addEventListener('input', () => { day.stressCheckIn = sn3.value; saveDayQuiet(); });
 
   document.getElementById('sleepSlider').addEventListener('input', e => {
     day.sleepHours = Number(e.target.value);
     document.getElementById('sleepValue').textContent = day.sleepHours.toFixed(1);
-    saveDay();
+    saveDayQuiet();
   });
   document.querySelectorAll('#moonRow .moon-btn').forEach(b => {
     b.addEventListener('click', () => {
@@ -7197,25 +7238,25 @@
 
   document.getElementById('gratitudeInput').addEventListener('input', e => {
     day.gratitude = e.target.value;
-    saveDay();
+    saveDayQuiet();
     const gsec = document.getElementById('gratitudeSection');
     if (gsec && (e.target.value || '').trim().length > 2) {
       gsec.classList.add('positive-bloom');
       setTimeout(() => gsec.classList.remove('positive-bloom'), 700);
     }
   });
-  document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
+  document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDayQuiet(); });
 
-  document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDay(); });
-  document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDay(); });
-  document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDay(); });
-  document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDay(); });
+  document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDayQuiet(); });
   const evSE = document.getElementById('eveningStrongestEmotion');
-  if (evSE) evSE.addEventListener('input', e => { day.eveningStrongestEmotion = e.target.value; saveDay(); });
+  if (evSE) evSE.addEventListener('input', e => { day.eveningStrongestEmotion = e.target.value; saveDayQuiet(); });
   const evQP = document.getElementById('eveningQuietPride');
-  if (evQP) evQP.addEventListener('input', e => { day.eveningQuietPride = evQP.value; saveDay(); });
+  if (evQP) evQP.addEventListener('input', e => { day.eveningQuietPride = evQP.value; saveDayQuiet(); });
   const evNT = document.getElementById('eveningNeedTomorrow');
-  if (evNT) evNT.addEventListener('input', e => { day.eveningNeedTomorrow = evNT.value; saveDay(); });
+  if (evNT) evNT.addEventListener('input', e => { day.eveningNeedTomorrow = evNT.value; saveDayQuiet(); });
   ['eveningWinInput', 'eveningNoteInput', 'eveningObstacleInput', 'eveningTomorrowInput', 'eveningStrongestEmotion', 'eveningQuietPride', 'eveningNeedTomorrow'].forEach(fieldId => {
     const el = document.getElementById(fieldId);
     if (!el) return;
@@ -7885,7 +7926,7 @@
           savePath();
         });
         const ta = el.querySelector('textarea[data-path-exp-note-idx]');
-        if (ta) { ta.value = item.feelNote || ''; ta.addEventListener('input', () => { item.feelNote = ta.value; savePath(); }); }
+        if (ta) { ta.value = item.feelNote || ''; ta.addEventListener('input', () => { item.feelNote = ta.value; savePathQuiet(); }); }
         el.querySelector('.del').addEventListener('click', () => {
           items.splice(idx, 1);
           savePath();
@@ -7994,7 +8035,7 @@
       if (id === 'pathValues') pathData.values = el.value;
       if (id === 'pathPractice') pathData.practice = el.value;
       if (id === 'pathLetter') pathData.letter = el.value;
-      savePath();
+      savePathQuiet();
       updatePathMeter();
     });
   });
@@ -8680,9 +8721,9 @@
     }, { passive: true });
   })();
 
-  window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('pagehide', () => { clearTimeout(saveTimer); flushQuietPathSave(); try { saveDayNow(); } catch (e) {} });
   window.addEventListener('beforeunload', stopSoundscape);
-  window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); flushQuietPathSave(); try { saveDayNow(); } catch (e) {} });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') ensureCurrentDay();
   });
