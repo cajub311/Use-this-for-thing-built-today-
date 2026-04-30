@@ -155,9 +155,11 @@
     display: none !important;
   }
   /* Gentle full-page dim in rest mode (non-destructive; rest-mode-soft still removes chrome) */
+  #main {
+    transition: filter 0.55s var(--ease-slow);
+  }
   body[data-rest-mode="on"] #main {
     filter: brightness(0.94) saturate(0.96);
-    transition: filter 0.6s var(--ease-slow);
   }
   body[data-rest-mode="on"] .nav {
     filter: none;
@@ -562,6 +564,9 @@
     border-color: var(--moss);
     color: var(--moss-deep);
     box-shadow: 0 4px 12px rgba(74, 107, 79, 0.18);
+    transform: scale(1.02);
+    outline: 2px solid rgba(74, 107, 79, 0.3);
+    outline-offset: 2px;
   }
   .picker-btn .icon-wrap {
     height: 26px;
@@ -725,6 +730,8 @@
     background: var(--moss);
     color: var(--paper-3);
     border-color: var(--moss-deep);
+    transform: scale(1.03);
+    box-shadow: 0 0 0 2px rgba(74, 107, 79, 0.28), 0 4px 12px rgba(74, 107, 79, 0.15);
   }
   .chip.bad.on {
     background: var(--clay);
@@ -833,6 +840,10 @@
   .likert-btn.on { background: var(--moss-mist); border-color: var(--moss); color: var(--moss-deep); font-weight: 600; }
   .scale-score { font-size: 0.82rem; color: var(--moss); margin: 8px 0 0; }
   .functional-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--ink-faint); margin: 4px 0 0; }
+  .functional-live-label {
+    font-size: 0.86rem; color: var(--ink-soft); margin: 10px 0 4px; min-height: 1.4em;
+  }
+  .functional-live-label strong { color: var(--moss-deep); font-weight: 500; }
   .med-input-row { flex-wrap: wrap; }
   .med-input-row .text-in { flex: 1 1 40%; }
   .sleep-clinical-grid {
@@ -1452,6 +1463,13 @@
     letter-spacing: 0.2em;
     z-index: 1;
   }
+  #breatheOverlay .breathe-text {
+    color: #EDE3D2;
+    text-shadow: 0 1px 22px rgba(8, 12, 10, 0.65), 0 0 1px rgba(8, 12, 10, 0.4);
+  }
+  #breatheOverlay .breathe-counter { color: rgba(237, 227, 210, 0.72); }
+  #breatheOverlay .overlay-close,
+  #breatheOverlay .tech-tab { color: #EDE3D2; }
   .technique-tabs {
     display: flex;
     gap: 6px;
@@ -2142,6 +2160,30 @@
   .day-saved-toast.on {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+  .app-toast-host {
+    position: fixed; top: max(12px, env(safe-area-inset-top, 0px) + 8px); left: 50%;
+    transform: translateX(-50%); z-index: 120; display: flex; flex-direction: column; gap: 8px;
+    align-items: center; pointer-events: none; max-width: min(420px, calc(100vw - 24px));
+  }
+  .app-toast {
+    pointer-events: none;
+    background: rgba(74, 107, 79, 0.94); color: var(--paper-3);
+    padding: 10px 18px; border-radius: 999px; font-family: 'Lora', serif; font-size: 0.88rem;
+    box-shadow: 0 8px 28px var(--shadow-deep);
+    opacity: 0; transform: translateY(-8px) scale(0.97);
+    transition: opacity 0.35s var(--ease-slow), transform 0.35s var(--ease-slow);
+  }
+  .app-toast.on { opacity: 1; transform: translateY(0) scale(1); }
+  .last-saved-hint {
+    font-size: 0.72rem; color: var(--ink-faint); margin: 6px 0 0; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+  body.save-celebrate #main { animation: saveLeafGlow 1.1s ease-out; }
+  @keyframes saveLeafGlow {
+    0% { filter: brightness(1); }
+    35% { filter: brightness(1.03) saturate(1.04); }
+    100% { filter: brightness(1); }
   }
   .practice-launch-ghost {
     position: absolute;
@@ -2862,8 +2904,13 @@
     user-select: none;
   }
   details.leaf.collapsible-section > summary::-webkit-details-marker { display: none; }
-  details.leaf.collapsible-section[open] > *:not(summary) {
-    animation: fadeIn 0.6s var(--ease-slow) both;
+  details.leaf.collapsible-section > summary .leaf-head,
+  details.leaf.collapsible-section > summary {
+    transition: color 0.25s ease;
+  }
+  details.leaf.collapsible-section .leaf-sub,
+  details.leaf.collapsible-section > *:not(summary) {
+    transition: opacity 0.35s ease;
   }
 
   .sleep-top {
@@ -2913,7 +2960,7 @@
   .grounding-log strong { color: var(--paper-3); }
 
   @media print {
-    .no-print, .save-bar, .nav, .skip-link, body::before, body::after { display: none !important; }
+    .no-print, .app-toast-host, .sticky-save-bar, .day-saved-toast, .data-corner, .save-bar, .nav, .skip-link, body::before, body::after { display: none !important; }
     .print-only { display: block !important; }
     body { background: #fff !important; background-image: none !important; padding-bottom: 24px !important; }
     .app { padding-top: 12px !important; }
@@ -3556,6 +3603,7 @@
       <h1 class="greeting" id="greeting">Good morning.</h1>
       <div class="date-line" id="date">—</div>
       <p class="sync-hint" id="syncNote">Stored in this browser only — not on a server. For a portable copy, use <strong>Memory</strong> → backup.</p>
+      <p class="last-saved-hint no-print" id="lastSavedHint" hidden aria-live="polite">Last saved —</p>
       <svg class="botanical-deco"><use href="#botanical-deco"/></svg>
     </header>
 
@@ -3689,7 +3737,7 @@
 
       <p class="picker-label" style="margin-top:18px">A few words, if you want</p>
       <textarea class="mood-note" id="moodNote" rows="2" placeholder="Nothing has to sound pretty."></textarea>
-      <p class="mini-hint no-print" style="margin-top:8px; font-size:0.72rem; color: var(--ink-faint);">Saved with your day &mdash; use the floating <strong>Save to journal</strong> when you want a firm save.</p>
+      <p class="mini-hint no-print" style="margin-top:8px; font-size:0.72rem; color: var(--ink-faint);">Your day saves as you go &mdash; use <strong>Mark moment saved</strong> at the bottom when you want a clear beat in the log.</p>
       <div class="mood-text-actions no-print">
         <button type="button" class="mini-btn" id="moodNoteClear" title="Clear this field">Erase</button>
       </div>
@@ -3780,7 +3828,8 @@
       <textarea class="mood-note" id="symptomsFreeText" rows="2" maxlength="400" placeholder="E.g. tight chest when the inbox grows · a flutter before calls — anything in your words…" spellcheck="true"></textarea>
       <p class="picker-label" style="margin-top:16px">If symptoms showed up, how much did they shape your day?</p>
       <p class="leaf-sub" style="margin-top:0">0 = barely · 4 = a lot. No wrong answer.</p>
-      <input type="range" min="0" max="4" step="1" value="0" class="slider" id="functionalImpactSlider" aria-label="How much symptoms affected your day" />
+      <input type="range" min="0" max="4" step="1" value="0" class="slider" id="functionalImpactSlider" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" aria-label="How much symptoms affected your day" aria-describedby="functionalImpactLabel" />
+      <p class="functional-live-label" id="functionalImpactLabel" role="status" aria-live="polite"><strong>gentle</strong> — symptoms barely showed up in the story of the day</p>
       <div class="functional-labels"><span>0 gentle</span><span>4 full weight</span></div>
     </details>
 
@@ -4668,10 +4717,11 @@
 </nav>
 
 <div class="sticky-save-bar no-print" id="stickySaveBar" aria-hidden="true">
-  <span class="sticky-save-hint" id="stickySaveHint">When you’re ready, save the day in one tap.</span>
-  <button type="button" class="sticky-save-btn" id="stickySaveBtn">Save to journal</button>
+  <span class="sticky-save-hint" id="stickySaveHint">Autosaves as you go. Tap to mark this moment in your log.</span>
+  <button type="button" class="sticky-save-btn" id="stickySaveBtn" title="Add a firm save moment with time">Mark moment saved</button>
 </div>
 <div class="day-saved-toast no-print" id="daySavedToast" role="status" aria-live="polite">Day saved</div>
+<div class="app-toast-host no-print" id="appToastHost" aria-live="polite" aria-relevant="additions"></div>
 
 <div class="overlay" id="exportModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="exportModalTitle">
   <div class="export-modal-panel leaf" style="max-width:min(480px,92vw); margin:0 auto">
@@ -4686,6 +4736,18 @@
       <button type="button" class="data-btn data-btn-ghost" id="exportAiJson">Copy structured JSON for AI</button>
     </div>
     <p class="data-hint" style="margin-top:14px">“PDF” uses your browser’s print dialog — pick “Save as PDF” where available.</p>
+  </div>
+</div>
+
+<div class="overlay" id="wipeConfirmModal" role="dialog" aria-modal="true" aria-labelledby="wipeConfirmTitle" aria-hidden="true">
+  <div class="export-modal-panel leaf" style="max-width:min(440px,92vw); margin:0 auto; position:relative; z-index:2">
+    <button type="button" class="overlay-close" id="wipeConfirmClose" aria-label="Close">close</button>
+    <h2 class="leaf-title" id="wipeConfirmTitle" style="margin-top:0">Erase <em>everything?</em></h2>
+    <p class="leaf-sub">This removes all saved days, Path, activity, and settings in this browser. It cannot be undone. Download a backup first if you might need your words.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; justify-content:flex-end">
+      <button type="button" class="data-btn data-btn-ghost" id="wipeConfirmCancel">Keep my data</button>
+      <button type="button" class="data-btn data-btn-danger" id="wipeConfirmDo">Yes, erase everything</button>
+    </div>
   </div>
 </div>
 
@@ -5017,7 +5079,12 @@
     "Where did beauty meet you today, even for a moment?",
     "What is one thing you did today that took courage, however small?",
     "What truth has been waiting patiently for you to acknowledge it?",
-    "What would tomorrow's you thank today's you for?"
+    "What would tomorrow's you thank today's you for?",
+    "What risk are you proud you took today — even if it was quiet?",
+    "What did you do today that the old you would not have dared?",
+    "Where did you choose honesty over performance?",
+    "What boundary (even a small one) did you hold with care?",
+    "What part of you showed up that you used to keep hidden?"
   ];
 
   const SYMPTOMS = [
@@ -5213,15 +5280,72 @@
   const greeting = () => {
     const h = new Date().getHours();
     if (h < 5)  return "A peaceful late hour.";
-    if (h < 12) return "Good morning.";
-    if (h < 17) return "Good afternoon.";
-    if (h < 21) return "Good evening.";
-    return "A peaceful night.";
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    if (h < 21) return "Good evening";
+    return "A peaceful night";
   };
 
   /* ────────────────────────────────────────────────────────
-     Day record
+     Day record (see JSDoc DayState — single shape for the whole day)
   ──────────────────────────────────────────────────────── */
+  /**
+   * @typedef {Object} DayState
+   * @property {string} intention
+   * @property {number} mood
+   * @property {number} energy
+   * @property {string} moodNote
+   * @property {string} moodContext
+   * @property {string} emotionalWeather
+   * @property {string[]} symptoms — body tag ids (multi-select)
+   * @property {string} symptomsFreeText
+   * @property {string[]} rituals
+   * @property {[number|null, number|null]} phq2
+   * @property {[number|null, number|null]} gad2
+   * @property {string} supportNote
+   * @property {string} strengthsNote
+   * @property {string} stressCheckIn
+   * @property {number} functionalImpact — 0–4 symptom load slider
+   * @property {number} water
+   * @property {number} pee
+   * @property {number} coffee
+   * @property {number} movement
+   * @property {number} steps
+   * @property {string} moveMode
+   * @property {number} sun
+   * @property {string} exerciseNote
+   * @property {number} outings
+   * @property {number} sweets
+   * @property {number} calories
+   * @property {Array} meals
+   * @property {Array} medications
+   * @property {string} allergies
+   * @property {Array} pains
+   * @property {number} sleepHours
+   * @property {number} sleepQuality
+   * @property {number} sleepLatencyMins
+   * @property {number} sleepAwakenings
+   * @property {number} sleepRested
+   * @property {string} dreams
+   * @property {string} gratitude
+   * @property {string} reflection
+   * @property {string} eveningWin
+   * @property {string} eveningNote
+   * @property {string} eveningObstacle
+   * @property {string} eveningTomorrow
+   * @property {string} eveningStrongestEmotion
+   * @property {string} eveningQuietPride
+   * @property {string} eveningNeedTomorrow
+   * @property {string} journalLong
+   * @property {string} activeMeal
+   * @property {number} activeSeverity
+   * @property {string} painQualitySelect
+   * @property {string} activeMedTime
+   * @property {number} mindfulMinutes
+   * @property {Array} dbtSkills
+   * @property {Array} thoughtRecords
+   */
+  /** @returns {DayState} */
   const blankDay = () => ({
     intention: '',
     mood: 0, energy: 0, moodNote: '', moodContext: '', emotionalWeather: '',
@@ -5280,13 +5404,17 @@
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
+  let quietDaySaveTimer = null;
+  let quietPathSaveTimer = null;
   function saveDayNow() {
     clearTimeout(saveTimer);
+    clearTimeout(quietDaySaveTimer);
     try {
       Storage.set(getStorageKey(), JSON.stringify(day));
       setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       renderDataCorner();
       try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
+      updateLastSavedAt();
     } catch (e) {
       setSaveBarText('Could not save — storage may be full or blocked', 'error');
       pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
@@ -5294,6 +5422,7 @@
   }
   function saveDay() {
     clearTimeout(saveTimer);
+    clearTimeout(quietDaySaveTimer);
     setSaveBarText('Saving…', 'saving');
     saveTimer = setTimeout(() => {
       try {
@@ -5302,11 +5431,26 @@
         throttledNote('Day saved for ' + currentDateKey + '.');
         renderDataCorner();
         try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
+        updateLastSavedAt();
       } catch (e) {
         setSaveBarText('Could not save — storage may be full or blocked', 'error');
         pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
       }
-    }, 220);
+    }, 300);
+  }
+  function saveDayQuiet() {
+    clearTimeout(quietDaySaveTimer);
+    quietDaySaveTimer = setTimeout(() => {
+      try {
+        Storage.set(getStorageKey(), JSON.stringify(day));
+        renderDataCorner();
+        try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
+        updateLastSavedAt();
+      } catch (e) {
+        setSaveBarText('Could not save — storage may be full or blocked', 'error');
+        pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+      }
+    }, 300);
   }
   function ensureCurrentDay() {
     const k = dateKey();
@@ -5423,12 +5567,34 @@
     }
   }
   function savePath() {
+    clearTimeout(quietPathSaveTimer);
     Storage.set(PATH_KEY, JSON.stringify(pathData));
     setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     renderDataCorner();
     if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
       try { renderLogView(); } catch (e) {}
     }
+  }
+  function savePathQuiet() {
+    clearTimeout(quietPathSaveTimer);
+    quietPathSaveTimer = setTimeout(() => {
+      try {
+        Storage.set(PATH_KEY, JSON.stringify(pathData));
+        renderDataCorner();
+        if (document.getElementById('view-log') && document.getElementById('view-log').classList.contains('active')) {
+          try { renderLogView(); } catch (e) {}
+        }
+      } catch (e) {
+        setSaveBarText('Could not save — storage may be full or blocked', 'error');
+        pushActivity('Save failed: ' + (e && e.message ? e.message : 'unknown error'));
+      }
+    }, 300);
+  }
+  function flushQuietPathSave() {
+    if (!quietPathSaveTimer) return;
+    clearTimeout(quietPathSaveTimer);
+    quietPathSaveTimer = null;
+    savePath();
   }
 
   const BACKUP_REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
@@ -6020,8 +6186,95 @@
       toast.classList.add('on');
       setTimeout(() => { toast.classList.remove('on'); }, 2000);
     }
+    celebrateSaveMoment();
+    updateLastSavedAt();
+    const sticky = document.getElementById('stickySaveHint');
+    if (sticky) sticky.textContent = 'Moment marked · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    pushActivity('Marked a save moment at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.');
+    showAppToast('Moment marked in your log');
     setTimeout(() => { setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', _lastSaveClass === 'error' ? 'error' : 'saved'); }, 1600);
   }
+  let lastSavedAtMs = 0;
+  function updateLastSavedAt() {
+    lastSavedAtMs = Date.now();
+    const hint = document.getElementById('lastSavedHint');
+    if (!hint) return;
+    hint.hidden = false;
+    hint.textContent = 'Last saved ' + new Date(lastSavedAtMs).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+  function celebrateSaveMoment() {
+    document.body.classList.remove('save-celebrate');
+    void document.body.offsetWidth;
+    document.body.classList.add('save-celebrate');
+    setTimeout(() => document.body.classList.remove('save-celebrate'), 1200);
+  }
+  let toastSeq = 0;
+  function showAppToast(message, ms) {
+    const host = document.getElementById('appToastHost');
+    if (!host || !message) return;
+    const id = ++toastSeq;
+    const el = document.createElement('div');
+    el.className = 'app-toast';
+    el.setAttribute('role', 'status');
+    el.textContent = message;
+    host.appendChild(el);
+    requestAnimationFrame(() => { el.classList.add('on'); });
+    setTimeout(() => {
+      el.classList.remove('on');
+      setTimeout(() => { try { el.remove(); } catch (e) {} }, 400);
+    }, ms || 3200);
+    return id;
+  }
+
+  const COLLAPSE_IDS = ['startHereDetails', 'innerLandscapeDetails', 'moodScalesDetails', 'bodyWeatherDetails', 'careSystemDetails', 'stressGentleDetails', 'eveningMoreDetails', 'ambienceDetails', 'medsAllergiesDetails'];
+  const COLLAPSE_KEY = 'stillness:collapse:v1';
+  function loadCollapseState() {
+    let map = {};
+    try {
+      const raw = Storage.get(COLLAPSE_KEY);
+      if (raw) map = JSON.parse(raw) || {};
+    } catch (e) { map = {}; }
+    COLLAPSE_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || el.tagName !== 'DETAILS') return;
+      if (Object.prototype.hasOwnProperty.call(map, id)) el.open = !!map[id];
+    });
+  }
+  function wireCollapsePersistence() {
+    COLLAPSE_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || el.tagName !== 'DETAILS') return;
+      el.addEventListener('toggle', () => {
+        let map = {};
+        try {
+          const raw = Storage.get(COLLAPSE_KEY);
+          if (raw) map = JSON.parse(raw) || {};
+        } catch (e) { map = {}; }
+        map[id] = el.open;
+        try { Storage.set(COLLAPSE_KEY, JSON.stringify(map)); } catch (e) {}
+      });
+    });
+  }
+
+  const FUNCTIONAL_IMPACT_LABELS = [
+    { title: 'gentle', body: 'symptoms barely showed up in the story of the day' },
+    { title: 'light', body: 'a noticeable thread, but not steering everything' },
+    { title: 'moderate', body: 'symptoms shaped choices or energy in real ways' },
+    { title: 'heavy', body: 'a strong pull — hard to set down' },
+    { title: 'full weight', body: 'symptoms were central to how the day felt' }
+  ];
+  function renderFunctionalImpactLabel() {
+    const el = document.getElementById('functionalImpactLabel');
+    const sl = document.getElementById('functionalImpactSlider');
+    const n = Math.max(0, Math.min(4, Number(day.functionalImpact) || 0));
+    if (sl) {
+      sl.value = String(n);
+      sl.setAttribute('aria-valuenow', String(n));
+    }
+    const row = FUNCTIONAL_IMPACT_LABELS[n] || FUNCTIONAL_IMPACT_LABELS[0];
+    if (el) el.innerHTML = '<strong>' + row.title + '</strong> — ' + row.body;
+  }
+
   function applyTextSize() {
     const s = (config.textSize === 'large') ? 'large' : 'default';
     document.documentElement.setAttribute('data-text-size', s);
@@ -6103,8 +6356,7 @@
     }
   }
   function renderFunctionalImpact() {
-    const el = document.getElementById('functionalImpactSlider');
-    if (el) el.value = String(day.functionalImpact != null ? day.functionalImpact : 0);
+    renderFunctionalImpactLabel();
   }
   function renderSymptomsFree() {
     const el = document.getElementById('symptomsFreeText');
@@ -6270,6 +6522,14 @@
     }
     if (title) title.textContent = img.title;
   }
+  let lastShufflePrompt = '';
+  function pickShufflePrompt() {
+    const pool = PROMPTS.filter(p => p !== lastShufflePrompt);
+    const use = pool.length ? pool : PROMPTS;
+    const p = use[Math.floor(Math.random() * use.length)];
+    lastShufflePrompt = p;
+    return p;
+  }
   function renderQuoteAndAffirmation(forceShufflePrompt) {
     const seed = seedFromDate(new Date());
     if (!forceShufflePrompt) {
@@ -6281,7 +6541,7 @@
       document.getElementById('affirmation').textContent = a;
       document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
     } else {
-      const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      const p = pickShufflePrompt();
       document.getElementById('promptPill').innerHTML = '<em>' + escapeHtml(p) + '</em> <button type="button" class="prompt-shuffle">shuffle</button>';
     }
   }
@@ -6289,10 +6549,16 @@
     document.getElementById('intentionInput').value = day.intention || '';
   }
   function renderMood() {
-    document.querySelectorAll('#moodRow .picker-btn').forEach(b =>
-      b.classList.toggle('on', Number(b.dataset.mood) === day.mood));
-    document.querySelectorAll('#energyRow .picker-btn').forEach(b =>
-      b.classList.toggle('on', Number(b.dataset.energy) === day.energy));
+    document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
+      const on = Number(b.dataset.mood) === day.mood;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
+      const on = Number(b.dataset.energy) === day.energy;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
     document.getElementById('moodNote').value = day.moodNote || '';
     const mc = document.getElementById('moodContextInput');
     if (mc) mc.value = day.moodContext || '';
@@ -6317,17 +6583,26 @@
         return;
       }
       const c = document.createElement('button');
+      c.type = 'button';
       c.className = 'chip' + (s.bad ? ' bad' : '') + (day.symptoms.includes(s.id) ? ' on' : '');
       c.textContent = s.label;
       c.dataset.id = s.id;
+      const sel = day.symptoms.includes(s.id);
+      c.setAttribute('aria-pressed', sel ? 'true' : 'false');
       c.addEventListener('click', () => {
         const i = day.symptoms.indexOf(s.id);
         if (i === -1) day.symptoms.push(s.id);
         else day.symptoms.splice(i, 1);
         c.classList.toggle('on');
+        c.setAttribute('aria-pressed', day.symptoms.includes(s.id) ? 'true' : 'false');
         recommendDismissed = false;
         renderLowMoodSupport();
-        saveDay();
+        saveDayQuiet();
+      });
+      c.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        c.click();
       });
       wrap.appendChild(c);
     });
@@ -7021,34 +7296,34 @@
      Event wiring
   ──────────────────────────────────────────────────────── */
   document.getElementById('intentionInput').addEventListener('input', e => {
-    day.intention = e.target.value; saveDay();
+    day.intention = e.target.value; saveDayQuiet();
   });
 
   document.querySelectorAll('#moodRow .picker-btn').forEach(b => {
-    b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); recommendDismissed = false; renderMood(); renderLowMoodSupport(); saveDay(); });
+    b.addEventListener('click', () => { day.mood = Number(b.dataset.mood); recommendDismissed = false; renderMood(); renderLowMoodSupport(); saveDayQuiet(); });
   });
   document.querySelectorAll('#energyRow .picker-btn').forEach(b => {
-    b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDay(); });
+    b.addEventListener('click', () => { day.energy = Number(b.dataset.energy); renderMood(); saveDayQuiet(); });
   });
   const jLong = document.getElementById('journalLongInput');
-  if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDay(); renderTodayProgress(); });
+  if (jLong) jLong.addEventListener('input', e => { day.journalLong = e.target.value; saveDayQuiet(); renderTodayProgress(); });
   document.getElementById('goToTodayFromJournal')?.addEventListener('click', () => switchView('today'));
   document.getElementById('moodNote').addEventListener('input', e => {
-    day.moodNote = e.target.value; saveDay();
+    day.moodNote = e.target.value; saveDayQuiet();
   });
   const moodCtx = document.getElementById('moodContextInput');
-  if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDay(); renderTodayProgress(); });
+  if (moodCtx) moodCtx.addEventListener('input', e => { day.moodContext = e.target.value; saveDayQuiet(); renderTodayProgress(); });
   const emoW = document.getElementById('emotionalWeatherInput');
-  if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDay(); renderTodayProgress(); });
+  if (emoW) emoW.addEventListener('input', e => { day.emotionalWeather = emoW.value; saveDayQuiet(); renderTodayProgress(); });
   document.getElementById('moodNoteClear').addEventListener('click', () => {
     day.moodNote = '';
     document.getElementById('moodNote').value = '';
     saveDay();
   });
   const exEl = document.getElementById('exerciseNote');
-  if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDay(); });
+  if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDayQuiet(); });
   const dreamEl = document.getElementById('dreamInput');
-  if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDay(); });
+  if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDayQuiet(); });
 
   function handleTrackerActionDataset(a) {
     if (!a) return;
@@ -7124,7 +7399,7 @@
   if (pqEl) pqEl.addEventListener('change', () => { day.painQualitySelect = pqEl.value; saveDay(); });
 
   const sft = document.getElementById('symptomsFreeText');
-  if (sft) sft.addEventListener('input', () => { day.symptomsFreeText = sft.value; saveDay(); renderTodayProgress(); });
+  if (sft) sft.addEventListener('input', () => { day.symptomsFreeText = sft.value; saveDayQuiet(); renderTodayProgress(); });
 
   document.querySelectorAll('.likert-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -7145,7 +7420,7 @@
   });
 
   const fi = document.getElementById('functionalImpactSlider');
-  if (fi) fi.addEventListener('input', () => { day.functionalImpact = Number(fi.value) || 0; saveDay(); renderTodayProgress(); });
+  if (fi) fi.addEventListener('input', () => { day.functionalImpact = Number(fi.value) || 0; renderFunctionalImpactLabel(); saveDayQuiet(); renderTodayProgress(); });
 
   const mts = document.getElementById('medTimeSelect');
   if (mts) mts.addEventListener('change', () => { day.activeMedTime = mts.value; saveDay(); });
@@ -7167,7 +7442,7 @@
   const mab = document.getElementById('medAddBtn');
   if (mab) mab.addEventListener('click', addMed);
   const ainp = document.getElementById('allergiesInput');
-  if (ainp) ainp.addEventListener('input', () => { day.allergies = ainp.value; saveDay(); renderTodayProgress(); });
+  if (ainp) ainp.addEventListener('input', () => { day.allergies = ainp.value; saveDayQuiet(); renderTodayProgress(); });
 
   const sl1 = document.getElementById('sleepLatency');
   if (sl1) sl1.addEventListener('change', () => { day.sleepLatencyMins = Number(sl1.value) || 0; saveDay(); });
@@ -7177,16 +7452,16 @@
   if (sl3) sl3.addEventListener('change', () => { day.sleepRested = Number(sl3.value) || 0; saveDay(); });
 
   const sn1 = document.getElementById('strengthsNote');
-  if (sn1) sn1.addEventListener('input', () => { day.strengthsNote = sn1.value; saveDay(); });
+  if (sn1) sn1.addEventListener('input', () => { day.strengthsNote = sn1.value; saveDayQuiet(); });
   const sn2 = document.getElementById('supportNote');
-  if (sn2) sn2.addEventListener('input', () => { day.supportNote = sn2.value; saveDay(); });
+  if (sn2) sn2.addEventListener('input', () => { day.supportNote = sn2.value; saveDayQuiet(); });
   const sn3 = document.getElementById('stressCheckIn');
-  if (sn3) sn3.addEventListener('input', () => { day.stressCheckIn = sn3.value; saveDay(); });
+  if (sn3) sn3.addEventListener('input', () => { day.stressCheckIn = sn3.value; saveDayQuiet(); });
 
   document.getElementById('sleepSlider').addEventListener('input', e => {
     day.sleepHours = Number(e.target.value);
     document.getElementById('sleepValue').textContent = day.sleepHours.toFixed(1);
-    saveDay();
+    saveDayQuiet();
   });
   document.querySelectorAll('#moonRow .moon-btn').forEach(b => {
     b.addEventListener('click', () => {
@@ -7197,25 +7472,25 @@
 
   document.getElementById('gratitudeInput').addEventListener('input', e => {
     day.gratitude = e.target.value;
-    saveDay();
+    saveDayQuiet();
     const gsec = document.getElementById('gratitudeSection');
     if (gsec && (e.target.value || '').trim().length > 2) {
       gsec.classList.add('positive-bloom');
       setTimeout(() => gsec.classList.remove('positive-bloom'), 700);
     }
   });
-  document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDay(); });
+  document.getElementById('reflectionInput').addEventListener('input', e => { day.reflection = e.target.value; saveDayQuiet(); });
 
-  document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDay(); });
-  document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDay(); });
-  document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDay(); });
-  document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDay(); });
+  document.getElementById('eveningWinInput').addEventListener('input', e => { day.eveningWin = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningNoteInput').addEventListener('input', e => { day.eveningNote = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningObstacleInput').addEventListener('input', e => { day.eveningObstacle = e.target.value; saveDayQuiet(); });
+  document.getElementById('eveningTomorrowInput').addEventListener('input', e => { day.eveningTomorrow = e.target.value; saveDayQuiet(); });
   const evSE = document.getElementById('eveningStrongestEmotion');
-  if (evSE) evSE.addEventListener('input', e => { day.eveningStrongestEmotion = e.target.value; saveDay(); });
+  if (evSE) evSE.addEventListener('input', e => { day.eveningStrongestEmotion = e.target.value; saveDayQuiet(); });
   const evQP = document.getElementById('eveningQuietPride');
-  if (evQP) evQP.addEventListener('input', e => { day.eveningQuietPride = evQP.value; saveDay(); });
+  if (evQP) evQP.addEventListener('input', e => { day.eveningQuietPride = evQP.value; saveDayQuiet(); });
   const evNT = document.getElementById('eveningNeedTomorrow');
-  if (evNT) evNT.addEventListener('input', e => { day.eveningNeedTomorrow = evNT.value; saveDay(); });
+  if (evNT) evNT.addEventListener('input', e => { day.eveningNeedTomorrow = evNT.value; saveDayQuiet(); });
   ['eveningWinInput', 'eveningNoteInput', 'eveningObstacleInput', 'eveningTomorrowInput', 'eveningStrongestEmotion', 'eveningQuietPride', 'eveningNeedTomorrow'].forEach(fieldId => {
     const el = document.getElementById(fieldId);
     if (!el) return;
@@ -7741,6 +8016,7 @@
       if (kindnessStage >= KINDNESS_STAGES.length) {
         document.getElementById('kindnessClose').click();
         pushActivity('Completed loving-kindness practice.');
+        showAppToast('Loving-kindness complete · ✦');
         return;
       }
     }
@@ -7779,6 +8055,7 @@
     if (scanIdx >= BODY_SCAN.length) {
       document.getElementById('scanClose').click();
       pushActivity('Completed body scan practice.');
+      showAppToast('Body scan complete · ✦');
       return;
     }
     void renderScan();
@@ -7885,7 +8162,7 @@
           savePath();
         });
         const ta = el.querySelector('textarea[data-path-exp-note-idx]');
-        if (ta) { ta.value = item.feelNote || ''; ta.addEventListener('input', () => { item.feelNote = ta.value; savePath(); }); }
+        if (ta) { ta.value = item.feelNote || ''; ta.addEventListener('input', () => { item.feelNote = ta.value; savePathQuiet(); }); }
         el.querySelector('.del').addEventListener('click', () => {
           items.splice(idx, 1);
           savePath();
@@ -7994,7 +8271,7 @@
       if (id === 'pathValues') pathData.values = el.value;
       if (id === 'pathPractice') pathData.practice = el.value;
       if (id === 'pathLetter') pathData.letter = el.value;
-      savePath();
+      savePathQuiet();
       updatePathMeter();
     });
   });
@@ -8595,13 +8872,18 @@
   document.getElementById('exportClinicalPdf')?.addEventListener('click', () => { closeExportModal(); runPrintForHtmlDoc('<h1>Stillness — clinical data table</h1>' + buildClinicalHtml(), 'Stillness clinical table'); });
   function copyBundleForAi() {
     const { md, json } = buildExportAiBundle();
-    const out = md + '\n\n---\n\n## JSON\n\n```json\n' + json + '\n```\n';
+    const header = '# Stillness export\n\n**Date:** ' + formatDate(currentDateKey) + ' · **Generated:** ' + new Date().toISOString() + '\n\n';
+    const out = header + md + '\n\n---\n\n## Structured JSON\n\n```json\n' + json + '\n```\n';
     if (navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(out)
-        .then(() => { pushActivity('Copied Markdown + JSON for AI.'); })
-        .catch(() => { pushActivity('Copy failed — try a desktop browser.'); });
+        .then(() => {
+          pushActivity('Copied Markdown + JSON for AI.');
+          showAppToast('Copied export for AI');
+        })
+        .catch(() => { pushActivity('Copy failed — try a desktop browser.'); showAppToast('Copy failed — try another browser'); });
     }
     pushActivity('Clipboard not available in this context.');
+    showAppToast('Clipboard not available here');
     return Promise.resolve();
   }
   document.getElementById('exportAiMarkdown')?.addEventListener('click', () => { closeExportModal(); void copyBundleForAi(); });
@@ -8609,9 +8891,13 @@
     const { json } = buildExportAiBundle();
     closeExportModal();
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(json).then(() => pushActivity('Copied JSON for AI.'), () => pushActivity('Copy failed.'));
+      navigator.clipboard.writeText(json).then(() => {
+        pushActivity('Copied JSON for AI.');
+        showAppToast('Copied JSON');
+      }, () => { pushActivity('Copy failed.'); showAppToast('Copy failed'); });
     } else {
       pushActivity('Clipboard not available.');
+      showAppToast('Clipboard not available');
     }
   });
   document.getElementById('copyForAiPrimary')?.addEventListener('click', () => { void copyBundleForAi(); });
@@ -8621,8 +8907,8 @@
     (navigator.clipboard && navigator.clipboard.writeText
       ? navigator.clipboard.writeText(t)
       : Promise.resolve())
-    .then(() => { pushActivity('Copied today’s session sheet to clipboard.'); })
-    .catch(() => { pushActivity('Could not copy — try selecting the text in the box.'); });
+    .then(() => { pushActivity('Copied today’s session sheet to clipboard.'); showAppToast('Copied session sheet'); })
+    .catch(() => { pushActivity('Could not copy — try selecting the text in the box.'); showAppToast('Copy failed'); });
   });
   document.getElementById('printPage').addEventListener('click', () => window.print());
 
@@ -8680,14 +8966,16 @@
     }, { passive: true });
   })();
 
-  window.addEventListener('pagehide', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('pagehide', () => { clearTimeout(saveTimer); clearTimeout(quietDaySaveTimer); flushQuietPathSave(); try { saveDayNow(); } catch (e) {} });
   window.addEventListener('beforeunload', stopSoundscape);
-  window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); try { saveDayNow(); } catch (e) {} });
+  window.addEventListener('beforeunload', () => { clearTimeout(saveTimer); clearTimeout(quietDaySaveTimer); flushQuietPathSave(); try { saveDayNow(); } catch (e) {} });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') ensureCurrentDay();
   });
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const wipe = document.getElementById('wipeConfirmModal');
+    if (wipe && wipe.classList.contains('open')) { closeWipeConfirm(); return; }
     const ex = document.getElementById('exportModal');
     if (ex && ex.classList.contains('open')) { closeExportModal(); return; }
     const b = document.getElementById('breatheOverlay');
@@ -8695,11 +8983,19 @@
     const k = document.getElementById('kindnessOverlay');
     const s = document.getElementById('scanOverlay');
     const w = document.getElementById('worryOverlay');
+    const tip = document.getElementById('tippOverlay');
+    const stp = document.getElementById('stopOverlay');
+    const rad = document.getElementById('radAccOverlay');
+    const th = document.getElementById('thoughtOverlay');
     if (b.classList.contains('open')) document.getElementById('breatheClose').click();
     else if (g.classList.contains('open')) document.getElementById('groundClose').click();
     else if (k.classList.contains('open')) document.getElementById('kindnessClose').click();
     else if (s.classList.contains('open')) document.getElementById('scanClose').click();
     else if (w.classList.contains('open')) document.getElementById('worryClose').click();
+    else if (tip && tip.classList.contains('open')) document.getElementById('tippClose')?.click();
+    else if (stp && stp.classList.contains('open')) document.getElementById('stopClose')?.click();
+    else if (rad && rad.classList.contains('open')) document.getElementById('radAccClose')?.click();
+    else if (th && th.classList.contains('open')) document.getElementById('thoughtClose')?.click();
   });
 
   document.querySelectorAll('.theme-swatch').forEach(btn => {
@@ -8752,6 +9048,7 @@
     renderDataCorner();
     renderRetentionStatus();
     pushActivity('Downloaded backup file.');
+    showAppToast('Backup file downloaded');
     document.getElementById('importMessage').textContent = 'Backup downloaded. Keep that file somewhere safe.';
   });
 
@@ -8798,6 +9095,7 @@
         renderDataCorner();
         msg.textContent = count ? `Restored ${count} day record(s).` : 'No day records found in file.';
         pushActivity('Restored backup (' + count + ' day record(s)).');
+        showAppToast(count ? 'Backup restored' : 'Backup opened — no day rows');
       } catch (err) {
         msg.textContent = 'Could not read that file.';
       }
@@ -8807,7 +9105,23 @@
   });
 
   document.getElementById('wipeAllBtn').addEventListener('click', () => {
-    if (!confirm('Erase all Stillness data in this browser? This cannot be undone.')) return;
+    const m = document.getElementById('wipeConfirmModal');
+    if (m) {
+      m.classList.add('open');
+      m.setAttribute('aria-hidden', 'false');
+      document.getElementById('wipeConfirmCancel')?.focus();
+    }
+  });
+  function closeWipeConfirm() {
+    const m = document.getElementById('wipeConfirmModal');
+    if (m) {
+      m.classList.remove('open');
+      m.setAttribute('aria-hidden', 'true');
+    }
+    document.getElementById('wipeAllBtn')?.focus();
+  }
+  function performWipeAll() {
+    closeWipeConfirm();
     Storage.listKeys('mindful:').forEach(k => Storage.remove(k));
     config = { retentionDays: 0, retentionUserSet: false, activityCap: 200, saveLogThrottleMs: 120000, theme: 'parchment', breatheSound: 'rain', breatheCues: true, voiceCues: false, lastBackupAt: 0 };
     applyTheme('parchment');
@@ -8823,6 +9137,13 @@
     setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
     document.getElementById('importMessage').textContent = 'All local data cleared.';
     pushActivity('All data erased in this browser.');
+    showAppToast('All Stillness data erased');
+  }
+  document.getElementById('wipeConfirmCancel')?.addEventListener('click', closeWipeConfirm);
+  document.getElementById('wipeConfirmClose')?.addEventListener('click', closeWipeConfirm);
+  document.getElementById('wipeConfirmDo')?.addEventListener('click', performWipeAll);
+  document.getElementById('wipeConfirmModal')?.addEventListener('click', (e) => {
+    if (e.target && e.target.id === 'wipeConfirmModal') closeWipeConfirm();
   });
 
   /* ────────────────────────────────────────────────────────
@@ -8895,6 +9216,7 @@
       setOverlayOpen('tippOverlay', false);
       if (tippStart) { addMindfulSeconds(Date.now() - tippStart); tippStart = null; }
       pushActivity('Completed TIPP distress-tolerance skill.');
+      showAppToast('TIPP practice complete');
       return;
     }
     renderTipp();
@@ -8934,6 +9256,7 @@
       setOverlayOpen('stopOverlay', false);
       if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
       pushActivity('Completed STOP skill.');
+      showAppToast('STOP practice complete');
       return;
     }
     renderStop();
@@ -8995,6 +9318,7 @@
     if (radAccStart) { addMindfulSeconds(Date.now() - radAccStart); radAccStart = null; }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     pushActivity('Completed Radical Acceptance practice.');
+    showAppToast('Radical acceptance saved');
   });
   document.getElementById('radAccClose')?.addEventListener('click', () => {
     setOverlayOpen('radAccOverlay', false);
@@ -9078,6 +9402,7 @@
     renderTodaySummary();
     renderLogView();
     pushActivity('Saved a thought record.');
+    showAppToast('Thought record saved');
   });
   document.getElementById('thoughtClose')?.addEventListener('click', () => {
     setOverlayOpen('thoughtOverlay', false);
@@ -9283,16 +9608,8 @@
   loadPath();
   renderAll();
   renderPath();
-  try {
-    const ild = document.getElementById('innerLandscapeDetails');
-    const msd = document.getElementById('moodScalesDetails');
-    const bwd = document.getElementById('bodyWeatherDetails');
-    const emd = document.getElementById('eveningMoreDetails');
-    if (ild) ild.open = false;
-    if (msd) msd.open = false;
-    if (bwd) bwd.open = false;
-    if (emd) emd.open = false;
-  } catch (e) {}
+  loadCollapseState();
+  wireCollapsePersistence();
   (function initRoute() {
     const v = getRouteView();
     if (v == null) {
