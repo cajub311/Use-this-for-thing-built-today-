@@ -579,6 +579,34 @@ body[data-rest-mode="on"] #main {
   flex-basis: 42px;
 }
 
+#view-history.history-empty-state .mood-graph,
+#view-history.history-empty-state #moodHeatmapCard,
+#view-history.history-empty-state #gardenBodySparks,
+#view-history.history-empty-state #gardenChartInsights {
+  display: none;
+}
+
+#view-history.history-empty-state .heatmap-wrap:not(#moodHeatmapCard) {
+  display: none;
+}
+
+#view-history.history-empty-state .streak-card {
+  min-height: 0;
+  padding: 26px 18px;
+  background: var(--zen-surface);
+}
+
+#view-history.history-empty-state .insight-row {
+  margin-top: 10px;
+}
+
+#view-history.history-empty-state .heatmap-wrap:last-child,
+#view-history.history-empty-state .history-empty {
+  width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .sticky-save-bar {
   width: min(90vw, 460px);
   padding: 8px;
@@ -763,7 +791,8 @@ body[data-rest-mode="on"] #main {
 
   #view-track .tracker {
     padding: 14px;
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: 54px minmax(0, 1fr);
+    row-gap: 6px;
   }
 
   #view-track .tracker-head {
@@ -771,22 +800,47 @@ body[data-rest-mode="on"] #main {
   }
 
   #view-track .water-vessel {
+    grid-row: 2;
     height: 22px;
     margin-bottom: 0;
   }
 
   #view-track .tracker-value {
-    font-size: 1.65rem;
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 1.95rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
   }
 
   #view-track .tracker-unit {
     grid-column: 2;
-    margin: -8px 0 0;
+    grid-row: 3;
+    align-self: center;
+    margin: 0;
+    text-align: left;
+    font-size: 0.84rem;
   }
 
   #view-track .tracker-controls {
     grid-column: 1 / -1;
+    grid-row: 4;
+    margin-top: 2px;
     min-width: 0;
+  }
+
+  #view-track .exercise-block,
+  #view-track .outdoor-split {
+    grid-column: 1 / -1;
+  }
+
+  #view-track .exercise-block {
+    grid-row: 5;
+  }
+
+  #view-track .pill {
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 
   #view-memory .leaf:first-of-type .data-row.no-print {

@@ -9320,6 +9320,7 @@
     const dayMap = {};
     days.forEach(d => dayMap[d.date] = d);
     days.forEach(d => { if (hasAnyData(d)) savedDays++; });
+    document.getElementById('view-history')?.classList.toggle('history-empty-state', savedDays === 0);
     document.getElementById('streakNum').textContent = savedDays;
 
     // Insights — averages
