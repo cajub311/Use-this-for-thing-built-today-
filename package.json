@@ -1,8 +1,8 @@
 {
   "name": "stillness",
   "private": true,
-  "description": "Stillness journal — static index.html app (Vercel deploy). Use npm run build for CI sanity check.",
+  "description": "Stillness journal static index.html app. Use npm run build to create public/ for Vercel.",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'); if(!fs.existsSync('index.html')){process.exit(1)} console.log('Stillness: index.html present — build OK');\""
+    "build": "node scripts/build-static.cjs"
   }
 }
