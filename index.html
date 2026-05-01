@@ -10728,7 +10728,6 @@
   document.getElementById('growthDetailClose')?.addEventListener('click', () => closeModalEl('growthDetailModal'));
   document.getElementById('growthDetailModal')?.addEventListener('click', (e) => { if (e.target && e.target.id === 'growthDetailModal') closeModalEl('growthDetailModal'); });
   if (!config.onboardingSeen) {
-    showAppToast('Welcome. Nothing here is urgent — your words stay in this browser until you choose to back them up in Memory.', 6200);
     config.onboardingSeen = true;
     saveConfig();
   }
