@@ -455,6 +455,10 @@
     opacity: 0.7;
     text-transform: uppercase;
   }
+  .leaf-num.is-active {
+    opacity: 0.95;
+    color: var(--moss-deep);
+  }
   .leaf-sub {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
@@ -893,6 +897,9 @@
     background:
       linear-gradient(145deg, rgba(214, 220, 201, 0.34), rgba(244, 236, 218, 0.72)),
       var(--paper-3);
+  }
+  .care-signal-mini {
+    white-space: nowrap;
   }
   .care-meter-grid {
     display: grid;
@@ -3183,6 +3190,31 @@
     border: 1px solid rgba(201, 187, 164, 0.6);
   }
   .data-btn-ghost:hover { background: var(--moss-mist); }
+  .garden-empty-start[hidden] {
+    display: none !important;
+  }
+  .garden-empty-start {
+    width: min(100%, 760px);
+    margin: 0 auto 16px;
+    background:
+      linear-gradient(145deg, rgba(214, 220, 201, 0.34), rgba(244, 236, 218, 0.78)),
+      var(--paper-3);
+  }
+  .garden-empty-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 14px;
+  }
+  .garden-empty-actions .data-btn {
+    width: 100%;
+    text-align: center;
+  }
+  @media (max-width: 560px) {
+    .garden-empty-actions {
+      grid-template-columns: 1fr;
+    }
+  }
   .file-label {
     display: inline-block;
     background: var(--paper);
@@ -4797,7 +4829,7 @@
     <details class="leaf collapsible-section care-signals" id="careSignalsDetails" aria-label="Therapy and care signals">
       <summary class="leaf-head">
         <h2 class="leaf-title">Care <em>signals</em> (optional)</h2>
-        <span class="leaf-num">therapy</span>
+        <span class="leaf-num care-signal-mini" id="careSignalMini">therapy</span>
       </summary>
       <p class="leaf-sub">Tiny notes for patterns you might want to bring to therapy or a medical visit. Skip anything that feels like too much.</p>
       <div class="care-meter-grid">
@@ -4970,6 +5002,18 @@
     </div>
 
     <div class="insight-row" id="insightRow"></div>
+
+    <section class="leaf garden-empty-start no-print" id="gardenEmptyStart" hidden>
+      <div class="leaf-head">
+        <h2 class="leaf-title">Begin <em>gently</em></h2>
+        <span class="leaf-num">empty garden</span>
+      </div>
+      <p class="leaf-sub">A garden starts with one saved day. Check in, take a quiet practice, or leave a tiny note and come back later.</p>
+      <div class="garden-empty-actions">
+        <button type="button" class="data-btn" data-garden-empty-go="today">Start today</button>
+        <button type="button" class="data-btn data-btn-ghost" data-garden-empty-go="practice">Open practice</button>
+      </div>
+    </section>
 
     <div class="heatmap-wrap" id="moodHeatmapCard">
       <h3>Last 90 days · mood</h3>
@@ -7823,6 +7867,15 @@
     if (body) body.value = day.careBodyNote || '';
     const question = document.getElementById('therapyQuestion');
     if (question) question.value = day.therapyQuestion || '';
+    const mini = document.getElementById('careSignalMini');
+    if (mini) {
+      const savedCount = ['stressLoad', 'urgeLevel', 'skillHelped']
+        .filter(key => Number(day[key]) > 0).length
+        + ((day.careBodyNote || '').trim() ? 1 : 0)
+        + ((day.therapyQuestion || '').trim() ? 1 : 0);
+      mini.textContent = savedCount ? `${savedCount} noted` : 'therapy';
+      mini.classList.toggle('is-active', savedCount > 0);
+    }
   }
   function renderMeals() {
     document.querySelectorAll('.meal-type').forEach(b =>
@@ -8561,9 +8614,9 @@
     el.addEventListener('change', () => saveDay());
   });
   const careBodyEl = document.getElementById('careBodyNote');
-  if (careBodyEl) careBodyEl.addEventListener('input', e => { day.careBodyNote = e.target.value; saveDayQuiet(); });
+  if (careBodyEl) careBodyEl.addEventListener('input', e => { day.careBodyNote = e.target.value; renderCareSignals(); saveDayQuiet(); });
   const therapyQuestionEl = document.getElementById('therapyQuestion');
-  if (therapyQuestionEl) therapyQuestionEl.addEventListener('input', e => { day.therapyQuestion = e.target.value; saveDayQuiet(); });
+  if (therapyQuestionEl) therapyQuestionEl.addEventListener('input', e => { day.therapyQuestion = e.target.value; renderCareSignals(); saveDayQuiet(); });
   const dreamEl = document.getElementById('dreamInput');
   if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDayQuiet(); });
 
@@ -8813,6 +8866,12 @@
   document.getElementById('memoryOpenInsights')?.addEventListener('click', () => switchView('history'));
   document.getElementById('memoryOpenPath')?.addEventListener('click', () => switchView('path'));
   document.getElementById('memoryOpenLibrary')?.addEventListener('click', () => switchView('quotes'));
+  document.querySelectorAll('[data-garden-empty-go]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.gardenEmptyGo === 'practice' ? 'practice' : 'today';
+      switchView(target);
+    });
+  });
   document.getElementById('dataCorner')?.addEventListener('click', () => {
     switchView('memory');
     setTimeout(() => document.getElementById('exportBtn')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
@@ -9627,7 +9686,11 @@
     const dayMap = {};
     days.forEach(d => dayMap[d.date] = d);
     days.forEach(d => { if (hasAnyData(d)) savedDays++; });
-    document.getElementById('view-history')?.classList.toggle('history-empty-state', savedDays === 0);
+    const historyView = document.getElementById('view-history');
+    const isHistoryEmpty = savedDays === 0;
+    historyView?.classList.toggle('history-empty-state', isHistoryEmpty);
+    const gardenEmptyStart = document.getElementById('gardenEmptyStart');
+    if (gardenEmptyStart) gardenEmptyStart.hidden = !isHistoryEmpty;
     document.getElementById('streakNum').textContent = savedDays;
 
     // Insights — averages

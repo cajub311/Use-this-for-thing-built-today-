@@ -641,8 +641,9 @@ body[data-rest-mode="on"] #main {
   background: var(--zen-surface);
 }
 
-#view-history.history-empty-state .insight-row {
-  margin-top: 10px;
+#view-history.history-empty-state .insight-row,
+#view-history.history-empty-state #historyList {
+  display: none;
 }
 
 #view-history.history-empty-state .heatmap-wrap:last-child,
