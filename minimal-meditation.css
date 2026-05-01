@@ -32,6 +32,15 @@ body {
   padding-bottom: calc(156px + env(safe-area-inset-bottom, 0px));
 }
 
+button,
+input,
+select,
+textarea,
+details {
+  scroll-margin-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  scroll-margin-top: 92px;
+}
+
 body::after {
   opacity: 0.24;
 }
@@ -108,6 +117,7 @@ body[data-rest-mode="on"] #main {
 }
 
 #view-today .sync-hint,
+#lastSavedHint,
 .storage-truth,
 .today-progress-wrap,
 .rest-mode-pill,
@@ -369,6 +379,14 @@ body[data-rest-mode="on"] #main {
   gap: 12px;
 }
 
+#view-today .quick-start {
+  display: none !important;
+}
+
+#view-today .today-deep-toggle-wrap {
+  margin-top: 4px;
+}
+
 #view-practice .visual-banner {
   min-height: 92px;
   grid-template-columns: 96px 1fr;
@@ -391,6 +409,30 @@ body[data-rest-mode="on"] #main {
 #view-practice .leaf,
 #view-memory .leaf {
   padding: 16px;
+}
+
+#view-practice .dbt-skill-stack {
+  gap: 10px;
+}
+
+#view-practice .dbt-skill-block {
+  padding: 13px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--zen-surface-strong) 82%, transparent);
+  border-color: var(--zen-line);
+}
+
+#view-practice .dbt-skill-name {
+  margin-bottom: 4px;
+}
+
+#view-practice .dbt-skill-hint {
+  margin-bottom: 10px;
+  line-height: 1.42;
+}
+
+#view-practice .dbt-skill-block .quick-action {
+  min-height: 42px;
 }
 
 #view-practice > .plate,
@@ -562,6 +604,9 @@ body[data-rest-mode="on"] #main {
 
 #view-track .tracker-value {
   margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  color: var(--moss-deep);
 }
 
 #view-track .tracker-controls {
@@ -608,6 +653,7 @@ body[data-rest-mode="on"] #main {
 }
 
 .sticky-save-bar {
+  display: none !important;
   width: min(90vw, 460px);
   padding: 8px;
   border-radius: 16px;
@@ -775,6 +821,10 @@ body[data-rest-mode="on"] #main {
     max-width: 320px;
   }
 
+  #view-today .today-deep-toggle-wrap {
+    margin-top: -18px;
+  }
+
   .day-moment .leaf,
   .leaf {
     padding: 14px;
@@ -808,7 +858,7 @@ body[data-rest-mode="on"] #main {
   #view-track .tracker-value {
     grid-column: 1;
     grid-row: 3;
-    font-size: 1.95rem;
+    font-size: 1.38rem;
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
@@ -841,6 +891,21 @@ body[data-rest-mode="on"] #main {
   #view-track .pill {
     padding-top: 7px;
     padding-bottom: 7px;
+  }
+
+  #view-practice .dbt-skill-block {
+    padding: 12px;
+  }
+
+  #view-practice .dbt-skill-hint {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  #view-practice .dbt-skill-block:focus-within .dbt-skill-hint {
+    -webkit-line-clamp: unset;
   }
 
   #view-memory .leaf:first-of-type .data-row.no-print {
