@@ -889,6 +889,66 @@
     font-size: 0.86rem; color: var(--ink-soft); margin: 10px 0 4px; min-height: 1.4em;
   }
   .functional-live-label strong { color: var(--moss-deep); font-weight: 500; }
+  .care-signals {
+    background:
+      linear-gradient(145deg, rgba(214, 220, 201, 0.34), rgba(244, 236, 218, 0.72)),
+      var(--paper-3);
+  }
+  .care-meter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 12px 0 14px;
+  }
+  @media (min-width: 680px) {
+    .care-meter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .care-meter {
+    border: 1px solid rgba(201, 187, 164, 0.5);
+    border-radius: var(--r);
+    padding: 12px;
+    background: rgba(255, 253, 247, 0.42);
+  }
+  .care-meter label {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .care-meter .care-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .care-meter output {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--moss-deep);
+    font-size: 0.95rem;
+    text-align: right;
+  }
+  .care-meter input[type="range"] {
+    width: 100%;
+    accent-color: var(--moss);
+  }
+  .care-note-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  @media (min-width: 680px) {
+    .care-note-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .care-note-grid label {
+    display: block;
+  }
+  .care-note-grid .sub {
+    display: block;
+    margin-bottom: 5px;
+  }
   .med-input-row { flex-wrap: wrap; }
   .med-input-row .text-in { flex: 1 1 40%; }
   .sleep-clinical-grid {
@@ -2631,6 +2691,150 @@
   @keyframes breatheHalo {
     0%, 100% { transform: scale(0.88); opacity: 0.3; }
     50% { transform: scale(1.12); opacity: 0.6; }
+  }
+  #breatheOverlay {
+    --ov-ink: rgba(248, 240, 222, 0.14);
+    --ov-ink-border: rgba(248, 240, 222, 0.34);
+    --ov-ink-hover: rgba(248, 240, 222, 0.24);
+    --ov-ink-on: rgba(248, 240, 222, 0.34);
+    background:
+      radial-gradient(circle at 50% 34%, rgba(160, 196, 165, 0.24), transparent 26rem),
+      radial-gradient(circle at 22% 82%, rgba(201, 169, 97, 0.13), transparent 22rem),
+      linear-gradient(180deg, #17231f 0%, #0f1714 100%);
+    color: #fbf4e6;
+    overflow-y: auto;
+    padding: max(20px, env(safe-area-inset-top, 0px) + 14px) 18px max(24px, env(safe-area-inset-bottom, 0px) + 18px);
+  }
+  #breatheOverlay.open {
+    gap: 16px;
+  }
+  #breatheOverlay::before {
+    opacity: 0.5;
+    mix-blend-mode: screen;
+  }
+  #breatheOverlay .breathe-soundbar {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top, 0px) + 10px);
+    left: max(14px, env(safe-area-inset-left, 0px) + 10px);
+    right: auto;
+    z-index: 25;
+    max-width: min(650px, calc(100vw - 120px));
+    padding: 8px;
+    border-radius: 18px;
+    background: rgba(12, 20, 17, 0.62);
+    border: 1px solid rgba(248, 240, 222, 0.18);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(16px) saturate(1.15);
+    -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  }
+  #breatheOverlay .breathe-soundbar select,
+  #breatheOverlay .breathe-soundbar .form-select,
+  #breatheOverlay .audio-toggle,
+  #breatheOverlay .voice-toggle,
+  #breatheOverlay .tech-tab,
+  #breatheOverlay .overlay-close {
+    color: #fff6e8;
+    background: rgba(248, 240, 222, 0.13);
+    border-color: rgba(248, 240, 222, 0.32);
+    text-shadow: none;
+    box-shadow: none;
+  }
+  #breatheOverlay .breathe-soundbar select,
+  #breatheOverlay .breathe-soundbar .form-select {
+    background: rgba(8, 14, 12, 0.78);
+  }
+  #breatheOverlay .audio-toggle[aria-pressed="true"],
+  #breatheOverlay .voice-toggle[aria-pressed="true"],
+  #breatheOverlay .tech-tab.on {
+    color: #142019;
+    background: #f2dfb8;
+    border-color: rgba(255, 246, 232, 0.72);
+  }
+  #breatheOverlay > .audio-toggle#audioToggle {
+    display: none;
+  }
+  #breatheOverlay .technique-tabs {
+    margin: 18px 0 8px;
+    padding: 7px;
+    border-radius: 999px;
+    background: rgba(12, 20, 17, 0.4);
+    border: 1px solid rgba(248, 240, 222, 0.16);
+    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.18);
+  }
+  #breatheOverlay .tech-tab {
+    min-height: 38px;
+    min-width: 58px;
+    font-size: 0.9rem;
+  }
+  #breatheOverlay .breathe-orb-wrap {
+    margin-top: 4px;
+  }
+  #breatheOverlay .breathe-circle {
+    background: radial-gradient(circle at 38% 30%, #d9ead0 0%, #8fb894 34%, #496f50 72%, #294434 100%);
+    box-shadow:
+      0 0 0 1px rgba(248, 240, 222, 0.2) inset,
+      0 0 80px rgba(129, 176, 135, 0.36),
+      0 26px 90px rgba(0, 0, 0, 0.32);
+  }
+  #breatheOverlay .breathe-circle.inhale {
+    background: radial-gradient(circle at 38% 30%, #ecf5df 0%, #b9d9aa 36%, #63976a 74%, #31553d 100%);
+    box-shadow:
+      0 0 0 1px rgba(248, 240, 222, 0.28) inset,
+      0 0 130px rgba(173, 217, 170, 0.48),
+      0 28px 96px rgba(0, 0, 0, 0.34);
+  }
+  #breatheOverlay .breathe-circle.exhale,
+  #breatheOverlay .breathe-circle.hold-out {
+    background: radial-gradient(circle at 38% 30%, #bfd3b7 0%, #779d7c 38%, #3d6447 74%, #22382c 100%);
+  }
+  #breatheOverlay .breathe-text {
+    color: #fff8ec;
+    font-weight: 500;
+    text-shadow: 0 2px 22px rgba(0, 0, 0, 0.62);
+  }
+  #breatheOverlay .breathe-counter {
+    color: #ead9b6;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(12, 20, 17, 0.38);
+    border: 1px solid rgba(248, 240, 222, 0.14);
+    text-shadow: none;
+  }
+  @media (max-width: 560px) {
+    #breatheOverlay.open {
+      justify-content: flex-start;
+      padding-top: calc(126px + env(safe-area-inset-top, 0px));
+    }
+    #breatheOverlay .breathe-soundbar {
+      top: max(10px, env(safe-area-inset-top, 0px) + 8px);
+      left: max(10px, env(safe-area-inset-left, 0px) + 8px);
+      right: 82px;
+      max-width: none;
+      gap: 7px;
+    }
+    #breatheOverlay .breathe-soundbar select {
+      flex: 1 1 100%;
+      width: 100%;
+      max-width: none;
+    }
+    #breatheOverlay .overlay-close {
+      top: max(10px, env(safe-area-inset-top, 0px) + 8px);
+      right: max(10px, env(safe-area-inset-right, 0px) + 8px);
+      padding: 10px 14px;
+    }
+    #breatheOverlay .technique-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      width: min(100%, 330px);
+      margin-top: 2px;
+    }
+    #breatheOverlay .tech-tab {
+      min-width: 0;
+      padding: 8px 6px;
+    }
+    #breatheOverlay .breathe-text {
+      margin-top: 22px;
+    }
   }
   .memory-search { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: var(--r); border: 1px solid rgba(201, 187, 164, 0.5); background: var(--paper); color: var(--ink); font-family: 'Lora', serif; font-size: 1rem; }
   .memory-search-hint { font-size: 0.78rem; color: var(--ink-faint); margin: 6px 0 0; }
@@ -4590,6 +4794,47 @@
     </div>
     </div>
 
+    <details class="leaf collapsible-section care-signals" id="careSignalsDetails" aria-label="Therapy and care signals">
+      <summary class="leaf-head">
+        <h2 class="leaf-title">Care <em>signals</em> (optional)</h2>
+        <span class="leaf-num">therapy</span>
+      </summary>
+      <p class="leaf-sub">Tiny notes for patterns you might want to bring to therapy or a medical visit. Skip anything that feels like too much.</p>
+      <div class="care-meter-grid">
+        <div class="care-meter">
+          <label for="stressLoadRange">
+            <span class="care-title">Stress load</span>
+            <output id="stressLoadLabel">quiet</output>
+          </label>
+          <input type="range" min="0" max="4" step="1" value="0" id="stressLoadRange" aria-label="Stress load today" />
+        </div>
+        <div class="care-meter">
+          <label for="urgeLevelRange">
+            <span class="care-title">Urge intensity</span>
+            <output id="urgeLevelLabel">none</output>
+          </label>
+          <input type="range" min="0" max="4" step="1" value="0" id="urgeLevelRange" aria-label="Intensity of an unhelpful urge today" />
+        </div>
+        <div class="care-meter">
+          <label for="skillHelpedRange">
+            <span class="care-title">Skill helped</span>
+            <output id="skillHelpedLabel">not used</output>
+          </label>
+          <input type="range" min="0" max="4" step="1" value="0" id="skillHelpedRange" aria-label="How much a coping skill helped today" />
+        </div>
+      </div>
+      <div class="care-note-grid">
+        <label>
+          <span class="sub">Body or medicine note</span>
+          <textarea class="deep-input" id="careBodyNote" rows="2" maxlength="320" placeholder="Side effect, cycle, illness, appetite, dizziness, pain pattern..."></textarea>
+        </label>
+        <label>
+          <span class="sub">Question for next session</span>
+          <textarea class="deep-input" id="therapyQuestion" rows="2" maxlength="320" placeholder="Something to ask your therapist, doctor, or future self..."></textarea>
+        </label>
+      </div>
+    </details>
+
     <!-- Food log -->
     <section class="leaf">
       <div class="leaf-head">
@@ -5794,6 +6039,11 @@
    * @property {string} moveMode
    * @property {number} sun
    * @property {string} exerciseNote
+   * @property {number} stressLoad
+   * @property {number} urgeLevel
+   * @property {number} skillHelped
+   * @property {string} careBodyNote
+   * @property {string} therapyQuestion
    * @property {number} outings
    * @property {number} sweets
    * @property {number} calories
@@ -5838,6 +6088,7 @@
     functionalImpact: 0,
     water: 0, pee: 0, coffee: 0,
     movement: 0, steps: 0, moveMode: 'min', sun: 0, exerciseNote: '',
+    stressLoad: 0, urgeLevel: 0, skillHelped: 0, careBodyNote: '', therapyQuestion: '',
     outings: 0, sweets: 0, calories: 0,
     meals: [], medications: [], allergies: '',
     pains: [],
@@ -7304,6 +7555,7 @@
            (d.moodContext && d.moodContext.trim()) || (d.emotionalWeather && d.emotionalWeather.trim()) ||
            (d.rituals && d.rituals.length) ||
            d.water || d.pee || d.coffee || d.movement || d.sun || d.steps || (d.exerciseNote && d.exerciseNote.trim()) ||
+           d.stressLoad || d.urgeLevel || d.skillHelped || (d.careBodyNote && d.careBodyNote.trim()) || (d.therapyQuestion && d.therapyQuestion.trim()) ||
            d.outings || d.sweets || d.calories ||
            (d.meals && d.meals.length) || (d.pains && d.pains.length) || (d.medications && d.medications.length) || (d.allergies && d.allergies.trim()) ||
            d.sleepHours !== 7 || d.dreams || d.gratitude || d.reflection || d.mindfulMinutes || (d.journalLong && d.journalLong.trim()) ||
@@ -7545,6 +7797,32 @@
     document.getElementById('sunValue').textContent = day.sun;
     const st = document.getElementById('stepsValue');
     if (st) st.textContent = day.steps != null ? Number(day.steps).toLocaleString() : '0';
+  }
+  const CARE_LABELS = {
+    stressLoad: ['quiet', 'tight', 'loaded', 'high', 'maxed'],
+    urgeLevel: ['none', 'passing', 'noticeable', 'strong', 'very strong'],
+    skillHelped: ['not used', 'tried', 'a little', 'helped', 'helped a lot']
+  };
+  function careSignalLabel(key, value) {
+    const list = CARE_LABELS[key] || [];
+    return list[Math.max(0, Math.min(list.length - 1, Number(value) || 0))] || 'none';
+  }
+  function renderCareSignals() {
+    [
+      ['stressLoad', 'stressLoadRange', 'stressLoadLabel'],
+      ['urgeLevel', 'urgeLevelRange', 'urgeLevelLabel'],
+      ['skillHelped', 'skillHelpedRange', 'skillHelpedLabel']
+    ].forEach(([key, inputId, labelId]) => {
+      const input = document.getElementById(inputId);
+      const label = document.getElementById(labelId);
+      const value = Number(day[key]) || 0;
+      if (input) input.value = String(value);
+      if (label) label.textContent = careSignalLabel(key, value);
+    });
+    const body = document.getElementById('careBodyNote');
+    if (body) body.value = day.careBodyNote || '';
+    const question = document.getElementById('therapyQuestion');
+    if (question) question.value = day.therapyQuestion || '';
   }
   function renderMeals() {
     document.querySelectorAll('.meal-type').forEach(b =>
@@ -7800,6 +8078,17 @@
     if (day.outings) parts.push(h('p', 'sum-line', 'Outings: ' + day.outings));
     if (day.sweets) parts.push(h('p', 'sum-line', 'Sweets / treats: ' + day.sweets));
     if (day.calories) parts.push(h('p', 'sum-line', 'Calories you logged: ' + Number(day.calories).toLocaleString() + ' kcal'));
+
+    if (day.stressLoad || day.urgeLevel || day.skillHelped || (day.careBodyNote && day.careBodyNote.trim()) || (day.therapyQuestion && day.therapyQuestion.trim())) {
+      parts.push(h('div', 'sum-head', 'Care signals'));
+      const careBits = [];
+      if (day.stressLoad) careBits.push('stress ' + careSignalLabel('stressLoad', day.stressLoad));
+      if (day.urgeLevel) careBits.push('urge ' + careSignalLabel('urgeLevel', day.urgeLevel));
+      if (day.skillHelped) careBits.push('skill ' + careSignalLabel('skillHelped', day.skillHelped));
+      if (careBits.length) parts.push(h('p', 'sum-line', e(careBits.join(' · '))));
+      if (day.careBodyNote && day.careBodyNote.trim()) parts.push(h('p', 'sum-line', 'Body / medicine note: ' + e(day.careBodyNote.trim())));
+      if (day.therapyQuestion && day.therapyQuestion.trim()) parts.push(h('p', 'sum-line', 'Next session question: ' + e(day.therapyQuestion.trim())));
+    }
 
     if (day.meals && day.meals.length) {
       parts.push(h('div', 'sum-head', 'Food'));
@@ -8198,7 +8487,7 @@
     renderFunctionalImpact();
     renderMeds();
     renderAllergies();
-    renderWater(); renderPee(); renderCoffee(); renderMove(); renderSun();
+    renderWater(); renderPee(); renderCoffee(); renderMove(); renderSun(); renderCareSignals();
     renderMeals(); renderPains();
     renderSleep();
     renderSleepDetail();
@@ -8257,6 +8546,24 @@
   });
   const exEl = document.getElementById('exerciseNote');
   if (exEl) exEl.addEventListener('input', e => { day.exerciseNote = e.target.value; saveDayQuiet(); });
+  [
+    ['stressLoadRange', 'stressLoad'],
+    ['urgeLevelRange', 'urgeLevel'],
+    ['skillHelpedRange', 'skillHelped']
+  ].forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      day[key] = Number(el.value) || 0;
+      renderCareSignals();
+      saveDayQuiet();
+    });
+    el.addEventListener('change', () => saveDay());
+  });
+  const careBodyEl = document.getElementById('careBodyNote');
+  if (careBodyEl) careBodyEl.addEventListener('input', e => { day.careBodyNote = e.target.value; saveDayQuiet(); });
+  const therapyQuestionEl = document.getElementById('therapyQuestion');
+  if (therapyQuestionEl) therapyQuestionEl.addEventListener('input', e => { day.therapyQuestion = e.target.value; saveDayQuiet(); });
   const dreamEl = document.getElementById('dreamInput');
   if (dreamEl) dreamEl.addEventListener('input', e => { day.dreams = e.target.value; saveDayQuiet(); });
 
