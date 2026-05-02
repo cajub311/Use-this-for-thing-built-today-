@@ -73,7 +73,9 @@ function ensureDiary(day) {
   };
 }
 
-function playSoftBell() {
+const MEDITATION_BELL_PATH = 'assets/sounds/singing-bowl.ogg';
+
+function playFallbackBell() {
   const AudioCtor = window.AudioContext || window.webkitAudioContext;
   if (!AudioCtor) return;
   const ctx = new AudioCtor();
@@ -93,10 +95,44 @@ function playSoftBell() {
   window.setTimeout(() => ctx.close().catch(() => {}), 3600);
 }
 
+async function playSoftBell() {
+  try {
+    const audio = new Audio(MEDITATION_BELL_PATH);
+    audio.preload = 'auto';
+    audio.volume = 0.62;
+    await audio.play();
+  } catch {
+    playFallbackBell();
+  }
+}
+
 function recordSession(key, payload) {
   updateDay((day) => {
     if (!Array.isArray(day[key])) day[key] = [];
     day[key].push({ ...payload, ts: Date.now() });
+  });
+}
+
+function paintSanctuaryChoice(kind, value) {
+  const attr = kind === 'mood' ? 'data-mood' : 'data-energy';
+  const scope = kind === 'mood' ? '[data-forest-mood]' : '[data-forest-energy]';
+  document.querySelectorAll(`${scope} button`).forEach((btn) => {
+    const on = Number(btn.getAttribute(attr)) === Number(value);
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+function setSanctuaryChoice(kind, value) {
+  const row = kind === 'mood' ? '#gentleMoodRow' : '#gentleEnergyRow';
+  const attr = kind === 'mood' ? 'mood' : 'energy';
+  paintSanctuaryChoice(kind, value);
+  updateDay((day) => {
+    day[kind] = Number(value);
+  });
+  window.requestAnimationFrame(() => {
+    document.querySelector(`${row} [data-${attr}="${value}"]`)?.click();
+    syncSanctuaryState();
   });
 }
 
@@ -156,16 +192,14 @@ function mountSanctuary() {
   });
 
   section.querySelectorAll('[data-forest-mood] button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelector(`#gentleMoodRow [data-mood="${btn.dataset.mood}"]`)?.click();
-      window.setTimeout(syncSanctuaryState, 60);
-    });
+    const choose = () => paintSanctuaryChoice('mood', btn.dataset.mood);
+    btn.addEventListener('pointerdown', choose);
+    btn.addEventListener('click', () => setSanctuaryChoice('mood', btn.dataset.mood));
   });
   section.querySelectorAll('[data-forest-energy] button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelector(`#gentleEnergyRow [data-energy="${btn.dataset.energy}"]`)?.click();
-      window.setTimeout(syncSanctuaryState, 60);
-    });
+    const choose = () => paintSanctuaryChoice('energy', btn.dataset.energy);
+    btn.addEventListener('pointerdown', choose);
+    btn.addEventListener('click', () => setSanctuaryChoice('energy', btn.dataset.energy));
   });
   syncSanctuaryState();
 }

@@ -228,6 +228,7 @@ html.forest-revamp #gentlePathSection {
   color: var(--ink-soft);
   font-family: "JetBrains Mono", monospace;
   cursor: pointer;
+  transition: background 90ms ease, border-color 90ms ease, color 90ms ease, transform 90ms ease;
 }
 
 .tiny-check-row button.on,
@@ -236,6 +237,10 @@ html.forest-revamp #gentlePathSection {
   background: var(--moss-deep);
   border-color: var(--moss-deep);
   color: #fbfaf2;
+}
+
+.tiny-check-row button:active {
+  transform: scale(0.98);
 }
 
 .forest-diary-card {
@@ -448,6 +453,76 @@ html.forest-revamp #gentlePathSection {
 
 html.forest-revamp #view-history .streak-label {
   color: var(--moss-deep);
+}
+
+html.forest-revamp #kindnessOverlay {
+  background:
+    radial-gradient(circle at 50% 32%, rgba(184, 155, 88, 0.28), transparent 34rem),
+    linear-gradient(135deg, #112019 0%, #1f4932 58%, #5d522d 100%);
+}
+
+html.forest-revamp #kindnessOverlay .meditation-content {
+  width: min(90vw, 580px);
+  padding: clamp(26px, 5vw, 44px);
+  border: 1px solid rgba(255, 253, 247, 0.34);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 253, 247, 0.96), rgba(226, 233, 220, 0.9));
+  color: var(--ink);
+  box-shadow: 0 26px 90px rgba(5, 18, 10, 0.36);
+}
+
+html.forest-revamp #kindnessOverlay .meditation-pulse {
+  width: 118px;
+  height: 118px;
+  margin-bottom: 22px;
+  background: radial-gradient(circle, rgba(184, 155, 88, 0.45), rgba(63, 111, 80, 0.14));
+}
+
+html.forest-revamp #kindnessOverlay .meditation-pulse::before,
+html.forest-revamp #kindnessOverlay .meditation-pulse::after {
+  border-color: rgba(30, 73, 50, 0.24);
+}
+
+html.forest-revamp #kindnessOverlay .meditation-step {
+  margin-bottom: 18px;
+  color: var(--moss-deep);
+  font-weight: 700;
+  opacity: 1;
+}
+
+html.forest-revamp #kindnessOverlay .meditation-phrase {
+  min-height: 118px;
+  color: var(--ink);
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+html.forest-revamp #kindnessOverlay .progress-dot {
+  width: 9px;
+  height: 9px;
+  background: rgba(30, 73, 50, 0.2);
+}
+
+html.forest-revamp #kindnessOverlay .progress-dot.on {
+  background: var(--moss-deep);
+}
+
+html.forest-revamp #kindnessOverlay .meditation-next {
+  min-width: 190px;
+  background: var(--moss-deep);
+  color: #fbfaf2;
+  box-shadow: 0 12px 34px rgba(30, 73, 50, 0.22);
+}
+
+html.forest-revamp #kindnessOverlay .overlay-close {
+  color: #fbfaf2;
+  background: rgba(255, 253, 247, 0.14);
+  border-color: rgba(255, 253, 247, 0.34);
 }
 
 @media (max-width: 720px) {

@@ -8971,9 +8971,17 @@
   let breatheStartTime = null;
   let audioEnabled = (Storage.get(AUDIO_KEY) || 'on') === 'on';
   let activeSoundscape = null;
+  const RITUAL_BELL_SRC = 'assets/sounds/singing-bowl.ogg';
 
   async function playBell(freq = 528, duration = 1.1) {
     if (!audioEnabled) return;
+    try {
+      const bell = new Audio(RITUAL_BELL_SRC);
+      bell.preload = 'auto';
+      bell.volume = Math.min(0.68, Math.max(0.42, duration * 0.48));
+      await bell.play();
+      return;
+    } catch {}
     const ctx = await ensureAudioRunning();
     if (!ctx) return;
     const now = ctx.currentTime;
