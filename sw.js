@@ -1,6 +1,6 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v49-forest-images';
+const CACHE = 'stillness-shell-v50-theravada-chants';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
@@ -42,7 +42,10 @@ const SHELL = [
   '/assets/sounds/rain.ogg',
   '/assets/sounds/forest-ambience.ogg',
   '/assets/sounds/singing-bowl.ogg',
-  '/assets/sounds/chant-refuge.oga'
+  '/assets/sounds/chant-refuge.oga',
+  '/assets/sounds/chant-veneration.mp3',
+  '/assets/sounds/chant-five-recollections.mp3',
+  '/assets/sounds/chant-karaniya-metta.mp3'
 ];
 
 self.addEventListener('install', (e) => {

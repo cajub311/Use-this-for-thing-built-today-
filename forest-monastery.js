@@ -193,7 +193,22 @@ function syncSanctuaryState() {
 function mountChantDoor() {
   const anchor = document.getElementById('qfAmbience');
   if (!anchor || document.getElementById('chantDoor')) return;
-  const chant = CHANT_SOURCES[0];
+  const chants = CHANT_SOURCES;
+  let activeIndex = 0;
+  const licenseLabel = (chant) => (
+    chant.licenseShort
+    || chant.license
+      .replace('Creative Commons Attribution-NonCommercial 4.0', 'CC BY-NC 4.0')
+      .replace('CC0 1.0 Universal Public Domain Dedication', 'CC0 1.0')
+  );
+  const renderChantText = (chant) => `
+    <h3>Words and meaning</h3>
+    <h4>${chant.title}</h4>
+    <ul class="chant-lines">${chant.transcript.map((line) => `<li>${line}</li>`).join('')}</ul>
+    <ul class="meaning-lines">${chant.meaning.map((line) => `<li>${line}</li>`).join('')}</ul>
+    <p class="chant-credit">${chant.pronunciation}</p>
+    <p class="chant-credit">Credit: <a href="${chant.sourceUrl}" target="_blank" rel="noopener noreferrer">${chant.credit}</a>${chant.guideUrl ? ` - <a href="${chant.guideUrl}" target="_blank" rel="noopener noreferrer">chant text</a>` : ''}.</p>
+  `;
   const section = document.createElement('section');
   section.className = 'leaf chant-door flow-section no-print';
   section.id = 'chantDoor';
@@ -202,32 +217,58 @@ function mountChantDoor() {
       <h2 class="leaf-title">Chant <em>door</em></h2>
       <span class="leaf-num">optional</span>
     </div>
-    <p class="leaf-sub">A small Pali refuge chant. Listen only if it helps; the app never starts vocal audio without a tap.</p>
+    <p class="leaf-sub">A small set of Theravada Pali chants. Listen only if it helps; the app never starts vocal audio without a tap.</p>
     <div class="chant-layout">
       <div class="chant-visual" role="img" aria-label="A singing bowl in a quiet practice hall open to rain"></div>
-      <div class="chant-card">
-        <h3>${chant.title}</h3>
-        <audio id="chantAudio" preload="metadata" src="${chant.localPath}"></audio>
+      <div class="chant-card chant-player">
+        <h3 id="chantTitle">${chants[0].title}</h3>
+        <audio id="chantAudio" preload="metadata" src="${chants[0].localPath}"></audio>
         <div class="sanctuary-action-row">
-          <button type="button" class="chant-action" id="chantPlay">Play chant</button>
+          <button type="button" class="chant-action" id="chantPlay">Play selected</button>
           <button type="button" class="chant-action secondary" id="chantStop">Stop</button>
         </div>
         <p class="chant-status" id="chantStatus">silent</p>
-        <p class="chant-credit">${chant.duration} · ${chant.language} · ${chant.license}</p>
+        <p class="chant-credit" id="chantMeta">${chants[0].duration} - ${chants[0].language} - ${licenseLabel(chants[0])}</p>
+        <div class="chant-selector" id="chantSelector" aria-label="Choose a Pali chant">
+          ${chants.map((item, index) => `
+            <button type="button" class="chant-option ${index === 0 ? 'on' : ''}" data-chant-index="${index}" aria-pressed="${index === 0 ? 'true' : 'false'}">
+              <span>${item.title}</span>
+              <small>${item.duration} - ${item.tradition || item.language}</small>
+            </button>
+          `).join('')}
+        </div>
       </div>
-      <div class="chant-card">
-        <h3>Words and meaning</h3>
-        <ul class="chant-lines">${chant.transcript.map((line) => `<li>${line}</li>`).join('')}</ul>
-        <ul class="meaning-lines">${chant.meaning.map((line) => `<li>${line}</li>`).join('')}</ul>
-        <p class="chant-credit">${chant.pronunciation}</p>
-        <p class="chant-credit">Credit: <a href="${chant.sourceUrl}" target="_blank" rel="noopener noreferrer">${chant.credit}</a>.</p>
-      </div>
+      <div class="chant-card chant-text" id="chantText">${renderChantText(chants[0])}</div>
     </div>
   `;
   anchor.insertAdjacentElement('afterend', section);
   const audio = section.querySelector('#chantAudio');
   const status = section.querySelector('#chantStatus');
+  const title = section.querySelector('#chantTitle');
+  const meta = section.querySelector('#chantMeta');
+  const text = section.querySelector('#chantText');
+  const selectChant = (index) => {
+    const next = chants[index] || chants[0];
+    activeIndex = chants.indexOf(next);
+    audio.pause();
+    audio.currentTime = 0;
+    audio.src = next.localPath;
+    audio.load();
+    title.textContent = next.title;
+    meta.textContent = `${next.duration} - ${next.language} - ${licenseLabel(next)}`;
+    text.innerHTML = renderChantText(next);
+    status.textContent = 'silent';
+    section.querySelectorAll('.chant-option').forEach((btn) => {
+      const on = Number(btn.dataset.chantIndex) === activeIndex;
+      btn.classList.toggle('on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  };
+  section.querySelectorAll('.chant-option').forEach((btn) => {
+    btn.addEventListener('click', () => selectChant(Number(btn.dataset.chantIndex)));
+  });
   section.querySelector('#chantPlay')?.addEventListener('click', async () => {
+    const chant = chants[activeIndex] || chants[0];
     try {
       await audio.play();
       status.textContent = 'chant playing';
