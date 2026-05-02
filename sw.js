@@ -1,6 +1,6 @@
-/* Minimal offline shell: network-first for HTML; cache static assets only.
+/* Offline shell: network-first for HTML; cache static assets and the latest visited app shell.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v51-bell-contrast';
+const CACHE = 'stillness-shell-v52-practice-polish';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
@@ -41,6 +41,7 @@ const SHELL = [
   '/assets/generated/practice-hall-bowl.png',
   '/assets/sounds/rain.ogg',
   '/assets/sounds/forest-ambience.ogg',
+  '/assets/sounds/trickling-water.ogg',
   '/assets/sounds/singing-bowl.ogg',
   '/assets/sounds/chant-refuge.oga',
   '/assets/sounds/chant-veneration.mp3',
@@ -71,6 +72,22 @@ self.addEventListener('fetch', (e) => {
   if (request.method !== 'GET') return;
   const u = new URL(request.url);
   if (u.origin !== self.location.origin) return;
+
+  const wantsHtml = request.mode === 'navigate' || (request.headers.get('accept') || '').includes('text/html');
+  if (wantsHtml) {
+    e.respondWith(
+      fetch(request)
+        .then((res) => {
+          if (res.ok) {
+            const c = res.clone();
+            caches.open(CACHE).then((cache) => cache.put('/index.html', c));
+          }
+          return res;
+        })
+        .catch(() => caches.match('/index.html').then((r) => r || Response.error()))
+    );
+    return;
+  }
 
   e.respondWith(
     fetch(request)

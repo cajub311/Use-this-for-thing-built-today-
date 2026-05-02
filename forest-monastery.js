@@ -52,6 +52,7 @@ function defaultDiaryFrom(day) {
     },
     targetBehavior: '',
     skills: Array.isArray(day.dbtSkills) ? day.dbtSkills.map((s) => s && s.skill).filter(Boolean).slice(-6) : [],
+    vulnerabilityFactors: [],
     effectiveness: Number(day.skillHelped) || 0,
     sleepHours: Number(day.sleepHours) || 7,
     medsNote: '',
@@ -69,7 +70,8 @@ function ensureDiary(day) {
     ...current,
     emotions: { ...base.emotions, ...(current.emotions || {}) },
     urges: { ...base.urges, ...(current.urges || {}) },
-    skills: Array.isArray(current.skills) ? current.skills : base.skills
+    skills: Array.isArray(current.skills) ? current.skills : base.skills,
+    vulnerabilityFactors: Array.isArray(current.vulnerabilityFactors) ? current.vulnerabilityFactors : base.vulnerabilityFactors
   };
 }
 
@@ -243,14 +245,14 @@ function mountChantDoor() {
     <p class="chant-credit">${chant.pronunciation}</p>
     <p class="chant-credit">Credit: <a href="${chant.sourceUrl}" target="_blank" rel="noopener noreferrer">${chant.credit}</a>${chant.guideUrl ? ` - <a href="${chant.guideUrl}" target="_blank" rel="noopener noreferrer">chant text</a>` : ''}.</p>
   `;
-  const section = document.createElement('section');
-  section.className = 'leaf chant-door flow-section no-print';
+  const section = document.createElement('details');
+  section.className = 'leaf chant-door flow-section no-print collapsible-section';
   section.id = 'chantDoor';
   section.innerHTML = `
-    <div class="leaf-head">
+    <summary class="leaf-head">
       <h2 class="leaf-title">Chant <em>door</em></h2>
       <span class="leaf-num">optional</span>
-    </div>
+    </summary>
     <p class="leaf-sub">A small set of Theravada Pali chants. Listen only if it helps; the app never starts vocal audio without a tap.</p>
     <div class="chant-layout">
       <div class="chant-visual" role="img" aria-label="A singing bowl in a quiet practice hall open to rain"></div>
@@ -319,6 +321,33 @@ function mountChantDoor() {
   audio.addEventListener('ended', () => { status.textContent = 'complete'; });
 }
 
+function mountGuidedAudio() {
+  const anchor = document.getElementById('qfAmbience');
+  if (!anchor || document.getElementById('guidedAudioPanel')) return;
+  const section = document.createElement('details');
+  section.className = 'leaf guided-audio-panel flow-section no-print collapsible-section';
+  section.id = 'guidedAudioPanel';
+  section.innerHTML = `
+    <summary class="leaf-head">
+      <h2 class="leaf-title">Guided <em>audio</em></h2>
+      <span class="leaf-num">9 min</span>
+    </summary>
+    <div class="guided-audio-card">
+      <div>
+        <p class="forest-kicker">UCLA Mindful</p>
+        <h3>Loving Kindness Meditation</h3>
+        <p class="leaf-sub">A free 9-minute compassion practice streamed from UCLA Mindful. It needs internet and never starts without a tap.</p>
+      </div>
+      <audio id="guidedMettaAudio" controls preload="none" src="https://d1cy5zxxhbcbkk.cloudfront.net/guided-meditations/05_Loving_Kindness_Meditation.mp3"></audio>
+      <p class="chant-credit">Credit: <a href="https://www.uclahealth.org/uclamindful/guided-meditations" target="_blank" rel="noopener noreferrer">UCLA Mindful</a>. License: CC BY-NC-ND 4.0.</p>
+    </div>
+  `;
+  anchor.insertAdjacentElement('afterend', section);
+  section.querySelector('#guidedMettaAudio')?.addEventListener('play', () => {
+    recordSession('practiceSessions', { kind: 'guided-metta', title: 'UCLA Loving Kindness Meditation', source: 'ucla-mindful' });
+  }, { once: true });
+}
+
 function mountDiaryCard() {
   const track = document.getElementById('view-track');
   const plate = track?.querySelector('.plate');
@@ -364,6 +393,12 @@ function mountDiaryCard() {
         <textarea id="diaryMedsNote" rows="2" maxlength="260" placeholder="Meds, appetite, cycle, side effects, or health note..."></textarea>
       </div>
     </div>
+    <div class="diary-panel diary-factor-panel">
+      <h3>What made it harder?</h3>
+      <div class="diary-factor-grid">
+        ${['tired', 'hungry', 'pain', 'conflict', 'too much caffeine', 'alone', 'rushed', 'missed meds'].map((factor) => `<button type="button" class="diary-chip" data-diary-factor="${factor}">${factor}</button>`).join('')}
+      </div>
+    </div>
     <div class="diary-write-grid" style="margin-top:12px">
       <textarea id="diaryTargetBehavior" rows="3" maxlength="360" placeholder="Target behavior or pattern to discuss..."></textarea>
       <textarea id="diaryBodyNote" rows="3" maxlength="360" placeholder="Body note..."></textarea>
@@ -378,6 +413,9 @@ function mountDiaryCard() {
   plate.insertAdjacentElement('afterend', section);
   section.addEventListener('input', updateDiaryOutputs);
   section.querySelectorAll('.skill-pill').forEach((btn) => {
+    btn.addEventListener('click', () => btn.classList.toggle('on'));
+  });
+  section.querySelectorAll('[data-diary-factor]').forEach((btn) => {
     btn.addEventListener('click', () => btn.classList.toggle('on'));
   });
   section.querySelector('#diarySave')?.addEventListener('click', saveDiaryCard);
@@ -420,6 +458,9 @@ function renderDiaryCard() {
   document.querySelectorAll('[data-diary-skill]').forEach((btn) => {
     btn.classList.toggle('on', (diary.skills || []).includes(btn.dataset.diarySkill));
   });
+  document.querySelectorAll('[data-diary-factor]').forEach((btn) => {
+    btn.classList.toggle('on', (diary.vulnerabilityFactors || []).includes(btn.dataset.diaryFactor));
+  });
   updateDiaryOutputs();
 }
 
@@ -434,11 +475,13 @@ function saveDiaryCard() {
   const urges = {};
   document.querySelectorAll('[data-diary-urge]').forEach((input) => { urges[input.dataset.diaryUrge] = Number(input.value) || 0; });
   const skills = [...document.querySelectorAll('[data-diary-skill].on')].map((btn) => btn.dataset.diarySkill);
+  const vulnerabilityFactors = [...document.querySelectorAll('[data-diary-factor].on')].map((btn) => btn.dataset.diaryFactor);
   updateDay((day) => {
     day.diaryCard = {
       emotions,
       urges,
       skills,
+      vulnerabilityFactors,
       effectiveness: Number(document.querySelector('[data-diary-effect="effectiveness"]')?.value) || 0,
       sleepHours: Number(document.getElementById('diarySleep')?.value) || 0,
       medsNote: document.getElementById('diaryMedsNote')?.value || '',
@@ -586,6 +629,7 @@ function init() {
   patchLabels();
   mountSanctuary();
   mountChantDoor();
+  mountGuidedAudio();
   mountDiaryCard();
   mountGardenCalm();
   installRefreshHooks();

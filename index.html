@@ -144,6 +144,58 @@
     --nav-border: rgba(58, 64, 96, 0.65);
     --nav-hover: rgba(255, 255, 255, 0.1);
   }
+  [data-theme="lotus"] {
+    --paper: #F0E5E8;
+    --paper-2: #DDD6DF;
+    --paper-3: #FFF7F4;
+    --ink: #2B2228;
+    --ink-soft: #604F58;
+    --ink-faint: #8B7780;
+    --moss: #5E7A69;
+    --moss-deep: #375A4D;
+    --moss-soft: #C8D4C2;
+    --moss-mist: #E1E8D9;
+    --clay: #A86F77;
+    --clay-soft: #E8C4CA;
+    --gold: #A88951;
+    --gold-soft: #E9D9A8;
+    --shadow-warm: rgba(96, 61, 71, 0.12);
+    --shadow-deep: rgba(96, 61, 71, 0.18);
+    --line: #C7B5BC;
+    --noise-opacity: 0.28;
+    --bg-grad-1: rgba(94, 122, 105, 0.24);
+    --bg-grad-2: rgba(168, 111, 119, 0.22);
+    --bg-grad-3: rgba(168, 137, 81, 0.16);
+    --nav-bg: rgba(248, 240, 240, 0.95);
+    --nav-border: rgba(199, 181, 188, 0.58);
+    --nav-hover: rgba(94, 122, 105, 0.1);
+  }
+  [data-theme="stone"] {
+    --paper: #DDE3DF;
+    --paper-2: #CBD5D2;
+    --paper-3: #F5F8F3;
+    --ink: #1F2828;
+    --ink-soft: #4B5A58;
+    --ink-faint: #74827E;
+    --moss: #4E6F68;
+    --moss-deep: #294E49;
+    --moss-soft: #B7C9C1;
+    --moss-mist: #D8E3DD;
+    --clay: #8F7768;
+    --clay-soft: #DDC9BD;
+    --gold: #AA934E;
+    --gold-soft: #DFD2A3;
+    --shadow-warm: rgba(44, 61, 58, 0.12);
+    --shadow-deep: rgba(44, 61, 58, 0.2);
+    --line: #AEBBB5;
+    --noise-opacity: 0.3;
+    --bg-grad-1: rgba(78, 111, 104, 0.24);
+    --bg-grad-2: rgba(143, 119, 104, 0.16);
+    --bg-grad-3: rgba(170, 147, 78, 0.14);
+    --nav-bg: rgba(238, 243, 240, 0.95);
+    --nav-border: rgba(174, 187, 181, 0.62);
+    --nav-hover: rgba(78, 111, 104, 0.1);
+  }
 
   html { font-size: 16px; }
   html[data-text-size="large"] { font-size: 19px; }
@@ -1914,7 +1966,7 @@
   }
   .soundscape-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 8px;
     margin-top: 14px;
   }
@@ -4628,10 +4680,11 @@
         <h2 class="leaf-title">Soft <em>ambience</em></h2>
         <span class="leaf-num">offline</span>
       </summary>
-      <p class="leaf-sub audio-real-note">Real public-domain recordings for rain, forest, and singing bowl, with generated fallback only when a browser cannot play the file. Tap the heading to open.</p>
+      <p class="leaf-sub audio-real-note">Real public-domain recordings for rain, forest, water, and singing bowl, with generated fallback only when a browser cannot play the file. Tap the heading to open.</p>
       <div class="soundscape-grid" id="soundscapeGrid">
         <button type="button" class="soundscape-btn" data-soundscape="rain">Real rain</button>
         <button type="button" class="soundscape-btn" data-soundscape="forest">Forest birds</button>
+        <button type="button" class="soundscape-btn" data-soundscape="water">Trickling water</button>
         <button type="button" class="soundscape-btn" data-soundscape="steam">Warm steam</button>
         <button type="button" class="soundscape-btn" data-soundscape="bowl">Real singing bowl</button>
         <button type="button" class="soundscape-btn" data-soundscape="bali">Gamelan hush</button>
@@ -4643,7 +4696,7 @@
       </div>
       <details class="audio-credit-note">
         <summary>Sound credits</summary>
-        <p>Rain, forest ambience, and singing bowl recordings are public-domain files from Wikimedia Commons, stored locally for the PWA.</p>
+        <p>Rain, forest ambience, trickling water, and singing bowl recordings are public-domain files from Wikimedia Commons, stored locally for the PWA.</p>
       </details>
     </details>
 
@@ -4694,6 +4747,11 @@
           <p class="dbt-skill-name">STOP</p>
           <p class="dbt-skill-hint">Stop, Take a breath, Observe, Proceed — a pause before acting on an urge.</p>
           <button type="button" class="quick-action" data-practice-launch="stop"><span>Open STOP</span><small>pause an urge</small></button>
+        </div>
+        <div class="dbt-skill-block" role="listitem">
+          <p class="dbt-skill-name">Self-soothe</p>
+          <p class="dbt-skill-hint">A five-senses reset: one soft thing to see, touch, hear, smell, and taste or sip.</p>
+          <button type="button" class="quick-action" data-practice-launch="selfsoothe"><span>Open self-soothe</span><small>five senses</small></button>
         </div>
         <div class="dbt-skill-block" role="listitem">
           <p class="dbt-skill-name">Radical acceptance</p>
@@ -5145,6 +5203,14 @@
           <span class="sw" style="background:#1B1F2E;border-color:#3A4060"></span>
           <span class="sw-name">Midnight</span>
         </button>
+        <button type="button" class="theme-swatch" data-set-theme="lotus" title="Lotus dawn">
+          <span class="sw" style="background:#F0E5E8;border-color:#C7B5BC"></span>
+          <span class="sw-name">Lotus</span>
+        </button>
+        <button type="button" class="theme-swatch" data-set-theme="stone" title="Stone mist">
+          <span class="sw" style="background:#DDE3DF;border-color:#AEBBB5"></span>
+          <span class="sw-name">Stone</span>
+        </button>
       </div>
       <p class="data-hint" style="margin-top:10px">Match your system or use the toggle if animations feel like too much.</p>
       <div class="data-row" style="margin-top:8px">
@@ -5152,11 +5218,12 @@
       </div>
       <p class="data-hint"><strong>Install on your phone:</strong> use the browser menu — <em>Add to Home Screen</em> (Safari) or <em>Install app</em> (Chrome). Opens like a full-screen app; the journal can open offline after the first visit.</p>
       <p class="picker-label" style="margin-top:20px">Breathing sound</p>
-      <p class="leaf-sub" style="margin-bottom:8px">Real ambience for rain, forest, and bowl, plus simple generated cues for the breathing phases. Open <em>Take a breath</em> to hear the bed and cues.</p>
+      <p class="leaf-sub" style="margin-bottom:8px">Real ambience for rain, forest, water, and bowl, plus simple generated cues for the breathing phases. Open <em>Take a breath</em> to hear the bed and cues.</p>
       <label class="data-hint" for="breatheSoundSelect" style="display:block;margin-bottom:6px">Ambient &amp; cue style</label>
       <select class="retention-select" id="breatheSoundSelect" title="Breathing meditation sound">
         <option value="rain">Real rain</option>
         <option value="forest">Forest birds</option>
+        <option value="water">Trickling water</option>
         <option value="steam">Warm steam</option>
         <option value="bowl">Real singing bowl</option>
         <option value="bali">Gamelan hush</option>
@@ -5606,6 +5673,24 @@
 <!-- ═══════════════════════════════════════════════════════
      DBT Radical Acceptance — three short prompts
 ═══════════════════════════════════════════════════════ -->
+<div class="overlay dusk-bg" id="selfSootheOverlay" role="dialog" aria-modal="true" aria-label="Self-soothe with senses skill" aria-hidden="true">
+  <div class="skill-banner">DBT Â· self-soothe</div>
+  <button class="overlay-close" id="selfSootheClose">close</button>
+  <div class="meditation-content self-soothe-content">
+    <div class="skill-orb skill-orb--sage" id="selfSootheOrb" aria-hidden="true"></div>
+    <div class="meditation-step" id="selfSootheStep">sense 1 of 5</div>
+    <div class="meditation-phrase" id="selfSoothePhrase">Let your eyes find one quiet shape or color.</div>
+    <textarea class="deep-input" id="selfSootheNote" rows="3" placeholder="Optional: one word, object, or sensation..."></textarea>
+    <div class="skill-dots" id="selfSootheDots" role="group" aria-label="Self-soothe progress"></div>
+    <div class="thought-nav">
+      <button type="button" id="selfSootheBack" class="meditation-next" style="background:transparent;border:1px solid rgba(237,227,210,0.3);color:#EDE3D2">back</button>
+      <button type="button" class="meditation-next" id="selfSootheNext">continue</button>
+      <button type="button" class="meditation-next" id="selfSootheLog" hidden>save & finish</button>
+    </div>
+    <p class="skill-safety">Use anything gentle and available. A sip of water counts.</p>
+  </div>
+</div>
+
 <div class="overlay gold-bg" id="radAccOverlay" role="dialog" aria-modal="true" aria-label="Radical acceptance micro-script" aria-hidden="true">
   <div class="skill-banner">DBT · radical acceptance</div>
   <button class="overlay-close" id="radAccClose">close</button>
@@ -6448,18 +6533,18 @@
     }));
   }
 
-  const THEME_COLORS = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E' };
+  const THEME_COLORS = { parchment: '#EDE3D2', forest: '#2A332B', midnight: '#1B1F2E', lotus: '#F0E5E8', stone: '#DDE3DF' };
   function applyTheme(name) {
-    const t = (name === 'forest' || name === 'midnight' || name === 'parchment') ? name : 'parchment';
+    const t = (name === 'forest' || name === 'midnight' || name === 'parchment' || name === 'lotus' || name === 'stone') ? name : 'parchment';
     config.theme = t;
     Storage.set(THEME_KEY, t);
     document.documentElement.setAttribute('data-theme', t);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', THEME_COLORS[t] || THEME_COLORS.parchment);
     const schemeMeta = document.querySelector('meta[name="color-scheme"]');
-    if (schemeMeta) schemeMeta.setAttribute('content', t === 'parchment' ? 'light' : 'dark');
+    if (schemeMeta) schemeMeta.setAttribute('content', (t === 'forest' || t === 'midnight') ? 'dark' : 'light');
     const appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (appleStatus) appleStatus.setAttribute('content', t === 'parchment' ? 'default' : 'black-translucent');
+    if (appleStatus) appleStatus.setAttribute('content', (t === 'forest' || t === 'midnight') ? 'black-translucent' : 'default');
     document.querySelectorAll('.theme-swatch').forEach(btn => {
       const on = btn.dataset.setTheme === t;
       btn.classList.toggle('on', on);
@@ -6487,10 +6572,10 @@
     }
   }
 
-  const BREATHE_SOUNDS = ['rain', 'forest', 'steam', 'bowl', 'bali', 'silent'];
+  const BREATHE_SOUNDS = ['rain', 'forest', 'water', 'steam', 'bowl', 'bali', 'silent'];
   const LEGACY_BREATHE_MAP = {
     chimes: 'bali', bamboo: 'forest', strings: 'steam', breeze: 'forest',
-    cave: 'steam', stream: 'rain'
+    cave: 'steam', stream: 'water'
   };
   function normalizeBreatheSound() {
     let s = (config && config.breatheSound) || 'rain';
@@ -6506,6 +6591,7 @@
   const RECORDED_AMBIENCE = {
     rain: 'assets/sounds/rain.ogg',
     forest: 'assets/sounds/forest-ambience.ogg',
+    water: 'assets/sounds/trickling-water.ogg',
     bowl: 'assets/sounds/singing-bowl.ogg'
   };
 
@@ -6630,7 +6716,27 @@
       ambientNodes.push(lfo, lg);
     };
 
-    if (sound === 'rain') {
+    if (sound === 'water') {
+      const br = makeBrownNoiseBuffer(ctx, 2.8);
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.setValueAtTime(780, now);
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.setValueAtTime(1150, now);
+      bp.Q.setValueAtTime(0.72, now);
+      const g1 = ctx.createGain();
+      g1.gain.value = 0.36;
+      loopNoise(br, [lp, g1, bp]);
+      addLFO(g1, 0.18, 0.1);
+      const pink = makePinkNoiseBuffer(ctx, 2.1);
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.setValueAtTime(2400, now);
+      const g2 = ctx.createGain();
+      g2.gain.value = 0.08;
+      loopNoise(pink, [hp, g2]);
+    } else if (sound === 'rain') {
       const pink = makePinkNoiseBuffer(ctx, 2.2);
       const hp = ctx.createBiquadFilter();
       hp.type = 'highpass';
@@ -8820,6 +8926,7 @@
     });
   });
   const ROUTE_VIEWS = new Set(['today', 'practice', 'track', 'journal', 'history', 'memory', 'log', 'path', 'quotes']);
+  const NAV_PARENT_VIEW = { log: 'memory', path: 'memory', quotes: 'memory', journal: 'memory' };
   function isValidViewId(v) { return v && document.getElementById('view-' + v); }
   function getRouteView() {
     if (!location.hash) return 'today';
@@ -8842,8 +8949,9 @@
     const viewEl = document.getElementById('view-' + target);
     if (!viewEl) return;
     if (!opts || !opts.fromHash) syncUrlToView(target);
+    const activeNavTarget = NAV_PARENT_VIEW[target] || target;
     document.querySelectorAll('.nav-btn').forEach(x => {
-      const isOn = x.dataset.view === target;
+      const isOn = x.dataset.view === activeNavTarget;
       x.classList.toggle('active', isOn);
       x.setAttribute('aria-pressed', isOn ? 'true' : 'false');
     });
@@ -8930,7 +9038,7 @@
   });
   document.querySelectorAll('[data-practice-launch]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const direct = ['tipp', 'stop', 'radacc', 'thought'];
+      const direct = ['tipp', 'stop', 'selfsoothe', 'radacc', 'thought'];
       if (direct.includes(btn.dataset.practiceLaunch)) {
         openSkillByName(btn.dataset.practiceLaunch);
         return;
@@ -9019,7 +9127,7 @@
     });
     const status = document.getElementById('soundscapeStatus');
     if (status) status.textContent = activeSoundscape
-      ? ({ rain: 'real rain', forest: 'forest birds', steam: 'warm steam', bowl: 'real singing bowl', bali: 'gamelan hush' }[activeSoundscape] || activeSoundscape)
+      ? ({ rain: 'real rain', forest: 'forest birds', water: 'trickling water', steam: 'warm steam', bowl: 'real singing bowl', bali: 'gamelan hush' }[activeSoundscape] || activeSoundscape)
       : 'silent';
   }
   function updateAudioToggle() {
@@ -10625,6 +10733,7 @@
   function openSkillByName(name) {
     if (name === 'tipp') { clearTippTimer(); tippIdx = 0; setOverlayOpen('tippOverlay', true); renderTipp(); document.getElementById('tippClose')?.focus(); tippStart = Date.now(); }
     if (name === 'stop') { clearStopTimer(); stopIdx = 0; setOverlayOpen('stopOverlay', true); renderStop(); document.getElementById('stopClose')?.focus(); stopStart = Date.now(); }
+    if (name === 'selfsoothe') { selfSootheIdx = 0; selfSootheNotes = []; setOverlayOpen('selfSootheOverlay', true); renderSelfSoothe(); document.getElementById('selfSootheClose')?.focus(); selfSootheStart = Date.now(); }
     if (name === 'radacc') { radAccIdx = 0; setOverlayOpen('radAccOverlay', true); renderRadAcc(); document.getElementById('radAccClose')?.focus(); radAccStart = Date.now(); }
     if (name === 'thought') { thoughtStep = 1; setOverlayOpen('thoughtOverlay', true); renderThought(); document.getElementById('thoughtClose')?.focus(); thoughtStart = Date.now(); }
   }
@@ -10769,6 +10878,66 @@
     setOverlayOpen('stopOverlay', false);
     clearStopTimer();
     if (stopStart) { addMindfulSeconds(Date.now() - stopStart); stopStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
+
+  const SELF_SOOTHE_STEPS = [
+    { label: 'See', phrase: 'Let your eyes find one quiet shape, color, or line. Rest there for one breath.', placeholder: 'I see...' },
+    { label: 'Touch', phrase: 'Feel one texture: sleeve, cup, blanket, chair, or your feet on the floor.', placeholder: 'I touch...' },
+    { label: 'Hear', phrase: 'Listen for the nearest gentle sound, then the farthest sound. Nothing to fix.', placeholder: 'I hear...' },
+    { label: 'Smell', phrase: 'Notice one scent, or imagine rain, tea, cedar, soap, or clean air.', placeholder: 'I smell or imagine...' },
+    { label: 'Taste', phrase: 'Take one sip, mint, gum, or simply notice the mouth and soften the jaw.', placeholder: 'I taste or sip...' }
+  ];
+  let selfSootheIdx = 0, selfSootheStart = null, selfSootheNotes = [];
+
+  function rememberSelfSootheNote() {
+    const note = (document.getElementById('selfSootheNote')?.value || '').trim();
+    selfSootheNotes[selfSootheIdx] = note ? `${SELF_SOOTHE_STEPS[selfSootheIdx].label}: ${note}` : '';
+  }
+
+  function renderSelfSoothe() {
+    const step = SELF_SOOTHE_STEPS[selfSootheIdx];
+    if (!step) return;
+    document.getElementById('selfSootheStep').textContent = `${step.label} - sense ${selfSootheIdx + 1} of ${SELF_SOOTHE_STEPS.length}`;
+    document.getElementById('selfSoothePhrase').textContent = step.phrase;
+    const note = document.getElementById('selfSootheNote');
+    if (note) {
+      note.value = (selfSootheNotes[selfSootheIdx] || '').replace(/^[^:]+:\s*/, '');
+      note.placeholder = step.placeholder;
+    }
+    setSkillDots('selfSootheDots', SELF_SOOTHE_STEPS.length, selfSootheIdx);
+    const backBtn = document.getElementById('selfSootheBack');
+    const nextBtn = document.getElementById('selfSootheNext');
+    const logBtn = document.getElementById('selfSootheLog');
+    if (backBtn) backBtn.hidden = selfSootheIdx === 0;
+    if (nextBtn) nextBtn.hidden = selfSootheIdx >= SELF_SOOTHE_STEPS.length - 1;
+    if (logBtn) logBtn.hidden = selfSootheIdx < SELF_SOOTHE_STEPS.length - 1;
+    if (config.voiceCues) speakCue(step.phrase);
+    setTimeout(() => { try { note?.focus(); } catch (e) {} }, 120);
+  }
+
+  document.getElementById('selfSootheNext')?.addEventListener('click', () => {
+    rememberSelfSootheNote();
+    if (selfSootheIdx < SELF_SOOTHE_STEPS.length - 1) selfSootheIdx++;
+    renderSelfSoothe();
+  });
+  document.getElementById('selfSootheBack')?.addEventListener('click', () => {
+    rememberSelfSootheNote();
+    if (selfSootheIdx > 0) selfSootheIdx--;
+    renderSelfSoothe();
+  });
+  document.getElementById('selfSootheLog')?.addEventListener('click', () => {
+    rememberSelfSootheNote();
+    saveDbtSkill('Self-soothe', selfSootheNotes.filter(Boolean).join(' | '));
+    setOverlayOpen('selfSootheOverlay', false);
+    if (selfSootheStart) { addMindfulSeconds(Date.now() - selfSootheStart); selfSootheStart = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    pushActivity('Completed Self-soothe practice.');
+    showAppToast('Self-soothe saved');
+  });
+  document.getElementById('selfSootheClose')?.addEventListener('click', () => {
+    setOverlayOpen('selfSootheOverlay', false);
+    if (selfSootheStart) { addMindfulSeconds(Date.now() - selfSootheStart); selfSootheStart = null; }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   });
 
