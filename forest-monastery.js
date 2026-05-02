@@ -204,6 +204,7 @@ function mountChantDoor() {
     </div>
     <p class="leaf-sub">A small Pali refuge chant. Listen only if it helps; the app never starts vocal audio without a tap.</p>
     <div class="chant-layout">
+      <div class="chant-visual" role="img" aria-label="A singing bowl in a quiet practice hall open to rain"></div>
       <div class="chant-card">
         <h3>${chant.title}</h3>
         <audio id="chantAudio" preload="metadata" src="${chant.localPath}"></audio>

@@ -1,6 +1,6 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v48-forest-monastery';
+const CACHE = 'stillness-shell-v49-forest-images';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
@@ -37,6 +37,8 @@ const SHELL = [
   '/assets/peaceful/lotus-stones-sunrise.jpg',
   '/assets/peaceful/buddhist-garden-altar.jpg',
   '/assets/peaceful/rain-window-winddown.jpg',
+  '/assets/generated/forest-monastery-sanctuary.png',
+  '/assets/generated/practice-hall-bowl.png',
   '/assets/sounds/rain.ogg',
   '/assets/sounds/forest-ambience.ogg',
   '/assets/sounds/singing-bowl.ogg',
