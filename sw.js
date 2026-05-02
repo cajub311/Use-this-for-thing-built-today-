@@ -1,6 +1,6 @@
 /* Minimal offline shell: network-first for HTML; cache static assets only.
    Do not precache index.html — stale cache was serving old JS and breaking taps. */
-const CACHE = 'stillness-shell-v47-breathing-care-polish';
+const CACHE = 'stillness-shell-v48-forest-monastery';
 const SHELL = [
   '/manifest.json',
   '/icon.svg',
@@ -8,6 +8,9 @@ const SHELL = [
   '/calm-redesign.css',
   '/polish-v2.css',
   '/minimal-meditation.css',
+  '/forest-monastery.css',
+  '/forest-monastery.js',
+  '/data/chant-sources.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/maskable-192.png',
@@ -36,7 +39,8 @@ const SHELL = [
   '/assets/peaceful/rain-window-winddown.jpg',
   '/assets/sounds/rain.ogg',
   '/assets/sounds/forest-ambience.ogg',
-  '/assets/sounds/singing-bowl.ogg'
+  '/assets/sounds/singing-bowl.ogg',
+  '/assets/sounds/chant-refuge.oga'
 ];
 
 self.addEventListener('install', (e) => {

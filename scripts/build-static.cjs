@@ -13,12 +13,15 @@ const files = [
   'calm-redesign.css',
   'polish-v2.css',
   'minimal-meditation.css',
+  'forest-monastery.css',
+  'forest-monastery.js',
   'android-polish.css',
   'android-polish.js'
 ];
 
 const directories = [
   'assets',
+  'data',
   'icons'
 ];
 

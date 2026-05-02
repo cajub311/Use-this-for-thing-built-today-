@@ -1,14 +1,14 @@
 {
-  "name": "Stillness — botanical journal",
+  "name": "Stillness - forest monastery",
   "short_name": "Stillness",
-  "description": "A gentle daily journal — mood, rest, intention, saved on your device.",
+  "description": "A local-first meditation sanctuary with practice, diary card, garden, and backup.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#EDE3D2",
-  "theme_color": "#EDE3D2",
+  "background_color": "#E6ECE2",
+  "theme_color": "#1E4932",
   "icons": [
     {
       "src": "/icons/icon-192.png",

@@ -1,0 +1,391 @@
+html.forest-revamp {
+  --paper: #e6ece2;
+  --paper-2: #dfe7da;
+  --paper-3: #fbfaf2;
+  --ink: #17231a;
+  --ink-soft: #4a5d4c;
+  --ink-faint: #71806e;
+  --moss: #3f6f50;
+  --moss-deep: #1e4932;
+  --moss-soft: #9fbaa0;
+  --moss-mist: #d5e0d0;
+  --clay: #a6694b;
+  --gold: #b89b58;
+  --line: rgba(67, 91, 67, 0.22);
+  --nav-bg: rgba(249, 248, 239, 0.92);
+}
+
+html.forest-revamp body {
+  background:
+    linear-gradient(180deg, rgba(214, 224, 211, 0.72), rgba(244, 239, 226, 0.92)),
+    var(--paper);
+}
+
+html.forest-revamp body::before {
+  opacity: 0.42;
+  background-image:
+    linear-gradient(90deg, rgba(38, 74, 48, 0.09) 1px, transparent 1px),
+    linear-gradient(rgba(38, 74, 48, 0.06) 1px, transparent 1px);
+  background-size: 118px 118px;
+}
+
+html.forest-revamp .app {
+  max-width: 960px;
+}
+
+html.forest-revamp #view-today .plate,
+html.forest-revamp #view-practice .plate,
+html.forest-revamp #view-track .plate,
+html.forest-revamp #view-history .plate {
+  min-height: 170px;
+  background:
+    linear-gradient(180deg, rgba(251, 250, 242, 0.45), rgba(251, 250, 242, 0.88)),
+    url("assets/peaceful/forest-cairn-mist.jpg") center / cover;
+  border-color: rgba(63, 111, 80, 0.18);
+}
+
+html.forest-revamp #view-practice .plate {
+  background:
+    linear-gradient(180deg, rgba(251, 250, 242, 0.42), rgba(251, 250, 242, 0.88)),
+    url("assets/peaceful/buddhist-garden-altar.jpg") center / cover;
+}
+
+html.forest-revamp #view-track .plate {
+  background:
+    linear-gradient(180deg, rgba(251, 250, 242, 0.48), rgba(251, 250, 242, 0.9)),
+    url("assets/peaceful/buddha-moss-garden.jpg") center / cover;
+}
+
+html.forest-revamp .today-progress-wrap,
+html.forest-revamp .rest-mode-pill,
+html.forest-revamp .quick-start,
+html.forest-revamp #gentlePathSection {
+  display: none !important;
+}
+
+.forest-sanctuary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: 16px;
+  padding: 18px;
+  margin: 0 0 16px;
+  border: 1px solid rgba(63, 111, 80, 0.2);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(249, 248, 239, 0.9), rgba(214, 224, 208, 0.72)),
+    var(--paper-3);
+  box-shadow: 0 22px 70px rgba(35, 59, 42, 0.1);
+}
+
+.forest-sanctuary h2,
+.forest-diary-card h2,
+.chant-door h2,
+.forest-weekly-review h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+.forest-kicker {
+  margin: 0 0 10px;
+  color: var(--moss-deep);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.sanctuary-copy {
+  min-height: 315px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(8, 22, 12, 0.06), rgba(8, 22, 12, 0.52)),
+    url("assets/peaceful/buddha-moss-garden.jpg") center / cover;
+  color: #fbfaf2;
+  overflow: hidden;
+}
+
+.sanctuary-copy h2,
+.sanctuary-copy .forest-kicker {
+  color: #fbfaf2;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+
+.sanctuary-copy p:last-of-type {
+  max-width: 31rem;
+  margin: 10px 0 0;
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.sanctuary-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sanctuary-action-row {
+  display: grid;
+  grid-template-columns: 1fr 0.78fr;
+  gap: 8px;
+}
+
+.sanctuary-sit,
+.sanctuary-bell,
+.sanctuary-next,
+.chant-action,
+.diary-save {
+  min-height: 48px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--moss-deep);
+  color: #fbfaf2;
+  font-family: "Lora", serif;
+  font-size: 0.98rem;
+  cursor: pointer;
+}
+
+.sanctuary-bell,
+.chant-action.secondary {
+  background: rgba(251, 250, 242, 0.78);
+  color: var(--moss-deep);
+  border: 1px solid rgba(63, 111, 80, 0.24);
+}
+
+.sanctuary-next {
+  width: 100%;
+  background: rgba(63, 111, 80, 0.1);
+  color: var(--moss-deep);
+  border: 1px solid rgba(63, 111, 80, 0.2);
+}
+
+.sanctuary-card,
+.diary-panel,
+.chant-card {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(63, 111, 80, 0.18);
+  background: rgba(251, 250, 242, 0.68);
+}
+
+.sanctuary-card h3,
+.diary-panel h3,
+.chant-card h3 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-family: "Lora", serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tiny-check-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.tiny-check-row button,
+.skill-pill,
+.diary-chip {
+  min-height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(63, 111, 80, 0.22);
+  background: rgba(255, 253, 247, 0.74);
+  color: var(--ink-soft);
+  font-family: "JetBrains Mono", monospace;
+  cursor: pointer;
+}
+
+.tiny-check-row button.on,
+.skill-pill.on,
+.diary-chip.on {
+  background: var(--moss-deep);
+  border-color: var(--moss-deep);
+  color: #fbfaf2;
+}
+
+.forest-diary-card {
+  margin-bottom: 14px;
+  background:
+    linear-gradient(145deg, rgba(251, 250, 242, 0.94), rgba(214, 224, 208, 0.72)),
+    var(--paper-3);
+}
+
+.diary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diary-meter {
+  display: grid;
+  grid-template-columns: 90px 1fr 26px;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.diary-meter input {
+  width: 100%;
+  accent-color: var(--moss-deep);
+}
+
+.diary-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.diary-write-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.forest-diary-card textarea,
+.forest-diary-card input[type="text"],
+.forest-diary-card input[type="number"] {
+  width: 100%;
+  border: 1px solid rgba(63, 111, 80, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 253, 247, 0.72);
+  color: var(--ink);
+}
+
+.diary-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.diary-status,
+.chant-status {
+  color: var(--moss-deep);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chant-door {
+  background:
+    linear-gradient(135deg, rgba(30, 73, 50, 0.09), rgba(184, 155, 88, 0.1)),
+    var(--paper-3);
+}
+
+.chant-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.chant-lines,
+.meaning-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chant-lines li,
+.meaning-lines li {
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(63, 111, 80, 0.12);
+}
+
+.chant-lines {
+  color: var(--moss-deep);
+  font-size: 1.05rem;
+}
+
+.chant-credit {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+.body-basics-details,
+.garden-patterns-details {
+  width: 100%;
+}
+
+.body-basics-details > summary,
+.garden-patterns-details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.body-basics-details > summary::-webkit-details-marker,
+.garden-patterns-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.forest-weekly-review {
+  margin: 0 0 14px;
+}
+
+.forest-week-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.forest-week-dot {
+  min-height: 54px;
+  border-radius: 14px;
+  background: rgba(63, 111, 80, 0.08);
+  border: 1px solid rgba(63, 111, 80, 0.14);
+  display: grid;
+  place-items: center;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--moss-deep);
+  font-size: 0.72rem;
+}
+
+html.forest-revamp #view-history .streak-label {
+  color: var(--moss-deep);
+}
+
+@media (max-width: 720px) {
+  .forest-sanctuary,
+  .diary-grid,
+  .chant-layout,
+  .diary-write-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sanctuary-copy {
+    min-height: 250px;
+  }
+
+  .diary-skill-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 460px) {
+  .forest-sanctuary {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .sanctuary-action-row,
+  .diary-skill-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .diary-meter {
+    grid-template-columns: 78px 1fr 24px;
+  }
+}

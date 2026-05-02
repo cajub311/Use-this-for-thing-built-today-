@@ -22,11 +22,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Stillness" />
-<meta name="description" content="Stillness — a gentle botanical daily journal. Mood, rest, intention, and small practices in the browser, saved on your device." />
+<meta name="description" content="Stillness is a local-first forest monastery app for daily sitting, gentle diary cards, sound, and reflection." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Stillness" />
-<meta property="og:title" content="Stillness — a botanical journal for your days" />
-<meta property="og:description" content="Stillness — a gentle botanical daily journal. Saved on your device, with a log, backup, and optional install as an app." />
+<meta property="og:title" content="Stillness - forest monastery" />
+<meta property="og:description" content="A local-first meditation sanctuary with practice, DBT diary card, garden, and backup." />
 <meta property="og:image" content="/assets/peaceful/still-lake-dawn.jpg" />
 <meta property="og:image:alt" content="A still misty lake at dawn — calm botanical image for the Stillness journal" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -43,16 +43,16 @@
   } catch (e) { /* no-op */ }
 })();
 </script>
-<meta name="twitter:title" content="Stillness — a botanical journal for your days" />
-<meta name="twitter:description" content="A gentle daily journal in the browser. Mood, rest, intention, evening check-in, and small practices—stored locally on this device." />
-<meta name="theme-color" content="#EDE3D2" />
+<meta name="twitter:title" content="Stillness - forest monastery" />
+<meta name="twitter:description" content="A local-first meditation sanctuary with practice, DBT diary card, garden, and backup." />
+<meta name="theme-color" content="#1E4932" />
 <meta name="color-scheme" content="light" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-<title>Stillness — a botanical journal for your days</title>
+<title>Stillness - forest monastery</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -3899,6 +3899,7 @@
 <link rel="stylesheet" href="calm-redesign.css" />
 <link rel="stylesheet" href="polish-v2.css" />
 <link rel="stylesheet" href="minimal-meditation.css" id="minimalZenCss" media="all" />
+<link rel="stylesheet" href="forest-monastery.css" />
 <script>
 (function () {
   try {
@@ -5397,9 +5398,9 @@
     <svg class="nav-icon" aria-hidden="true"><use href="#icon-nav-practice"/></svg>
     <span class="nav-label">Practice</span>
   </button>
-  <button type="button" class="nav-btn" data-view="track" aria-pressed="false" aria-label="Track body">
+  <button type="button" class="nav-btn" data-view="track" aria-pressed="false" aria-label="Diary - DBT and body">
     <svg class="nav-icon" aria-hidden="true"><use href="#icon-nav-track"/></svg>
-    <span class="nav-label">Track</span>
+    <span class="nav-label">Diary</span>
   </button>
   <button type="button" class="nav-btn" data-view="history" aria-pressed="false" aria-label="Garden — history and charts">
     <svg class="nav-icon" aria-hidden="true"><use href="#icon-nav-garden"/></svg>
@@ -6145,6 +6146,10 @@
     activeMeal: 'breakfast', activeSeverity: 0, painQualitySelect: '', activeMedTime: 'morning',
     mindfulMinutes: 0,
     practiceFlags: { breathe: false, tipp: false, stop: false },
+    diaryCard: {},
+    chantSessions: [],
+    bellSessions: [],
+    practiceSessions: [],
     dbtSkills: [],
     thoughtRecords: []
   });
@@ -6186,16 +6191,29 @@
     if (typeof day.gentleReflectAnswer !== 'string') day.gentleReflectAnswer = '';
     if (!day.practiceFlags || typeof day.practiceFlags !== 'object') day.practiceFlags = { breathe: false, tipp: false, stop: false };
     ['breathe', 'tipp', 'stop'].forEach(k => { if (typeof day.practiceFlags[k] !== 'boolean') day.practiceFlags[k] = false; });
+    if (!day.diaryCard || typeof day.diaryCard !== 'object' || Array.isArray(day.diaryCard)) day.diaryCard = {};
+    if (!Array.isArray(day.chantSessions)) day.chantSessions = [];
+    if (!Array.isArray(day.bellSessions)) day.bellSessions = [];
+    if (!Array.isArray(day.practiceSessions)) day.practiceSessions = [];
     (day.pains || []).forEach(p => { if (p.quality == null) p.quality = ''; });
   }
   let saveTimer = null;
   let quietDaySaveTimer = null;
   let quietPathSaveTimer = null;
+  function mergeModuleFieldsIntoDay() {
+    try {
+      const existing = JSON.parse(Storage.get(getStorageKey()) || '{}');
+      ['diaryCard', 'chantSessions', 'bellSessions', 'practiceSessions'].forEach(k => {
+        if (existing && existing[k] !== undefined) day[k] = existing[k];
+      });
+    } catch (e) {}
+    return day;
+  }
   function saveDayNow() {
     clearTimeout(saveTimer);
     clearTimeout(quietDaySaveTimer);
     try {
-      Storage.set(getStorageKey(), JSON.stringify(day));
+      Storage.set(getStorageKey(), JSON.stringify(mergeModuleFieldsIntoDay()));
       setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
       renderDataCorner();
       try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
@@ -6211,7 +6229,7 @@
     setSaveBarText('Saving…', 'saving');
     saveTimer = setTimeout(() => {
       try {
-        Storage.set(getStorageKey(), JSON.stringify(day));
+        Storage.set(getStorageKey(), JSON.stringify(mergeModuleFieldsIntoDay()));
         setSaveBarText(storageDurable ? 'Saved locally' : 'Session only', storageDurable ? 'saved' : 'error');
         throttledNote('Day saved for ' + currentDateKey + '.');
         renderDataCorner();
@@ -6227,7 +6245,7 @@
     clearTimeout(quietDaySaveTimer);
     quietDaySaveTimer = setTimeout(() => {
       try {
-        Storage.set(getStorageKey(), JSON.stringify(day));
+        Storage.set(getStorageKey(), JSON.stringify(mergeModuleFieldsIntoDay()));
         renderDataCorner();
         try { renderTodayProgress(); updateStickySaveBar(); } catch (e) {}
         updateLastSavedAt();
@@ -7606,7 +7624,9 @@
            d.eveningWin || d.eveningNote || d.eveningObstacle || d.eveningTomorrow ||
            (d.eveningStrongestEmotion && d.eveningStrongestEmotion.trim()) || (d.eveningQuietPride && d.eveningQuietPride.trim()) || (d.eveningNeedTomorrow && d.eveningNeedTomorrow.trim()) ||
            (d.phq2 && d.phq2.some(x => x != null)) || (d.gad2 && d.gad2.some(x => x != null)) ||
-           d.functionalImpact > 0 || (d.strengthsNote && d.strengthsNote.trim()) || (d.supportNote && d.supportNote.trim()) || (d.stressCheckIn && d.stressCheckIn.trim());
+           d.functionalImpact > 0 || (d.strengthsNote && d.strengthsNote.trim()) || (d.supportNote && d.supportNote.trim()) || (d.stressCheckIn && d.stressCheckIn.trim()) ||
+           (d.diaryCard && Object.keys(d.diaryCard).length) ||
+           (d.chantSessions && d.chantSessions.length) || (d.bellSessions && d.bellSessions.length) || (d.practiceSessions && d.practiceSessions.length);
   }
 
   function savedDayCount() {
@@ -11119,5 +11139,6 @@
       .catch(() => {});
   }
 </script>
+<script type="module" src="forest-monastery.js"></script>
 </body>
 </html>
